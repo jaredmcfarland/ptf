@@ -397,3 +397,289 @@ Choose a resolution option to proceed.
 ```
 
 </structured_returns>
+
+<inference_details>
+**Multi-Pass Dependency Inference Implementation**
+
+## Data Structures
+
+```python
+# Task index built in step 1
+task_index = {
+    task_id: {
+        "inputs": [{"path": str, "type": str, "required": bool}],
+        "outputs": [{"path": str, "type": str}],
+        "description": str,
+        "context_notes": str
+    }
+}
+
+# Dependencies accumulated across passes
+dependencies = []
+
+# Confidence ranking for comparison
+CONFIDENCE_RANK = {"high": 3, "medium": 2, "low": 1}
+
+def add_if_not_exists(dep):
+    """Add dependency only if not already present with higher confidence"""
+    for existing in dependencies:
+        if existing["from"] == dep["from"] and existing["to"] == dep["to"]:
+            # Already exists - check if we should upgrade
+            if CONFIDENCE_RANK[dep["confidence"]] > CONFIDENCE_RANK[existing["confidence"]]:
+                # Upgrade confidence
+                existing["confidence"] = dep["confidence"]
+                existing["type"] = dep["type"]
+                existing["reason"] = dep["reason"]
+            return  # Don't add duplicate
+    dependencies.append(dep)
+
+def has_dependency(from_id, to_id):
+    """Check if dependency already exists between two tasks"""
+    return any(d["from"] == from_id and d["to"] == to_id for d in dependencies)
+```
+
+## Pass 1: Artifact Matching (Detailed)
+
+The most reliable inference source. Exact path matches between outputs and inputs.
+
+```python
+def pass1_artifact_matching(tasks):
+    """
+    For each required input, find the task that produces it.
+    HIGH confidence - exact path matches are definitive.
+    """
+    for task_b in tasks:
+        for input_spec in task_b.get("inputs", []):
+            # Skip optional inputs - they don't create hard dependencies
+            if not input_spec.get("required", True):
+                continue
+
+            input_path = input_spec["path"]
+
+            for task_a in tasks:
+                if task_a["id"] == task_b["id"]:
+                    continue  # Skip self
+
+                for output in task_a.get("outputs", []):
+                    if output["path"] == input_path:
+                        add_if_not_exists({
+                            "from": task_a["id"],
+                            "to": task_b["id"],
+                            "type": "artifact",
+                            "confidence": "high",
+                            "reason": f"{task_b['id']} requires {input_path} produced by {task_a['id']}"
+                        })
+```
+
+## Pass 2: Type/Pattern Matching (Detailed)
+
+For glob-pattern inputs, match against outputs using minimatch semantics.
+
+```python
+def pass2_pattern_matching(tasks):
+    """
+    Handle inputs with glob patterns (*, **).
+    MEDIUM confidence - patterns may over-match.
+    """
+    import fnmatch
+
+    for task_b in tasks:
+        for input_spec in task_b.get("inputs", []):
+            input_path = input_spec["path"]
+
+            # Only process glob patterns
+            if "*" not in input_path and "**" not in input_path:
+                continue
+
+            for task_a in tasks:
+                if task_a["id"] == task_b["id"]:
+                    continue
+
+                for output in task_a.get("outputs", []):
+                    # Use fnmatch for glob matching
+                    if fnmatch.fnmatch(output["path"], input_path):
+                        add_if_not_exists({
+                            "from": task_a["id"],
+                            "to": task_b["id"],
+                            "type": "artifact",
+                            "confidence": "medium",
+                            "reason": f"Pattern '{input_path}' matches '{output['path']}'"
+                        })
+```
+
+## Pass 3: Semantic Analysis (Detailed)
+
+LLM analyzes task descriptions for natural language references to other tasks.
+
+```python
+def pass3_semantic_analysis(tasks):
+    """
+    Use LLM to find implicit dependencies in descriptions.
+    MEDIUM confidence - requires interpretation.
+    """
+    # Build task summary for analysis
+    task_summaries = []
+    for task in tasks:
+        task_summaries.append({
+            "id": task["id"],
+            "description": task.get("description", ""),
+            "context_notes": task.get("context_notes", "")
+        })
+
+    # LLM prompt for dependency extraction
+    prompt = f"""
+    Analyze these task descriptions for implicit dependencies.
+    Look for natural language indicators that one task needs another:
+
+    Indicators to find:
+    - "uses the X from task Y" or "uses the X created by..."
+    - "after task Y completes" or "once Y is done..."
+    - "builds on" or "extends"
+    - "references the schema/model/service from..."
+    - "assumes X exists" where X is produced elsewhere
+
+    Tasks:
+    {json.dumps(task_summaries, indent=2)}
+
+    Return JSON array of dependencies:
+    [
+      {{"from": "producer-id", "to": "consumer-id", "reason": "explanation"}}
+    ]
+
+    Rules:
+    - Only return CLEAR, HIGH-CONFIDENCE semantic dependencies
+    - Do NOT duplicate artifact dependencies (input/output path matches)
+    - Prefer no result over uncertain matches
+    """
+
+    # Parse LLM response
+    semantic_deps = llm_analyze(prompt)
+
+    for dep in semantic_deps:
+        # Verify task IDs exist
+        if not any(t["id"] == dep["from"] for t in tasks):
+            continue  # Unknown source task
+        if not any(t["id"] == dep["to"] for t in tasks):
+            continue  # Unknown target task
+
+        add_if_not_exists({
+            "from": dep["from"],
+            "to": dep["to"],
+            "type": "semantic",
+            "confidence": "medium",
+            "reason": dep.get("reason", "Semantic analysis")
+        })
+```
+
+## Pass 4: Domain Heuristics (Detailed)
+
+Apply adapter-defined patterns based on artifact types.
+
+```python
+def pass4_heuristic_patterns(tasks, adapter):
+    """
+    Apply domain-specific dependency patterns.
+    LOW confidence - heuristics may not apply.
+    """
+    patterns = adapter.get("dependencies", {}).get("common_patterns", [])
+
+    for pattern in patterns:
+        # Pattern structure: {from_type, to_type, description}
+        from_type = pattern["from_type"]
+        to_type = pattern["to_type"]
+        description = pattern.get("description", f"{from_type} -> {to_type}")
+
+        # Find tasks producing from_type
+        producers = [
+            t for t in tasks
+            if any(o.get("type") == from_type for o in t.get("outputs", []))
+        ]
+
+        # Find tasks producing to_type
+        consumers = [
+            t for t in tasks
+            if any(o.get("type") == to_type for o in t.get("outputs", []))
+        ]
+
+        # Create dependencies where none exist
+        for producer in producers:
+            for consumer in consumers:
+                if producer["id"] == consumer["id"]:
+                    continue
+
+                # Only add if no existing dependency
+                if not has_dependency(producer["id"], consumer["id"]):
+                    add_if_not_exists({
+                        "from": producer["id"],
+                        "to": consumer["id"],
+                        "type": "implicit",
+                        "confidence": "low",
+                        "reason": description
+                    })
+```
+
+## Pass 5: Resource Conflicts (Detailed)
+
+Detect tasks that write to the same file - they cannot run in parallel.
+
+```python
+def pass5_resource_conflicts(tasks):
+    """
+    Find overlapping outputs that require serialization.
+    HIGH confidence - prevents file corruption.
+    """
+    # Map output paths to their owning tasks
+    output_owners = {}
+
+    for task in tasks:
+        for output in task.get("outputs", []):
+            path = output["path"]
+
+            if path in output_owners:
+                # Conflict detected!
+                other_task_id = output_owners[path]
+
+                # Order alphabetically for determinism
+                ids = sorted([task["id"], other_task_id])
+
+                add_if_not_exists({
+                    "from": ids[0],
+                    "to": ids[1],
+                    "type": "resource",
+                    "confidence": "high",
+                    "reason": f"Both tasks modify '{path}' - must serialize"
+                })
+
+            output_owners[path] = task["id"]
+```
+
+## Complete Inference Pipeline
+
+```python
+def infer_all_dependencies(tasks, adapter):
+    """
+    Run all 5 passes in order.
+    Later passes only add if not already covered by earlier passes.
+    """
+    global dependencies
+    dependencies = []
+
+    # Pass 1: Most reliable - exact artifact matches
+    pass1_artifact_matching(tasks)
+
+    # Pass 2: Glob pattern matches
+    pass2_pattern_matching(tasks)
+
+    # Pass 3: Semantic analysis of descriptions
+    pass3_semantic_analysis(tasks)
+
+    # Pass 4: Domain-specific heuristics
+    pass4_heuristic_patterns(tasks, adapter)
+
+    # Pass 5: Resource conflict detection
+    pass5_resource_conflicts(tasks)
+
+    return dependencies
+```
+
+</inference_details>
