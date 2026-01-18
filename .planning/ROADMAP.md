@@ -31,11 +31,12 @@ PTF transforms complex goals into atomic tasks with dependency-aware parallel ex
   3. SKILL.md documents framework concepts and is readable by Claude Code
   4. Example files demonstrate schema usage and can be parsed without errors
   5. Context budget fields exist in Task schema (estimated_tokens, max_context_percentage)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD (schemas and validation)
-- [ ] 01-02: TBD (plugin structure and skill)
+- [ ] 01-01-PLAN.md — Create all 5 YAML schemas (Task, Artifact, Dependency, Wave, Plan)
+- [ ] 01-02-PLAN.md — Create plugin directory structure and SKILL.md documentation
+- [ ] 01-03-PLAN.md — Create example task and plan files demonstrating schema usage
 
 ### Phase 2: Decomposition
 **Goal**: Transform goals into validated atomic tasks through 5-step decomposition process
@@ -165,7 +166,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/3 | Planned | - |
 | 2. Decomposition | 0/TBD | Not started | - |
 | 3. Dependency Analysis | 0/TBD | Not started | - |
 | 4. State Management | 0/TBD | Not started | - |
@@ -206,4 +207,5 @@ Note: The count discrepancy suggests CMD-* requirements duplicate functionality 
 
 ---
 *Roadmap created: 2025-01-18*
+*Phase 1 planned: 2025-01-18*
 *Depth: comprehensive (8 phases)*
