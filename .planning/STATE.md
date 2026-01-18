@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2025-01-18)
 ## Current Position
 
 Phase: 2 of 8 (Decomposition)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-01-18 — Completed 02-01-PLAN.md (Domain Adapters)
+Last activity: 2026-01-18 — Completed 02-02-PLAN.md (Init Command)
 
-Progress: [████░░░░░░] ~16%
+Progress: [█████░░░░░] ~20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 1 min 51 sec
-- Total execution time: ~7.4 min
+- Total plans completed: 5
+- Average duration: 1 min 53 sec
+- Total execution time: ~9.4 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 4m 32s | 1m 31s |
-| 02-decomposition | 1 | 2m 51s | 2m 51s |
+| 02-decomposition | 2 | 4m 51s | 2m 26s |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (1m 22s), 01-02 (2m), 01-03 (1m 10s), 02-01 (2m 51s)
+- Last 5 plans: 01-02 (2m), 01-03 (1m 10s), 02-01 (2m 51s), 02-02 (2m)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -56,6 +56,8 @@ Recent decisions affecting current work:
 - [02-01]: 4 questioning categories per adapter (core domain, constraints, methodology, scope)
 - [02-01]: Atomicity criteria as checklist pattern (criterion, check, fail_signal)
 - [02-01]: Template adapter uses [CUSTOMIZE] markers for self-documentation
+- [02-02]: 7-phase process for /ptf:init (Setup, Domain Detection, Clarification, Analysis, Constitution, Commit, Complete)
+- [02-02]: Write order: goal.md -> config.yaml -> analysis.yaml (dependencies flow downward)
 
 ### Pending Todos
 
@@ -67,9 +69,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-18 23:03 UTC
-Stopped at: Completed 02-01-PLAN.md (Domain Adapters)
+Last session: 2026-01-18 23:06 UTC
+Stopped at: Completed 02-02-PLAN.md (Init Command)
 Resume file: None
 
 ---
-*Next action: Continue Phase 2 - create /ptf:init command (02-02-PLAN.md)*
+*Next action: Continue Phase 2 - create /ptf:decompose command (02-03-PLAN.md)*
