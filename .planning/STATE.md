@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Fresh context execution for every task — context windows are the scarce resource in AI computation
-**Current focus:** Phase 3 - Dependency Analysis (Phase 2 complete)
+**Current focus:** Phase 3 - Dependency Analysis (Plan 1 complete)
 
 ## Current Position
 
-Phase: 2 of 8 (Decomposition)
-Plan: 4 of 4 in current phase
-Status: Phase complete
-Last activity: 2026-01-18 — Completed 02-04-PLAN.md (Decompose Command)
+Phase: 3 of 8 (Dependency Analysis)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-01-18 — Completed 03-01-PLAN.md (Dependency Analyzer)
 
-Progress: [██████░░░░] ~25%
+Progress: [███████░░░] ~30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 1 min 57 sec
-- Total execution time: ~13.8 min
+- Total plans completed: 8
+- Average duration: 2 min 4 sec
+- Total execution time: ~17.5 min
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: [██████░░░░] ~25%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 4m 32s | 1m 31s |
 | 02-decomposition | 4 | 9m 12s | 2m 18s |
+| 03-dependency-analysis | 1 | 3m 40s | 3m 40s |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (2m 51s), 02-02 (2m), 02-03 (2m 21s), 02-04 (2m)
+- Last 5 plans: 02-02 (2m), 02-03 (2m 21s), 02-04 (2m), 03-01 (3m 40s)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -64,6 +65,10 @@ Recent decisions affecting current work:
 - [02-04]: 5-phase process for /ptf:decompose (Prerequisites, Spawn, Handle, Commit, Complete)
 - [02-04]: Resume detection checks status fields in subgoals.yaml, validation.yaml
 - [02-04]: BLOCKED handling offers: Adjust goal, Force continue, Abort
+- [03-01]: 5-pass inference order: artifact -> pattern -> semantic -> heuristic -> resource
+- [03-01]: Confidence levels never downgrade (higher takes precedence)
+- [03-01]: Tarjan's for cycle detection (O(V+E), exact cycle members)
+- [03-01]: Kahn's for wave computation (natural parallel levels)
 
 ### Pending Todos
 
@@ -75,9 +80,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-18 23:11 UTC
-Stopped at: Completed 02-04-PLAN.md (Decompose Command) - Phase 2 complete
+Last session: 2026-01-18 23:39 UTC
+Stopped at: Completed 03-01-PLAN.md (Dependency Analyzer)
 Resume file: None
 
 ---
-*Next action: Start Phase 3 - Dependency Analysis (03-dependency-analysis)*
+*Next action: Execute 03-02-PLAN.md (Plan Command)*
