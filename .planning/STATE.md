@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Fresh context execution for every task — context windows are the scarce resource in AI computation
-**Current focus:** Phase 2 - Commands (Phase 1 complete)
+**Current focus:** Phase 2 - Decomposition (Phase 1 complete)
 
 ## Current Position
 
-Phase: 1 of 8 (Foundation) - COMPLETE
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-01-18 — Completed 01-03-PLAN.md (Example Files)
+Phase: 2 of 8 (Decomposition)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-18 — Completed 02-01-PLAN.md (Domain Adapters)
 
-Progress: [███░░░░░░░] ~12%
+Progress: [████░░░░░░] ~16%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 1 min 31 sec
-- Total execution time: ~4.5 min
+- Total plans completed: 4
+- Average duration: 1 min 51 sec
+- Total execution time: ~7.4 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 4m 32s | 1m 31s |
+| 02-decomposition | 1 | 2m 51s | 2m 51s |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (1m 22s), 01-02 (2m), 01-03 (1m 10s)
+- Last 5 plans: 01-01 (1m 22s), 01-02 (2m), 01-03 (1m 10s), 02-01 (2m 51s)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -52,6 +53,9 @@ Recent decisions affecting current work:
 - [01-02]: Directory .gitkeep files include purpose comments
 - [01-03]: Auth-schema example for complete task demonstration (realistic, matches research)
 - [01-03]: 5-wave plan structure shows linear dependency chain
+- [02-01]: 4 questioning categories per adapter (core domain, constraints, methodology, scope)
+- [02-01]: Atomicity criteria as checklist pattern (criterion, check, fail_signal)
+- [02-01]: Template adapter uses [CUSTOMIZE] markers for self-documentation
 
 ### Pending Todos
 
@@ -63,9 +67,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-18 22:38 UTC
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Last session: 2026-01-18 23:03 UTC
+Stopped at: Completed 02-01-PLAN.md (Domain Adapters)
 Resume file: None
 
 ---
-*Next action: Begin Phase 2 (Commands) - create /ptf:init command*
+*Next action: Continue Phase 2 - create /ptf:init command (02-02-PLAN.md)*
