@@ -48,12 +48,13 @@ Plans:
   3. Decomposition validates 100% coverage (no task overlap, all goal aspects addressed)
   4. Tasks meet atomicity criteria (single-file, fresh-context-completable)
   5. Decomposition state persists to .orchestrator/decomposition/ and survives session restart
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 02-01: TBD (init command and goal analysis)
-- [ ] 02-02: TBD (decomposer subagent and 5-step process)
-- [ ] 02-03: TBD (validation and persistence)
+- [ ] 02-01-PLAN.md — Create domain adapters (software-development, research, template)
+- [ ] 02-02-PLAN.md — Create /ptf:init command for goal analysis
+- [ ] 02-03-PLAN.md — Create ptf-decomposer subagent for 5-step decomposition
+- [ ] 02-04-PLAN.md — Create /ptf:decompose command to orchestrate decomposition
 
 ### Phase 3: Dependency Analysis
 **Goal**: Infer task dependencies and compute parallel execution waves
@@ -166,8 +167,8 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 3/3 | ✓ Complete | 2026-01-18 |
-| 2. Decomposition | 0/TBD | Not started | - |
+| 1. Foundation | 3/3 | Complete | 2026-01-18 |
+| 2. Decomposition | 0/4 | Planned | - |
 | 3. Dependency Analysis | 0/TBD | Not started | - |
 | 4. State Management | 0/TBD | Not started | - |
 | 5. Execution Engine | 0/TBD | Not started | - |
@@ -208,4 +209,5 @@ Note: The count discrepancy suggests CMD-* requirements duplicate functionality 
 ---
 *Roadmap created: 2025-01-18*
 *Phase 1 planned: 2025-01-18*
+*Phase 2 planned: 2026-01-18*
 *Depth: comprehensive (8 phases)*
