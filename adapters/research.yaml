@@ -1,0 +1,268 @@
+# Research Domain Adapter
+# Customizes PTF decomposition for research tasks
+
+name: research
+description: |
+  Domain adapter for research tasks including literature review,
+  experiments, data analysis, and synthesis of findings.
+version: "1.0"
+
+# Questioning - drives the /ptf:init clarification process
+questioning:
+  init_questions:
+    - category: research_question
+      question: "What's the core research question you're investigating?"
+      why: "Defines the central focus and shapes decomposition strategy"
+      options_template:
+        - "What is the relationship between {X} and {Y}?"
+        - "How does {phenomenon} work?"
+        - "What are the best practices for {topic}?"
+        - "Compare and contrast {A} vs {B}"
+
+    - category: existing_knowledge
+      question: "What do you already know about this topic?"
+      why: "Identifies starting point and gaps to fill"
+      options_template:
+        - "Comprehensive existing knowledge"
+        - "Some familiarity"
+        - "Mostly new territory"
+
+    - category: methodology
+      question: "What research methodology will you use?"
+      why: "Shapes task structure and artifact types"
+      options_template:
+        - "Literature review"
+        - "Empirical analysis"
+        - "Comparative study"
+        - "Mixed methods"
+
+    - category: scope_bounds
+      question: "What are the boundaries of this research?"
+      why: "Prevents scope creep and unbounded exploration"
+      options_template:
+        - "Time period: {range}"
+        - "Source types: {types}"
+        - "Geographic scope: {area}"
+        - "Domain constraints: {constraints}"
+
+# Decomposition - drives the /ptf:decompose process
+decomposition:
+  subgoal_heuristics:
+    - name: by-question
+      description: Split by sub-questions within the main question
+      examples:
+        - "What causes X?"
+        - "What are the effects of X?"
+        - "How is X measured?"
+        - "What interventions work for X?"
+      when_to_use: "Complex question with multiple facets"
+
+    - name: by-source
+      description: Split by source types or categories
+      examples:
+        - "Academic papers"
+        - "Industry reports"
+        - "Primary sources"
+        - "Expert interviews"
+      when_to_use: "Research requires diverse source types"
+
+    - name: by-stage
+      description: Split by research process stages
+      examples:
+        - "Literature search"
+        - "Source evaluation"
+        - "Data extraction"
+        - "Synthesis"
+      when_to_use: "Standard research workflow"
+
+    - name: by-synthesis
+      description: Split by levels of synthesis
+      examples:
+        - "Individual source summaries"
+        - "Thematic groupings"
+        - "Cross-theme synthesis"
+        - "Final conclusions"
+      when_to_use: "Complex synthesis requirements"
+
+  atomicity_criteria:
+    - criterion: single-question
+      check: "Task addresses one research question or sub-question"
+      fail_signal: "description mentions multiple unrelated questions"
+
+    - criterion: bounded-sources
+      check: "Task works with a limited set of sources (typically 3-5)"
+      fail_signal: "task requires reviewing unlimited sources"
+
+    - criterion: verifiable-finding
+      check: "Task produces a concrete, checkable finding or summary"
+      fail_signal: "output is vague like 'understand X'"
+
+    - criterion: fresh-context-completable
+      check: "Can complete in <30% context window starting fresh"
+      fail_signal: "inputs require reading >50KB of context"
+
+    - criterion: explicit-sources
+      check: "All source dependencies declared in inputs"
+      fail_signal: "description references sources not in inputs"
+
+  max_recursion_depth: 4
+
+# Constitution - template for project-specific immutable principles
+constitution:
+  template: |
+    # {project_name} Constitution
+
+    These principles are IMMUTABLE for this research project.
+    Violating them compromises research integrity.
+
+    ## Core Principles
+
+    1. **Artifact Integrity**: Every task produces exactly the artifacts declared
+       in its outputs. No undeclared findings or summaries.
+
+    2. **Dependency Honesty**: All source dependencies are declared in inputs.
+       Hidden dependencies make findings unverifiable.
+
+    3. **Fresh Context**: Every task must be completable by an agent starting
+       with empty context, loading only declared inputs.
+
+    4. **Verification**: Every finding has a concrete verification step.
+       "Seems reasonable" is not verification.
+
+    ## Domain Principles (Research)
+
+    5. **Source Integrity**: Always cite sources. Every claim traces to evidence.
+       No unsourced assertions.
+
+    6. **Claim-Evidence Binding**: Every claim in a finding must reference
+       the specific evidence supporting it.
+
+    7. **Methodology Consistency**: Apply the same evaluation criteria
+       across all sources within a task.
+
+    8. **Bias Awareness**: Document potential biases in sources and
+       limitations in findings.
+
+    ## Project-Specific Constraints
+
+    {project_constraints}
+
+    ---
+    *Generated: {timestamp}*
+    *Domain: research*
+
+# Artifacts - types and verification strategies
+artifacts:
+  types:
+    - name: finding
+      extensions:
+        - .md
+        - .yaml
+      description: Individual research finding with supporting evidence
+
+    - name: summary
+      extensions:
+        - .md
+      description: Summary of a source or set of sources
+
+    - name: synthesis
+      extensions:
+        - .md
+      description: Integrated analysis across multiple findings
+
+    - name: data
+      extensions:
+        - .csv
+        - .json
+        - .yaml
+      description: Extracted or processed research data
+
+    - name: methodology
+      extensions:
+        - .md
+      description: Research methodology documentation
+
+    - name: bibliography
+      extensions:
+        - .bib
+        - .yaml
+        - .md
+      description: Reference and citation tracking
+
+  verification_strategies:
+    finding:
+      - method: exists
+        description: Finding file exists
+      - method: contains
+        description: Has required sections (claim, evidence, source)
+      - method: references
+        description: All claims reference sources
+
+    summary:
+      - method: exists
+        description: Summary file exists
+      - method: contains
+        description: Has key points and source reference
+
+    synthesis:
+      - method: exists
+        description: Synthesis file exists
+      - method: integrates
+        description: References multiple findings
+      - method: contains
+        description: Has conclusions and limitations
+
+    data:
+      - method: exists
+        description: Data file exists
+      - method: syntax
+        description: Valid format (CSV/JSON/YAML)
+
+    methodology:
+      - method: exists
+        description: Methodology documentation exists
+      - method: contains
+        description: Has criteria and process sections
+
+    bibliography:
+      - method: exists
+        description: Bibliography exists
+      - method: contains
+        description: All cited sources included
+
+# Dependencies - common patterns for dependency inference
+dependencies:
+  common_patterns:
+    - name: source-to-finding
+      from_type: data
+      to_type: finding
+      description: Findings depend on source data they analyze
+      confidence: high
+
+    - name: finding-to-summary
+      from_type: finding
+      to_type: summary
+      description: Summaries depend on findings they aggregate
+      confidence: high
+
+    - name: summary-to-synthesis
+      from_type: summary
+      to_type: synthesis
+      description: Synthesis depends on summaries it integrates
+      confidence: high
+
+    - name: methodology-to-data
+      from_type: methodology
+      to_type: data
+      description: Data extraction follows methodology
+      confidence: medium
+
+  inference_hints:
+    - pattern: "\\[\\d+\\]"
+      implies: citation reference, depends on bibliography
+    - pattern: "Based on (.+\\.md)"
+      implies: depends on referenced finding
+    - pattern: "Source: (.+)"
+      implies: depends on cited source
+    - pattern: "From methodology"
+      implies: depends on methodology document
