@@ -1,0 +1,49 @@
+# Complete task example - all fields including context_budget and on_failure
+id: auth-schema
+name: Create Authentication Schema
+description: |
+  Create the Prisma schema for user authentication including:
+  - User model with email, password hash, created_at
+  - Session model with token, user_id, expires_at
+  - Proper indexes and relations
+
+  Follow Prisma best practices for naming conventions and
+  use appropriate field types for each column.
+
+inputs:
+  - path: prisma/schema.prisma
+    description: Existing Prisma schema to extend (if exists)
+    required: false
+  - path: docs/auth-requirements.md
+    description: Authentication requirements document
+    required: true
+
+outputs:
+  - path: prisma/schema.prisma
+    type: source-code
+
+verify:
+  - type: exists
+    target: prisma/schema.prisma
+  - type: contains
+    target: prisma/schema.prisma
+    expected: "model User"
+  - type: contains
+    target: prisma/schema.prisma
+    expected: "model Session"
+  - type: runs
+    target: "npx prisma validate"
+    expected: 0
+
+context_notes: |
+  Use Prisma best practices. Include proper indexes for
+  email lookups and session token queries. Ensure the
+  Session model has a proper relation to User.
+
+context_budget:
+  estimated_input_tokens: 2000
+  max_context_percentage: 25
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

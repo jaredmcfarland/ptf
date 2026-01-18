@@ -1,0 +1,14 @@
+# Minimal task example - required fields only
+id: create-readme
+name: Create README
+description: |
+  Create a basic README.md file with project name and description.
+  Use standard markdown formatting.
+
+outputs:
+  - path: README.md
+    type: documentation
+
+verify:
+  - type: exists
+    target: README.md
