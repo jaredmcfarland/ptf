@@ -1,0 +1,44 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/artifact.schema.yaml"
+title: Artifact
+description: A file produced or consumed by tasks in the Parallel Task Framework
+type: object
+required:
+  - path
+  - type
+  - produced_by
+properties:
+  path:
+    type: string
+    description: Canonical file path relative to project root
+  type:
+    type: string
+    enum:
+      - source-code
+      - config
+      - test
+      - migration
+      - documentation
+      - data
+      - schema
+    description: Artifact type for verification routing
+  produced_by:
+    type: string
+    description: Task ID that created this artifact
+  produced_at:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when artifact was created
+  consumed_by:
+    type: array
+    items:
+      type: string
+    description: Task IDs that read this artifact as input
+  checksum:
+    type: string
+    pattern: "^[a-f0-9]{64}$"
+    description: SHA-256 hash of file contents for integrity verification
+  verified:
+    type: boolean
+    default: false
+    description: Whether artifact has passed verification checks
