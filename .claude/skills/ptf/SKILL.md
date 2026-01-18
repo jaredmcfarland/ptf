@@ -132,6 +132,27 @@ PTF provides slash commands for each stage of the workflow:
 4. `/ptf:execute-all` - Run all waves
 5. `/ptf:status` - Monitor progress
 
+### /ptf:plan
+
+Generate execution plan from decomposition.
+
+**Requires:** Decomposition complete (.orchestrator/decomposition/tasks/)
+**Creates:** graph.yaml (dependencies), plan.md (human-readable plan)
+
+**Usage:**
+```
+/ptf:plan
+```
+
+**Process:**
+1. Validates decomposition exists
+2. Runs dependency analyzer (if needed)
+3. Handles any cycles with user input
+4. Generates human-readable plan.md
+5. Commits results
+
+**After this:** Run `/ptf:execute` to begin execution
+
 ## Schema Reference
 
 PTF schemas are defined in `schemas/` using JSON Schema Draft 7:
@@ -214,6 +235,53 @@ PTF uses specialized subagents for different responsibilities:
 3. Verifier checks each task's outputs
 4. On success: mark complete, proceed to Wave N+1
 5. On failure: apply failure policy (retry/skip/escalate)
+
+## Dependency Analysis
+
+PTF automatically infers task dependencies through multi-pass analysis.
+
+### Inference Passes
+
+1. **Artifact Matching (HIGH confidence)**
+   - Exact input/output path matches
+   - Task B's input matches Task A's output
+
+2. **Type/Pattern Matching (MEDIUM confidence)**
+   - Glob patterns (*.ts, **/*.yaml)
+   - Matches output paths against input patterns
+
+3. **Semantic Analysis (MEDIUM confidence)**
+   - LLM analyzes descriptions for implicit references
+   - "uses the X from task Y", "after Y completes"
+
+4. **Domain Heuristics (LOW confidence)**
+   - Adapter-provided patterns
+   - e.g., "tests depend on source-code"
+
+5. **Resource Conflicts (HIGH confidence)**
+   - Tasks modifying same file cannot parallelize
+   - Forces serialization
+
+### Wave Computation
+
+Kahn's algorithm groups tasks into parallel execution waves:
+- Wave 1: Tasks with no dependencies (can start immediately)
+- Wave N: Tasks whose dependencies completed in wave N-1
+- Tasks in same wave execute in parallel
+
+### Cycle Detection
+
+Tarjan's algorithm detects circular dependencies:
+- Reports exact tasks involved
+- Suggests which dependency to break (lowest confidence)
+- User can break, edit manually, or abort
+
+### Graph Output
+
+`.orchestrator/decomposition/graph.yaml` contains:
+- All inferred dependencies with confidence levels
+- Wave assignments for parallel execution
+- Validation summary and warnings
 
 ## Domain Adapters
 
