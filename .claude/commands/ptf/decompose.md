@@ -261,55 +261,64 @@ VAL_OUTPUT=$(grep -A2 "output_usefulness:" .orchestrator/decomposition/validatio
 CRITERIA_COUNT=$(grep -c "^  - " .orchestrator/decomposition/analysis.yaml | head -1 || echo "?")
 ```
 
-Present formatted summary:
+Present formatted decomposition summary:
 
 ```
----
-
-## PTF DECOMPOSITION COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ PTF ► DECOMPOSITION COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Goal:** {OBJECTIVE}
 
-### Subgoals
+## Subgoals
 
 | # | Subgoal | Tasks | Key Outputs |
 |---|---------|-------|-------------|
-{Read from subgoals.yaml and format as table rows}
+| 1 | {name from subgoals.yaml} | {count tasks for this subgoal} | {outputs list} |
+| 2 | {name from subgoals.yaml} | {count tasks for this subgoal} | {outputs list} |
+...
 
-### Tasks
+(Read from subgoals.yaml: for each subgoal, count tasks in tasks/ that have from_subgoal matching the subgoal id)
+
+## Tasks
 
 {TASK_COUNT} atomic tasks created:
 
 | ID | Name | Outputs | Dependencies |
 |----|------|---------|--------------|
-{Read from tasks/*.yaml and format as table rows}
+| {id} | {name} | {outputs[0].path} | {count of inputs with required: true} |
+...
 
-### Validation
+(Read from tasks/*.yaml: for each task file, extract id, name, first output path, and count required inputs)
 
-- Coverage: {VAL_COVERAGE} - All {CRITERIA_COUNT} success criteria mapped
-- Overlap: {VAL_OVERLAP} - No duplicate outputs
-- Atomicity: {VAL_ATOMICITY} - All tasks meet criteria
-- Inputs: {VAL_INPUT} - All inputs have producers
-- Outputs: {VAL_OUTPUT} - All outputs consumed or final
+## Validation
 
-### Files Created
+✓ Coverage: All {CRITERIA_COUNT} success criteria mapped
+✓ Overlap: No duplicate outputs
+✓ Atomicity: All tasks meet criteria
+✓ Inputs: All inputs have producers
+✓ Outputs: All outputs consumed or final
+
+(Use ✓ for passed checks, ✗ for failed, ! for warnings)
+
+## Files Created
 
 - .orchestrator/decomposition/subgoals.yaml
 - .orchestrator/decomposition/tasks/ ({TASK_COUNT} files)
 - .orchestrator/decomposition/validation.yaml
 - .orchestrator/decomposition/graph.yaml
 
----
+───────────────────────────────────────────────────────────────
 
-## Next Up
+## ▶ Next Up
 
-**Dependency Analysis** - compute task dependencies and parallel waves
+**Dependency Analysis** — compute task dependencies and parallel waves
 
-`/ptf:plan` - generate execution plan
+`/ptf:plan` — generate execution plan
 
-<sub>`/clear` first - fresh context window</sub>
+<sub>`/clear` first → fresh context window</sub>
 
----
+───────────────────────────────────────────────────────────────
 ```
 
 </process>
