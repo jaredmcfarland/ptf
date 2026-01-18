@@ -179,26 +179,160 @@ Explicitly excluded. Documented to prevent scope creep.
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
+Phase assignments for all v1 requirements.
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| FOUND-* | Phase 1 | Pending |
-| DECOMP-* | Phase 2 | Pending |
-| DEP-* | Phase 3 | Pending |
-| STATE-* | Phase 4 | Pending |
-| EXEC-* | Phase 5 | Pending |
-| VERIFY-* | Phase 5 | Pending |
-| FAIL-* | Phase 6 | Pending |
-| ADAPT-* | Phase 7 | Pending |
-| CMD-* | Phases 1-7 | Pending |
-| HOOK-* | Phase 5 | Pending |
+### Phase 1: Foundation
+| Requirement | Description | Status |
+|-------------|-------------|--------|
+| FOUND-01 | YAML schema for Task | Pending |
+| FOUND-02 | YAML schema for Artifact | Pending |
+| FOUND-03 | YAML schema for Dependency | Pending |
+| FOUND-04 | YAML schema for Wave | Pending |
+| FOUND-05 | YAML schema for Plan | Pending |
+| FOUND-06 | Context budget fields in Task schema | Pending |
+| FOUND-07 | SKILL.md documenting framework concepts | Pending |
+| FOUND-08 | Plugin directory structure | Pending |
+| FOUND-09 | Example task definition files | Pending |
+| FOUND-10 | Example plan files | Pending |
 
-**Coverage:**
-- v1 requirements: 88 total
-- Mapped to phases: 88
-- Unmapped: 0
+### Phase 2: Decomposition
+| Requirement | Description | Status |
+|-------------|-------------|--------|
+| DECOMP-01 | /ptf:init command | Pending |
+| DECOMP-02 | Goal analysis extraction | Pending |
+| DECOMP-03 | Adapter-driven questioning | Pending |
+| DECOMP-04 | Constitution generation | Pending |
+| DECOMP-05 | /ptf:decompose command | Pending |
+| DECOMP-06 | Subgoal identification | Pending |
+| DECOMP-07 | Recursive decomposition | Pending |
+| DECOMP-08 | Atomicity evaluation | Pending |
+| DECOMP-09 | Decomposition validation | Pending |
+| DECOMP-10 | Decomposer subagent | Pending |
+| DECOMP-11 | Decomposition state persistence | Pending |
+| CMD-01 | /ptf:init command interface | Pending |
+| CMD-02 | /ptf:decompose command interface | Pending |
+
+### Phase 3: Dependency Analysis
+| Requirement | Description | Status |
+|-------------|-------------|--------|
+| DEP-01 | Artifact-based dependency inference | Pending |
+| DEP-02 | Type-based dependency inference | Pending |
+| DEP-03 | Semantic dependency inference | Pending |
+| DEP-04 | Domain heuristic inference | Pending |
+| DEP-05 | Resource conflict detection | Pending |
+| DEP-06 | Cycle detection | Pending |
+| DEP-07 | Cycle resolution guidance | Pending |
+| DEP-08 | Wave computation | Pending |
+| DEP-09 | Dependency analyzer subagent | Pending |
+| DEP-10 | /ptf:plan command | Pending |
+| DEP-11 | Dependency graph persistence | Pending |
+| CMD-03 | /ptf:plan command interface | Pending |
+
+### Phase 4: State Management
+| Requirement | Description | Status |
+|-------------|-------------|--------|
+| STATE-01 | File-based state in .orchestrator/ | Pending |
+| STATE-02 | execution.yaml master state | Pending |
+| STATE-03 | Per-task state files | Pending |
+| STATE-04 | Per-wave state files | Pending |
+| STATE-05 | Artifact manifest | Pending |
+| STATE-06 | Event log (JSONL) | Pending |
+| STATE-07 | Wave boundary checkpoints | Pending |
+| STATE-08 | /ptf:status command | Pending |
+| STATE-09 | /ptf:resume command | Pending |
+| STATE-10 | Resume validation | Pending |
+| CMD-06 | /ptf:status command interface | Pending |
+
+### Phase 5: Execution Engine
+| Requirement | Description | Status |
+|-------------|-------------|--------|
+| EXEC-01 | /ptf:execute [wave] command | Pending |
+| EXEC-02 | /ptf:execute-all command | Pending |
+| EXEC-03 | Wave-based parallel execution | Pending |
+| EXEC-04 | Fresh context dispatch | Pending |
+| EXEC-05 | Context loading from declared inputs | Pending |
+| EXEC-06 | Task executor subagent | Pending |
+| EXEC-07 | Orchestrator subagent | Pending |
+| EXEC-08 | Ralph-style execution mode | Pending |
+| EXEC-09 | Completion promise pattern | Pending |
+| EXEC-10 | Configurable max iterations | Pending |
+| EXEC-11 | JSONL event logging | Pending |
+| EXEC-12 | max_parallel_tasks config | Pending |
+| CMD-04 | /ptf:execute command interface | Pending |
+| CMD-05 | /ptf:execute-all command interface | Pending |
+| HOOK-01 | post-task-complete hook | Pending |
+| HOOK-02 | pre-wave-start hook | Pending |
+| HOOK-03 | on-failure hook | Pending |
+| HOOK-04 | on-session-end hook | Pending |
+
+### Phase 6: Verification
+| Requirement | Description | Status |
+|-------------|-------------|--------|
+| VERIFY-01 | Verifier subagent | Pending |
+| VERIFY-02 | Verification: exists | Pending |
+| VERIFY-03 | Verification: contains | Pending |
+| VERIFY-04 | Verification: runs | Pending |
+| VERIFY-05 | Verification: syntax | Pending |
+| VERIFY-06 | Verification: custom | Pending |
+| VERIFY-07 | /ptf:verify [task] command | Pending |
+| VERIFY-08 | Verification results in state | Pending |
+| VERIFY-09 | Verification failure handling | Pending |
+| CMD-08 | /ptf:verify command interface | Pending |
+
+### Phase 7: Failure Handling
+| Requirement | Description | Status |
+|-------------|-------------|--------|
+| FAIL-01 | Retry with max attempts | Pending |
+| FAIL-02 | Exponential backoff | Pending |
+| FAIL-03 | Skip strategy | Pending |
+| FAIL-04 | Escalate strategy | Pending |
+| FAIL-05 | Failure cascade handling | Pending |
+| FAIL-06 | Cascade policy per task | Pending |
+| FAIL-07 | /ptf:retry [task] command | Pending |
+| FAIL-08 | /ptf:abort command | Pending |
+| FAIL-09 | Failure records | Pending |
+| FAIL-10 | Human escalation options | Pending |
+| FAIL-11 | Replan capability | Pending |
+| CMD-07 | /ptf:resume command interface | Pending |
+| CMD-09 | /ptf:retry command interface | Pending |
+| CMD-10 | /ptf:abort command interface | Pending |
+
+### Phase 8: Domain Adapters
+| Requirement | Description | Status |
+|-------------|-------------|--------|
+| ADAPT-01 | Domain adapter interface | Pending |
+| ADAPT-02 | Adapter loading/integration | Pending |
+| ADAPT-03 | Software adapter (complete) | Pending |
+| ADAPT-04 | Software: decomposition heuristics | Pending |
+| ADAPT-05 | Software: atomicity criteria | Pending |
+| ADAPT-06 | Software: artifact types | Pending |
+| ADAPT-07 | Software: verification strategies | Pending |
+| ADAPT-08 | Software: dependency patterns | Pending |
+| ADAPT-09 | Research adapter (complete) | Pending |
+| ADAPT-10 | Research: decomposition heuristics | Pending |
+| ADAPT-11 | Research: atomicity criteria | Pending |
+| ADAPT-12 | Research: artifact types | Pending |
+| ADAPT-13 | Research: verification strategies | Pending |
+| ADAPT-14 | Research: dependency patterns | Pending |
+| ADAPT-15 | Template adapter | Pending |
+| ADAPT-16 | Constitution templates | Pending |
+
+### Coverage Summary
+
+| Phase | Requirements | Count |
+|-------|--------------|-------|
+| Phase 1 | FOUND-01 to FOUND-10 | 10 |
+| Phase 2 | DECOMP-01 to DECOMP-11, CMD-01, CMD-02 | 13 |
+| Phase 3 | DEP-01 to DEP-11, CMD-03 | 12 |
+| Phase 4 | STATE-01 to STATE-10, CMD-06 | 11 |
+| Phase 5 | EXEC-01 to EXEC-12, CMD-04, CMD-05, HOOK-01 to HOOK-04 | 18 |
+| Phase 6 | VERIFY-01 to VERIFY-09, CMD-08 | 10 |
+| Phase 7 | FAIL-01 to FAIL-11, CMD-07, CMD-09, CMD-10 | 14 |
+| Phase 8 | ADAPT-01 to ADAPT-16 | 16 |
+| **Total** | | **104** |
+
+**Note:** Original count of 88 excluded CMD-* and HOOK-* as separate requirements (they were considered part of their functional categories). The detailed traceability above counts them separately for explicit tracking, resulting in 104 entries. All functionality is covered with no orphans.
 
 ---
 *Requirements defined: 2025-01-18*
-*Last updated: 2025-01-18 after initial definition*
+*Last updated: 2025-01-18 after roadmap creation*
