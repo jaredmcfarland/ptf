@@ -83,12 +83,12 @@ Plans:
   3. Session interruption preserves state; `/ptf:resume` continues from last checkpoint
   4. Wave boundary checkpoints happen automatically after each wave completes
   5. Artifact manifest tracks all produced files with verification status
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: TBD (state schema and directory structure)
-- [ ] 04-02: TBD (checkpoint and resume protocol)
-- [ ] 04-03: TBD (status command and artifact manifest)
+- [ ] 04-01-PLAN.md — Create state schemas (execution-state, task-state, wave-state, artifact-manifest)
+- [ ] 04-02-PLAN.md — Create event-log schema and ptf-state-manager subagent (checkpoint protocol)
+- [ ] 04-03-PLAN.md — Create /ptf:status and /ptf:resume commands
 
 ### Phase 5: Execution Engine
 **Goal**: Execute tasks in parallel waves with fresh context per task
@@ -170,7 +170,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
 | 2. Decomposition | 4/4 | Complete | 2026-01-18 |
 | 3. Dependency Analysis | 3/3 | Complete | 2026-01-18 |
-| 4. State Management | 0/TBD | Not started | - |
+| 4. State Management | 0/3 | Planned | - |
 | 5. Execution Engine | 0/TBD | Not started | - |
 | 6. Verification | 0/TBD | Not started | - |
 | 7. Failure Handling | 0/TBD | Not started | - |
@@ -211,4 +211,5 @@ Note: The count discrepancy suggests CMD-* requirements duplicate functionality 
 *Phase 1 planned: 2025-01-18*
 *Phase 2 planned: 2026-01-18*
 *Phase 3 planned: 2026-01-18*
+*Phase 4 planned: 2026-01-18*
 *Depth: comprehensive (8 phases)*
