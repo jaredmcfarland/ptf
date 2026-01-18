@@ -683,3 +683,311 @@ def infer_all_dependencies(tasks, adapter):
 ```
 
 </inference_details>
+
+<algorithms>
+**Graph Algorithms for Dependency Analysis**
+
+## Tarjan's Algorithm - Cycle Detection
+
+Finds all strongly connected components (SCCs). Any SCC with >1 member is a cycle.
+Time complexity: O(V+E) - optimal for cycle detection.
+
+```python
+def tarjan_scc(tasks, dependencies):
+    """
+    Tarjan's algorithm to find strongly connected components.
+
+    Returns: {
+        "has_cycles": bool,
+        "cycles": [[task_ids in cycle]],
+        "resolution_hints": [{"cycle": [...], "suggested_break": dep, "reason": str}]
+    }
+    """
+    # Build adjacency list from dependencies
+    adj = {t["id"]: [] for t in tasks}
+    for dep in dependencies:
+        adj[dep["from"]].append(dep["to"])
+
+    # Tarjan's algorithm state
+    index_counter = [0]  # Mutable container for nested function
+    stack = []
+    lowlinks = {}
+    indices = {}
+    on_stack = {}
+    sccs = []
+
+    def strongconnect(v):
+        """Process a node in the DFS."""
+        # Set the depth index for v
+        indices[v] = index_counter[0]
+        lowlinks[v] = index_counter[0]
+        index_counter[0] += 1
+        stack.append(v)
+        on_stack[v] = True
+
+        # Consider successors of v
+        for w in adj[v]:
+            if w not in indices:
+                # Successor w has not yet been visited; recurse
+                strongconnect(w)
+                lowlinks[v] = min(lowlinks[v], lowlinks[w])
+            elif on_stack.get(w, False):
+                # Successor w is on stack and hence in current SCC
+                lowlinks[v] = min(lowlinks[v], indices[w])
+
+        # If v is a root node, pop the SCC
+        if lowlinks[v] == indices[v]:
+            scc = []
+            while True:
+                w = stack.pop()
+                on_stack[w] = False
+                scc.append(w)
+                if w == v:
+                    break
+            sccs.append(scc)
+
+    # Run algorithm on all nodes
+    for task in tasks:
+        if task["id"] not in indices:
+            strongconnect(task["id"])
+
+    # Find cycles (SCCs with >1 member)
+    cycles = [scc for scc in sccs if len(scc) > 1]
+
+    if not cycles:
+        return {"has_cycles": False, "cycles": [], "resolution_hints": []}
+
+    # Generate resolution hints for each cycle
+    confidence_order = {"low": 0, "medium": 1, "high": 2}
+    hints = []
+
+    for cycle in cycles:
+        # Find dependencies within this cycle
+        cycle_set = set(cycle)
+        cycle_deps = [
+            d for d in dependencies
+            if d["from"] in cycle_set and d["to"] in cycle_set
+        ]
+
+        if not cycle_deps:
+            continue  # Shouldn't happen, but guard
+
+        # Find the dependency with lowest confidence
+        lowest = min(
+            cycle_deps,
+            key=lambda d: confidence_order.get(d["confidence"], 1)
+        )
+
+        hints.append({
+            "cycle": cycle,
+            "suggested_break": lowest,
+            "reason": f"This dependency has {lowest['confidence']} confidence - "
+                     f"removing it would break the cycle"
+        })
+
+    return {
+        "has_cycles": True,
+        "cycles": cycles,
+        "resolution_hints": hints
+    }
+```
+
+## Kahn's Algorithm - Wave Computation
+
+Topological sort that naturally groups tasks into parallel waves.
+Time complexity: O(V+E) - optimal for level-based grouping.
+
+```python
+def kahn_waves(tasks, dependencies):
+    """
+    Kahn's algorithm to compute parallel execution waves.
+
+    Returns: [
+        {"number": 1, "tasks": [ids], "status": "pending", "depends_on_waves": [], "rationale": "..."},
+        {"number": 2, "tasks": [ids], "status": "pending", "depends_on_waves": [1], "rationale": "..."},
+        ...
+    ]
+
+    Raises: Exception if cycles exist (run Tarjan's first!)
+    """
+    # Build in-degree map and adjacency list
+    in_degree = {t["id"]: 0 for t in tasks}
+    dependents = {t["id"]: [] for t in tasks}  # who depends on this task
+
+    for dep in dependencies:
+        in_degree[dep["to"]] += 1
+        dependents[dep["from"]].append(dep["to"])
+
+    waves = []
+    remaining = set(t["id"] for t in tasks)
+
+    while remaining:
+        # Find all tasks with no unmet dependencies (in-degree 0)
+        ready = [t for t in remaining if in_degree[t] == 0]
+
+        if not ready and remaining:
+            # This means there's a cycle - should not happen if Tarjan's ran first
+            raise Exception(
+                f"Cycle detected during wave computation! "
+                f"Remaining tasks: {remaining}"
+            )
+
+        # Create wave
+        wave_number = len(waves) + 1
+
+        # Determine rationale based on wave number
+        if wave_number == 1:
+            rationale = "No dependencies - can start immediately"
+        else:
+            # Find which earlier waves these tasks depend on
+            dep_waves = set()
+            for task_id in ready:
+                for dep in dependencies:
+                    if dep["to"] == task_id:
+                        # Find which wave the 'from' task is in
+                        for w in waves:
+                            if dep["from"] in w["tasks"]:
+                                dep_waves.add(w["number"])
+            if dep_waves:
+                rationale = f"Depend on wave(s) {sorted(dep_waves)}"
+            else:
+                rationale = f"Depend on wave {wave_number - 1}"
+
+        wave = {
+            "number": wave_number,
+            "tasks": sorted(ready),  # Sort for determinism
+            "status": "pending",
+            "depends_on_waves": [wave_number - 1] if wave_number > 1 else [],
+            "rationale": rationale
+        }
+        waves.append(wave)
+
+        # Remove ready tasks from remaining, update in-degrees
+        for task_id in ready:
+            remaining.remove(task_id)
+            # Decrement in-degree for all tasks that depend on this one
+            for dependent_id in dependents[task_id]:
+                in_degree[dependent_id] -= 1
+
+    return waves
+```
+
+## Parallelism Factor
+
+Metric for how much parallelism the dependency graph enables.
+
+```python
+def compute_parallelism_factor(tasks, waves):
+    """
+    Parallelism factor = total_tasks / wave_count
+
+    Interpretation:
+    - 1.0 = Fully sequential (no parallelism possible)
+    - 2.0 = On average, 2 tasks can run simultaneously
+    - N   = On average, N tasks can run simultaneously
+
+    Higher is better - means more parallel execution.
+
+    Examples:
+    - 8 tasks, 4 waves = 2.0x (moderate parallelism)
+    - 8 tasks, 8 waves = 1.0x (fully sequential)
+    - 8 tasks, 2 waves = 4.0x (high parallelism)
+    """
+    if not waves:
+        return 0.0
+
+    return len(tasks) / len(waves)
+
+
+def analyze_wave_distribution(waves):
+    """
+    Analyze task distribution across waves.
+
+    Returns insights about parallelism bottlenecks:
+    - Which waves have fewest tasks (sequential bottlenecks)
+    - Which waves have most tasks (parallelism opportunities)
+    """
+    if not waves:
+        return {"bottleneck_waves": [], "parallel_waves": [], "distribution": []}
+
+    distribution = [(w["number"], len(w["tasks"])) for w in waves]
+
+    # Find bottlenecks (waves with 1 task)
+    bottlenecks = [w["number"] for w in waves if len(w["tasks"]) == 1]
+
+    # Find highly parallel waves (3+ tasks)
+    parallel = [w["number"] for w in waves if len(w["tasks"]) >= 3]
+
+    return {
+        "bottleneck_waves": bottlenecks,
+        "parallel_waves": parallel,
+        "distribution": distribution,
+        "insight": (
+            f"{len(bottlenecks)} sequential bottleneck(s), "
+            f"{len(parallel)} highly parallel wave(s)"
+        )
+    }
+```
+
+## Complete Graph Analysis Pipeline
+
+```python
+def analyze_dependency_graph(tasks, dependencies):
+    """
+    Complete analysis pipeline:
+    1. Detect cycles with Tarjan's
+    2. If no cycles, compute waves with Kahn's
+    3. Calculate parallelism metrics
+    """
+    # Step 1: Cycle detection
+    cycle_result = tarjan_scc(tasks, dependencies)
+
+    if cycle_result["has_cycles"]:
+        return {
+            "success": False,
+            "error": "cycles_detected",
+            "cycles": cycle_result["cycles"],
+            "resolution_hints": cycle_result["resolution_hints"]
+        }
+
+    # Step 2: Wave computation
+    waves = kahn_waves(tasks, dependencies)
+
+    # Step 3: Metrics
+    parallelism = compute_parallelism_factor(tasks, waves)
+    distribution = analyze_wave_distribution(waves)
+
+    return {
+        "success": True,
+        "waves": waves,
+        "metrics": {
+            "task_count": len(tasks),
+            "wave_count": len(waves),
+            "parallelism_factor": round(parallelism, 2),
+            "distribution": distribution
+        }
+    }
+```
+
+## Algorithm Correctness Notes
+
+**Tarjan's Algorithm:**
+- Visits each node exactly once
+- Stack tracks current path through graph
+- Lowlinks identify "back edges" to ancestors
+- SCCs are popped when root is found
+- Multi-node SCCs = cycles
+
+**Kahn's Algorithm:**
+- Processes nodes level-by-level
+- In-degree 0 means no unmet dependencies
+- Decrementing in-degrees "unlocks" dependent tasks
+- Natural wave grouping from processing order
+- Empty remaining + not empty graph = cycle
+
+**Determinism:**
+- Sort task IDs within waves for consistent output
+- Alphabetical ordering when breaking ties
+- Same input always produces same output
+
+</algorithms>
