@@ -1,0 +1,141 @@
+# Example: Dependency Graph for auth-system
+# Demonstrates multi-pass inference output and wave computation
+#
+# This file is produced by ptf-dependency-analyzer and consumed by /ptf:plan
+# Location: .orchestrator/decomposition/graph.yaml
+
+step: 5-dependency-graph
+created: 2026-01-18T10:30:00Z
+status: complete
+
+# Metadata
+task_count: 8
+subgoal_count: 4
+goal: "Implement authentication system"
+
+# Dependencies inferred from multi-pass analysis
+dependencies:
+  # Pass 1: Artifact matching (HIGH confidence)
+  - from: auth-schema
+    to: user-repository
+    type: artifact
+    confidence: high
+    reason: "user-repository inputs prisma/schema.prisma produced by auth-schema"
+
+  - from: auth-schema
+    to: session-repository
+    type: artifact
+    confidence: high
+    reason: "session-repository inputs prisma/schema.prisma produced by auth-schema"
+
+  - from: user-repository
+    to: auth-service
+    type: artifact
+    confidence: high
+    reason: "auth-service inputs src/repositories/user.ts produced by user-repository"
+
+  - from: session-repository
+    to: auth-service
+    type: artifact
+    confidence: high
+    reason: "auth-service inputs src/repositories/session.ts produced by session-repository"
+
+  - from: auth-service
+    to: auth-routes
+    type: artifact
+    confidence: high
+    reason: "auth-routes inputs src/services/auth.ts produced by auth-service"
+
+  - from: auth-service
+    to: auth-middleware
+    type: artifact
+    confidence: high
+    reason: "auth-middleware inputs src/services/auth.ts produced by auth-service"
+
+  # Pass 2: Type/pattern matching (MEDIUM confidence)
+  - from: config-setup
+    to: auth-routes
+    type: artifact
+    confidence: medium
+    reason: "Pattern src/config/*.ts matches src/config/auth.ts"
+
+  # Pass 3: Semantic analysis (MEDIUM confidence)
+  # (None in this example - all caught by artifact matching)
+
+  # Pass 4: Domain heuristics (LOW confidence)
+  - from: auth-service
+    to: auth-tests
+    type: implicit
+    confidence: low
+    reason: "Domain heuristic: test depends on source-code"
+
+  - from: auth-routes
+    to: auth-tests
+    type: implicit
+    confidence: low
+    reason: "Domain heuristic: test depends on source-code"
+
+  # Pass 5: Resource conflicts (HIGH confidence)
+  # (None in this example - no overlapping outputs)
+
+# Wave assignments from Kahn's algorithm
+waves:
+  - number: 1
+    tasks:
+      - auth-schema
+      - config-setup
+    status: pending
+    depends_on_waves: []
+    rationale: "No dependencies - can start immediately"
+
+  - number: 2
+    tasks:
+      - user-repository
+      - session-repository
+    status: pending
+    depends_on_waves: [1]
+    rationale: "Depend on auth-schema from wave 1"
+
+  - number: 3
+    tasks:
+      - auth-service
+    status: pending
+    depends_on_waves: [2]
+    rationale: "Depends on repositories from wave 2"
+
+  - number: 4
+    tasks:
+      - auth-routes
+      - auth-middleware
+      - auth-tests
+    status: pending
+    depends_on_waves: [3]
+    rationale: "Depend on auth-service from wave 3"
+
+# Validation results
+validation:
+  has_cycles: false
+  all_tasks_assigned: true
+  orphan_tasks: []
+
+  dependency_summary:
+    total: 9
+    by_type:
+      artifact: 7
+      semantic: 0
+      implicit: 2
+      resource: 0
+    by_confidence:
+      high: 6
+      medium: 1
+      low: 2
+
+  parallelism_factor: 2.0  # 8 tasks / 4 waves
+
+# Warnings for human review
+warnings:
+  - "auth-tests has implicit dependency on auth-service (low confidence) - verify test actually tests this service"
+  - "auth-tests has implicit dependency on auth-routes (low confidence) - verify test actually tests these routes"
+
+# Ignored dependencies (used when breaking cycles)
+ignored_dependencies: []
