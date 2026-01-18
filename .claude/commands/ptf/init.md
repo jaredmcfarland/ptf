@@ -152,6 +152,8 @@ Track all responses for use in analysis and constitution.
 
 ## Phase 4: Goal Analysis
 
+**Write order: goal.md -> config.yaml -> analysis.yaml (dependencies flow downward)**
+
 1. **Write goal.md (immutable original):**
 
    Write `.orchestrator/goal.md`:
