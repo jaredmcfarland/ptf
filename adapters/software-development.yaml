@@ -1,0 +1,260 @@
+# Software Development Domain Adapter
+# Customizes PTF decomposition for software development tasks
+
+name: software-development
+description: |
+  Domain adapter for software development tasks including
+  web applications, APIs, databases, and infrastructure.
+version: "1.0"
+
+# Questioning - drives the /ptf:init clarification process
+questioning:
+  init_questions:
+    - category: core_value
+      question: "What's the ONE thing that must work perfectly?"
+      why: "Identifies critical path, shapes verification priorities"
+      options_template:
+        - "The {main_feature}"
+        - "The {integration}"
+        - "The {user_flow}"
+
+    - category: existing_code
+      question: "Any existing code patterns to follow?"
+      why: "Constrains implementation approach"
+      options_template:
+        - "Follow existing {pattern}"
+        - "Greenfield"
+        - "Mixed"
+
+    - category: integration_points
+      question: "External services or APIs to integrate?"
+      why: "Identifies potential task boundaries"
+      options_template:
+        - "Database"
+        - "Auth provider"
+        - "Third-party API"
+        - "None"
+
+    - category: scale
+      question: "Expected complexity level?"
+      why: "Calibrates decomposition depth"
+      options_template:
+        - "Simple (1-5 files)"
+        - "Medium (5-15 files)"
+        - "Complex (15+ files)"
+
+# Decomposition - drives the /ptf:decompose process
+decomposition:
+  subgoal_heuristics:
+    - name: by-layer
+      description: Split by architectural layer
+      examples:
+        - "Data layer (schemas, migrations)"
+        - "Repository layer (data access)"
+        - "Service layer (business logic)"
+        - "API layer (endpoints, controllers)"
+        - "UI layer (components, pages)"
+      when_to_use: "Feature spans multiple layers"
+
+    - name: by-feature
+      description: Split by user-facing feature
+      examples:
+        - "User authentication"
+        - "Content management"
+        - "Search functionality"
+      when_to_use: "Multiple independent features"
+
+    - name: by-file-boundary
+      description: One task per file/module
+      examples:
+        - "Create userRepository.ts"
+        - "Create authService.ts"
+      when_to_use: "Clear module boundaries"
+
+    - name: by-interface
+      description: Cut at API/interface boundaries
+      examples:
+        - "Internal API vs external API"
+        - "Service interfaces vs implementations"
+      when_to_use: "Multiple integration points"
+
+  atomicity_criteria:
+    - criterion: single-file
+      check: "Task produces at most one file (or tightly-coupled set of 2-3)"
+      fail_signal: "outputs array has >3 files"
+
+    - criterion: fresh-context-completable
+      check: "Can complete in <30% context window starting fresh"
+      fail_signal: "inputs require reading >50KB of context"
+
+    - criterion: verifiable
+      check: "Has concrete verification command or check"
+      fail_signal: "verify array is empty or vague"
+
+    - criterion: focused
+      check: "Task touches one concept/concern"
+      fail_signal: "description mentions multiple unrelated concepts"
+
+    - criterion: explicit-inputs
+      check: "All file dependencies declared in inputs"
+      fail_signal: "description references files not in inputs"
+
+  max_recursion_depth: 5
+
+# Constitution - template for project-specific immutable principles
+constitution:
+  template: |
+    # {project_name} Constitution
+
+    These principles are IMMUTABLE for this project.
+    Violating them means the task is incorrectly defined.
+
+    ## Core Principles
+
+    1. **Artifact Integrity**: Every task produces exactly the artifacts declared
+       in its outputs. No undeclared file modifications.
+
+    2. **Dependency Honesty**: All file dependencies are declared in inputs.
+       Hidden dependencies break parallel execution.
+
+    3. **Fresh Context**: Every task must be completable by an agent starting
+       with empty context, loading only declared inputs.
+
+    4. **Verification**: Every artifact has a concrete verification step.
+       "Looks good" is not verification.
+
+    ## Domain Principles (Software Development)
+
+    5. **Type Safety**: Generated code must pass type checking.
+       Include type check in verification.
+
+    6. **Test Coverage**: Logic-containing code has corresponding tests.
+       Tests are separate tasks (code -> test dependency).
+
+    7. **API Contracts**: Endpoints follow existing patterns if present.
+       New patterns require explicit documentation.
+
+    ## Project-Specific Constraints
+
+    {project_constraints}
+
+    ---
+    *Generated: {timestamp}*
+    *Domain: software-development*
+
+# Artifacts - types and verification strategies
+artifacts:
+  types:
+    - name: source-code
+      extensions:
+        - .ts
+        - .js
+        - .py
+        - .go
+        - .rs
+        - .java
+      description: Application source code
+
+    - name: migration
+      extensions:
+        - .sql
+        - .prisma
+      description: Database schema changes
+
+    - name: config
+      extensions:
+        - .yaml
+        - .yml
+        - .json
+        - .toml
+        - .env.example
+      description: Configuration files
+
+    - name: test
+      extensions:
+        - .test.ts
+        - .spec.ts
+        - _test.go
+        - _test.py
+      description: Test files
+
+    - name: documentation
+      extensions:
+        - .md
+        - .rst
+      description: Documentation files
+
+  verification_strategies:
+    source-code:
+      - method: exists
+        description: File exists at expected path
+      - method: syntax
+        description: File parses without syntax errors
+      - method: runs
+        command_template: "npx tsc --noEmit {path}"
+        description: Type check passes
+
+    migration:
+      - method: exists
+        description: Migration file exists
+      - method: syntax
+        description: Valid SQL/Prisma syntax
+      - method: runs
+        command_template: "npx prisma validate"
+        description: Schema validates
+
+    test:
+      - method: exists
+        description: Test file exists
+      - method: runs
+        command_template: "npm test -- {path}"
+        description: Tests pass
+
+    config:
+      - method: exists
+        description: Config file exists
+      - method: syntax
+        description: Valid YAML/JSON/TOML
+
+    documentation:
+      - method: exists
+        description: Documentation file exists
+      - method: contains
+        description: Has required sections
+
+# Dependencies - common patterns for dependency inference
+dependencies:
+  common_patterns:
+    - name: schema-to-repository
+      from_type: migration
+      to_type: source-code
+      description: Repositories depend on schemas they access
+      confidence: high
+
+    - name: repository-to-service
+      from_type: source-code
+      to_type: source-code
+      description: Services depend on repositories they use
+      confidence: high
+
+    - name: service-to-api
+      from_type: source-code
+      to_type: source-code
+      description: API endpoints depend on services they call
+      confidence: high
+
+    - name: code-to-test
+      from_type: source-code
+      to_type: test
+      description: Tests depend on code they test
+      confidence: high
+
+  inference_hints:
+    - pattern: "import.*from ['\"]\\./(.+)['\"]"
+      implies: depends on imported module
+    - pattern: "prisma\\.(.+)\\."
+      implies: depends on prisma schema
+    - pattern: "require\\(['\"](.+)['\"]\\)"
+      implies: depends on required module
+    - pattern: "@inject\\(['\"](.+)['\"]\\)"
+      implies: depends on injected dependency
