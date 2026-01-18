@@ -1,0 +1,238 @@
+# Template Domain Adapter
+# Copy this file and customize for your domain
+#
+# Usage:
+# 1. Copy to adapters/{your-domain}.yaml
+# 2. Replace all [CUSTOMIZE] markers with your domain-specific content
+# 3. Test with /ptf:init --domain={your-domain}
+#
+# This template includes extensive comments explaining each section.
+# Remove or modify comments as needed for your adapter.
+
+# =============================================================================
+# HEADER - Basic adapter identification
+# =============================================================================
+
+# Unique identifier for this domain (used in file paths and references)
+name: "[CUSTOMIZE] your-domain-name"
+
+# Human-readable description of what this domain covers
+description: |
+  [CUSTOMIZE] Description of what this domain covers.
+  Include typical use cases and task types.
+  Example: "Domain adapter for X tasks including Y, Z, and W."
+
+# Semantic version of this adapter (bump when making changes)
+version: "1.0"
+
+# =============================================================================
+# QUESTIONING - Drives the /ptf:init clarification process
+# =============================================================================
+# These questions help gather context during project initialization.
+# The decomposer uses answers to make better decomposition decisions.
+
+questioning:
+  # Array of questions asked during /ptf:init
+  init_questions:
+    # Each question probes a specific aspect of the goal
+    # Categories should match your domain's key decision points
+
+    - category: "[CUSTOMIZE] category-name"
+      # The actual question presented to the user
+      question: "[CUSTOMIZE] What question to ask?"
+      # Why this question matters for decomposition
+      why: "[CUSTOMIZE] Why this information shapes task breakdown"
+      # Template options to guide user responses
+      options_template:
+        - "[CUSTOMIZE] Option pattern 1"
+        - "[CUSTOMIZE] Option pattern 2"
+        - "[CUSTOMIZE] Option pattern 3"
+
+    # Example structure (uncomment and customize):
+    # - category: scope
+    #   question: "What's the core deliverable?"
+    #   why: "Identifies critical path for decomposition"
+    #   options_template:
+    #     - "Primary output is {main_thing}"
+    #     - "Multiple equal deliverables"
+
+    # Add 3-5 questions that cover your domain's key aspects
+    # Common categories: scope, constraints, existing_work, quality, timeline
+
+# =============================================================================
+# DECOMPOSITION - Drives the /ptf:decompose process
+# =============================================================================
+# This section defines HOW goals are broken down into tasks.
+
+decomposition:
+  # Heuristics for identifying subgoals
+  # These are strategies for "cutting" a goal into pieces
+  subgoal_heuristics:
+    - name: "[CUSTOMIZE] heuristic-name"
+      description: "[CUSTOMIZE] How this heuristic splits goals"
+      examples:
+        - "[CUSTOMIZE] Example cut 1"
+        - "[CUSTOMIZE] Example cut 2"
+        - "[CUSTOMIZE] Example cut 3"
+      when_to_use: "[CUSTOMIZE] Conditions when this heuristic applies"
+
+    # Add 3-5 heuristics that make sense for your domain
+    # Common patterns:
+    # - by-phase: Split by sequential phases
+    # - by-component: Split by independent components
+    # - by-output: Split by distinct deliverables
+    # - by-dependency: Split at dependency boundaries
+
+  # Criteria for determining if a task is atomic (small enough)
+  # If any criterion fails, the task should be decomposed further
+  atomicity_criteria:
+    - criterion: "[CUSTOMIZE] criterion-name"
+      check: "[CUSTOMIZE] How to verify this criterion is met"
+      fail_signal: "[CUSTOMIZE] Signs that this criterion is violated"
+
+    # Essential criteria (include these or equivalents):
+    # - fresh-context-completable: Can finish in <30% context window
+    # - verifiable: Has concrete verification method
+    # - focused: Addresses single concern
+    # - explicit-inputs: All dependencies declared
+
+    # Domain-specific criteria examples:
+    # - single-output: Produces one distinct artifact
+    # - time-bounded: Can complete in reasonable time
+    # - skill-bounded: Requires one type of expertise
+
+  # Maximum depth of recursive decomposition
+  # Deeper = smaller tasks, but more overhead
+  # Recommended: 4-6 depending on typical goal complexity
+  max_recursion_depth: 5
+
+# =============================================================================
+# CONSTITUTION - Template for project-specific principles
+# =============================================================================
+# The constitution defines immutable principles for a project.
+# It's generated during /ptf:init using this template.
+
+constitution:
+  # Multi-line template with placeholders
+  # Available placeholders: {project_name}, {project_constraints}, {timestamp}
+  template: |
+    # {project_name} Constitution
+
+    These principles are IMMUTABLE for this project.
+    Violating them means the task is incorrectly defined.
+
+    ## Core Principles
+
+    1. **Artifact Integrity**: Every task produces exactly the artifacts declared
+       in its outputs. No undeclared modifications.
+
+    2. **Dependency Honesty**: All dependencies are declared in inputs.
+       Hidden dependencies break parallel execution.
+
+    3. **Fresh Context**: Every task must be completable by an agent starting
+       with empty context, loading only declared inputs.
+
+    4. **Verification**: Every artifact has a concrete verification step.
+       "Looks good" is not verification.
+
+    ## Domain Principles ([CUSTOMIZE] Domain Name)
+
+    [CUSTOMIZE] Add 3-5 domain-specific principles here.
+
+    5. **[CUSTOMIZE] Principle Name**: [CUSTOMIZE] Principle description.
+       [CUSTOMIZE] Additional guidance.
+
+    6. **[CUSTOMIZE] Principle Name**: [CUSTOMIZE] Principle description.
+       [CUSTOMIZE] Additional guidance.
+
+    ## Project-Specific Constraints
+
+    {project_constraints}
+
+    ---
+    *Generated: {timestamp}*
+    *Domain: [CUSTOMIZE] domain-name*
+
+# =============================================================================
+# ARTIFACTS - Types and verification strategies
+# =============================================================================
+# Defines what kinds of outputs this domain produces and how to verify them.
+
+artifacts:
+  # List of artifact types this domain produces
+  types:
+    - name: "[CUSTOMIZE] artifact-type-name"
+      extensions:
+        - "[CUSTOMIZE] .ext1"
+        - "[CUSTOMIZE] .ext2"
+      description: "[CUSTOMIZE] What this artifact type represents"
+
+    # Common artifact types to consider:
+    # - document: Written content (.md, .txt, .docx)
+    # - data: Structured data (.json, .yaml, .csv)
+    # - code: Executable code (.py, .js, .ts)
+    # - config: Configuration (.yaml, .json, .toml)
+    # - media: Images, audio, video
+
+  # How to verify each artifact type
+  verification_strategies:
+    "[CUSTOMIZE] artifact-type-name":
+      - method: exists
+        description: "[CUSTOMIZE] What existence means for this type"
+      - method: contains
+        description: "[CUSTOMIZE] What required content to check for"
+      # Optional additional verification methods:
+      # - method: syntax
+      #   description: "Valid format/syntax"
+      # - method: runs
+      #   command_template: "[CUSTOMIZE] command to run"
+      #   description: "Execution succeeds"
+
+    # Common verification methods:
+    # - exists: File exists at path
+    # - contains: File has required content
+    # - syntax: File parses without errors
+    # - runs: Command executes successfully
+    # - matches: Content matches pattern
+
+# =============================================================================
+# DEPENDENCIES - Common patterns for dependency inference
+# =============================================================================
+# Helps the framework infer task dependencies automatically.
+
+dependencies:
+  # Known dependency patterns between artifact types
+  common_patterns:
+    - name: "[CUSTOMIZE] pattern-name"
+      from_type: "[CUSTOMIZE] source-artifact-type"
+      to_type: "[CUSTOMIZE] dependent-artifact-type"
+      description: "[CUSTOMIZE] Why this dependency exists"
+      confidence: "[CUSTOMIZE] high|medium|low"
+
+    # Example patterns:
+    # - name: input-to-output
+    #   from_type: data
+    #   to_type: analysis
+    #   description: "Analysis depends on input data"
+    #   confidence: high
+
+  # Regex patterns that hint at dependencies
+  # Used for semantic dependency inference
+  inference_hints:
+    - pattern: "[CUSTOMIZE] regex-pattern"
+      implies: "[CUSTOMIZE] what this pattern suggests"
+
+    # Example hints:
+    # - pattern: "import.*from"
+    #   implies: depends on imported module
+    # - pattern: "Based on"
+    #   implies: depends on referenced source
+
+# =============================================================================
+# END OF TEMPLATE
+# =============================================================================
+# After customizing:
+# 1. Remove unnecessary comments
+# 2. Validate YAML syntax
+# 3. Test with /ptf:init --domain={your-domain}
+# 4. Iterate based on decomposition quality
