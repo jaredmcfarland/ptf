@@ -22,17 +22,17 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Decomposition
 
-- [ ] **DECOMP-01**: `/ptf:init [goal]` command initializes project and runs goal analysis
-- [ ] **DECOMP-02**: Goal analysis extracts objective, scope, constraints, success criteria, domain
-- [ ] **DECOMP-03**: Adapter-driven questioning during init (domain shapes questions asked)
-- [ ] **DECOMP-04**: Constitution generation (domain-shaped immutable principles)
-- [ ] **DECOMP-05**: `/ptf:decompose` command runs full 5-step decomposition process
-- [ ] **DECOMP-06**: Subgoal identification (Step 2) breaks analyzed goal into major components
-- [ ] **DECOMP-07**: Recursive decomposition (Step 3) breaks subgoals into atomic tasks
-- [ ] **DECOMP-08**: Atomicity evaluation using domain adapter criteria
-- [ ] **DECOMP-09**: Decomposition validation (Step 4) checks coverage, overlap, atomicity
-- [ ] **DECOMP-10**: Decomposer subagent executes the 5-step process
-- [ ] **DECOMP-11**: Decomposition state persists to .orchestrator/decomposition/
+- [x] **DECOMP-01**: `/ptf:init [goal]` command initializes project and runs goal analysis
+- [x] **DECOMP-02**: Goal analysis extracts objective, scope, constraints, success criteria, domain
+- [x] **DECOMP-03**: Adapter-driven questioning during init (domain shapes questions asked)
+- [x] **DECOMP-04**: Constitution generation (domain-shaped immutable principles)
+- [x] **DECOMP-05**: `/ptf:decompose` command runs full 5-step decomposition process
+- [x] **DECOMP-06**: Subgoal identification (Step 2) breaks analyzed goal into major components
+- [x] **DECOMP-07**: Recursive decomposition (Step 3) breaks subgoals into atomic tasks
+- [x] **DECOMP-08**: Atomicity evaluation using domain adapter criteria
+- [x] **DECOMP-09**: Decomposition validation (Step 4) checks coverage, overlap, atomicity
+- [x] **DECOMP-10**: Decomposer subagent executes the 5-step process
+- [x] **DECOMP-11**: Decomposition state persists to .orchestrator/decomposition/
 
 ### Dependencies
 
@@ -198,19 +198,19 @@ Phase assignments for all v1 requirements.
 ### Phase 2: Decomposition
 | Requirement | Description | Status |
 |-------------|-------------|--------|
-| DECOMP-01 | /ptf:init command | Pending |
-| DECOMP-02 | Goal analysis extraction | Pending |
-| DECOMP-03 | Adapter-driven questioning | Pending |
-| DECOMP-04 | Constitution generation | Pending |
-| DECOMP-05 | /ptf:decompose command | Pending |
-| DECOMP-06 | Subgoal identification | Pending |
-| DECOMP-07 | Recursive decomposition | Pending |
-| DECOMP-08 | Atomicity evaluation | Pending |
-| DECOMP-09 | Decomposition validation | Pending |
-| DECOMP-10 | Decomposer subagent | Pending |
-| DECOMP-11 | Decomposition state persistence | Pending |
-| CMD-01 | /ptf:init command interface | Pending |
-| CMD-02 | /ptf:decompose command interface | Pending |
+| DECOMP-01 | /ptf:init command | Complete |
+| DECOMP-02 | Goal analysis extraction | Complete |
+| DECOMP-03 | Adapter-driven questioning | Complete |
+| DECOMP-04 | Constitution generation | Complete |
+| DECOMP-05 | /ptf:decompose command | Complete |
+| DECOMP-06 | Subgoal identification | Complete |
+| DECOMP-07 | Recursive decomposition | Complete |
+| DECOMP-08 | Atomicity evaluation | Complete |
+| DECOMP-09 | Decomposition validation | Complete |
+| DECOMP-10 | Decomposer subagent | Complete |
+| DECOMP-11 | Decomposition state persistence | Complete |
+| CMD-01 | /ptf:init command interface | Complete |
+| CMD-02 | /ptf:decompose command interface | Complete |
 
 ### Phase 3: Dependency Analysis
 | Requirement | Description | Status |

@@ -11,7 +11,7 @@ PTF transforms complex goals into atomic tasks with dependency-aware parallel ex
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation** - YAML schemas, plugin structure, skill documentation
-- [ ] **Phase 2: Decomposition** - Goal analysis, recursive task breakdown, validation
+- [x] **Phase 2: Decomposition** - Goal analysis, recursive task breakdown, validation
 - [ ] **Phase 3: Dependency Analysis** - Multi-pass inference, cycle detection, wave computation
 - [ ] **Phase 4: State Management** - File-based persistence, checkpoints, resume capability
 - [ ] **Phase 5: Execution Engine** - Wave-based parallel execution, fresh context dispatch
@@ -51,10 +51,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Create domain adapters (software-development, research, template)
-- [ ] 02-02-PLAN.md — Create /ptf:init command for goal analysis
-- [ ] 02-03-PLAN.md — Create ptf-decomposer subagent for 5-step decomposition
-- [ ] 02-04-PLAN.md — Create /ptf:decompose command to orchestrate decomposition
+- [x] 02-01-PLAN.md — Create domain adapters (software-development, research, template)
+- [x] 02-02-PLAN.md — Create /ptf:init command for goal analysis
+- [x] 02-03-PLAN.md — Create ptf-decomposer subagent for 5-step decomposition
+- [x] 02-04-PLAN.md — Create /ptf:decompose command to orchestrate decomposition
 
 ### Phase 3: Dependency Analysis
 **Goal**: Infer task dependencies and compute parallel execution waves
@@ -168,7 +168,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
-| 2. Decomposition | 0/4 | Planned | - |
+| 2. Decomposition | 4/4 | Complete | 2026-01-18 |
 | 3. Dependency Analysis | 0/TBD | Not started | - |
 | 4. State Management | 0/TBD | Not started | - |
 | 5. Execution Engine | 0/TBD | Not started | - |
