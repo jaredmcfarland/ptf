@@ -1,0 +1,20 @@
+# Minimal plan example - single wave
+id: simple-feature
+goal: Add user greeting feature
+
+tasks:
+  - id: add-greeting
+    name: Add Greeting Function
+    description: Create a function that returns personalized greeting
+    outputs:
+      - path: src/greeting.js
+        type: source-code
+    verify:
+      - type: exists
+        target: src/greeting.js
+
+waves:
+  - number: 1
+    tasks: [add-greeting]
+    status: pending
+    depends_on_waves: []

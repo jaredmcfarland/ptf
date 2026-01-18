@@ -1,0 +1,150 @@
+# Complete multi-wave plan example - demonstrates all plan features
+id: auth-system-plan
+goal: Build user authentication system with login, logout, and session management
+created: 2026-01-18T10:00:00Z
+
+analysis:
+  objective: Implement complete authentication flow with secure session management
+  scope:
+    included:
+      - User registration
+      - Login/logout
+      - Session management
+      - Password hashing
+    excluded:
+      - OAuth providers
+      - Two-factor authentication
+      - Password reset flow
+  constraints:
+    - Must use Prisma for database
+    - Must use bcrypt for password hashing
+    - Sessions expire after 24 hours
+  success_criteria:
+    - User can register with email/password
+    - User can login and receive session token
+    - User can logout and invalidate session
+    - Sessions expire after 24 hours
+  domain: software-development
+
+tasks:
+  - id: auth-schema
+    name: Create Authentication Schema
+    description: |
+      Create Prisma schema with User and Session models.
+      Include proper indexes and relations.
+    outputs:
+      - path: prisma/schema.prisma
+        type: source-code
+    verify:
+      - type: exists
+        target: prisma/schema.prisma
+      - type: contains
+        target: prisma/schema.prisma
+        expected: "model User"
+
+  - id: user-repository
+    name: Implement User Repository
+    description: |
+      Create repository layer for User model with CRUD operations.
+      Include methods for finding by email and creating users.
+    outputs:
+      - path: src/repositories/user.ts
+        type: source-code
+    verify:
+      - type: exists
+        target: src/repositories/user.ts
+
+  - id: auth-service
+    name: Implement Auth Service
+    description: |
+      Create service layer with login, logout, and session management.
+      Handle password hashing and session token generation.
+    outputs:
+      - path: src/services/auth.ts
+        type: source-code
+    verify:
+      - type: exists
+        target: src/services/auth.ts
+
+  - id: auth-routes
+    name: Implement Auth Routes
+    description: |
+      Create API routes for /login, /logout, and /register endpoints.
+      Include input validation and error handling.
+    outputs:
+      - path: src/routes/auth.ts
+        type: source-code
+    verify:
+      - type: exists
+        target: src/routes/auth.ts
+
+  - id: auth-tests
+    name: Write Auth Tests
+    description: |
+      Create integration tests for authentication flow.
+      Test registration, login, logout, and session expiry.
+    outputs:
+      - path: tests/auth.test.ts
+        type: test
+    verify:
+      - type: exists
+        target: tests/auth.test.ts
+      - type: runs
+        target: "npm test -- auth"
+        expected: 0
+
+dependencies:
+  - from: auth-schema
+    to: user-repository
+    type: artifact
+    confidence: high
+    reason: Repository needs schema to exist
+
+  - from: user-repository
+    to: auth-service
+    type: artifact
+    confidence: high
+    reason: Service uses repository for data access
+
+  - from: auth-service
+    to: auth-routes
+    type: artifact
+    confidence: high
+    reason: Routes call service methods
+
+  - from: auth-routes
+    to: auth-tests
+    type: artifact
+    confidence: high
+    reason: Tests exercise routes
+
+waves:
+  - number: 1
+    tasks: [auth-schema]
+    status: pending
+    depends_on_waves: []
+
+  - number: 2
+    tasks: [user-repository]
+    status: pending
+    depends_on_waves: [1]
+
+  - number: 3
+    tasks: [auth-service]
+    status: pending
+    depends_on_waves: [2]
+
+  - number: 4
+    tasks: [auth-routes]
+    status: pending
+    depends_on_waves: [3]
+
+  - number: 5
+    tasks: [auth-tests]
+    status: pending
+    depends_on_waves: [4]
+
+execution_policy:
+  max_parallel: 5
+  failure_strategy: escalate
+  checkpoint_frequency: wave
