@@ -1,0 +1,50 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/wave.schema.yaml"
+title: Wave
+description: Set of tasks with no interdependencies that can execute in parallel
+type: object
+required:
+  - number
+  - tasks
+  - status
+properties:
+  number:
+    type: integer
+    minimum: 1
+    description: Wave sequence number (execution order)
+  tasks:
+    type: array
+    items:
+      type: string
+    minItems: 1
+    description: Task IDs in this wave (all execute in parallel)
+  status:
+    type: string
+    enum:
+      - pending
+      - running
+      - completed
+      - partial
+      - failed
+    default: pending
+    description: |
+      Current wave execution status:
+      - pending: Not yet started
+      - running: Currently executing
+      - completed: All tasks succeeded
+      - partial: Some tasks succeeded, others failed
+      - failed: Wave execution failed
+  depends_on_waves:
+    type: array
+    items:
+      type: integer
+      minimum: 1
+    description: Wave numbers that must complete before this wave can start
+  started_at:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when wave execution began
+  completed_at:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when wave execution finished

@@ -1,0 +1,40 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/dependency.schema.yaml"
+title: Dependency
+description: Relationship where one task must complete before another can begin
+type: object
+required:
+  - from
+  - to
+  - type
+properties:
+  from:
+    type: string
+    description: Prerequisite task ID (must complete first)
+  to:
+    type: string
+    description: Dependent task ID (waits for prerequisite)
+  type:
+    type: string
+    enum:
+      - artifact
+      - semantic
+      - resource
+      - implicit
+    description: |
+      How the dependency was determined:
+      - artifact: Task B needs output file from Task A
+      - semantic: Task B references concepts defined by Task A
+      - resource: Tasks share external resource (database, API)
+      - implicit: Default ordering when no explicit dependency found
+  confidence:
+    type: string
+    enum:
+      - high
+      - medium
+      - low
+    default: medium
+    description: Inference confidence level for dependency analysis
+  reason:
+    type: string
+    description: Human-readable explanation of why this dependency exists

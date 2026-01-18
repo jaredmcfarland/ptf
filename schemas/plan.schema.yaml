@@ -1,0 +1,108 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/plan.schema.yaml"
+title: Plan
+description: Complete execution plan for a goal in the Parallel Task Framework
+type: object
+required:
+  - id
+  - goal
+  - tasks
+  - waves
+properties:
+  id:
+    type: string
+    pattern: "^[a-z0-9-]+$"
+    description: Unique plan identifier (lowercase, alphanumeric, hyphens)
+  goal:
+    type: string
+    description: High-level objective this plan achieves
+  created:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when plan was generated
+  analysis:
+    $ref: "#/definitions/PlanAnalysis"
+    description: Goal analysis context from decomposition phase
+  tasks:
+    type: array
+    minItems: 1
+    items:
+      $ref: "https://ptf.dev/schemas/task.schema.yaml"
+    description: All tasks in this plan (references task schema)
+  dependencies:
+    type: array
+    items:
+      $ref: "https://ptf.dev/schemas/dependency.schema.yaml"
+    description: Dependency relationships between tasks (references dependency schema)
+  waves:
+    type: array
+    minItems: 1
+    items:
+      $ref: "https://ptf.dev/schemas/wave.schema.yaml"
+    description: Computed execution waves (references wave schema)
+  execution_policy:
+    $ref: "#/definitions/ExecutionPolicy"
+    description: Configuration for plan execution behavior
+
+definitions:
+  PlanAnalysis:
+    type: object
+    properties:
+      objective:
+        type: string
+        description: Refined statement of what the plan accomplishes
+      scope:
+        type: object
+        properties:
+          included:
+            type: array
+            items:
+              type: string
+            description: Features and capabilities explicitly in scope
+          excluded:
+            type: array
+            items:
+              type: string
+            description: Features and capabilities explicitly out of scope
+      constraints:
+        type: array
+        items:
+          type: string
+        description: Technical or business constraints affecting execution
+      success_criteria:
+        type: array
+        items:
+          type: string
+        description: Measurable outcomes that define plan completion
+      domain:
+        type: string
+        description: Domain adapter used (e.g., software-development, research)
+
+  ExecutionPolicy:
+    type: object
+    properties:
+      max_parallel:
+        type: integer
+        minimum: 1
+        default: 5
+        description: Maximum concurrent tasks within a wave
+      failure_strategy:
+        type: string
+        enum:
+          - continue
+          - stop
+          - escalate
+        default: escalate
+        description: |
+          How to handle task failures:
+          - continue: Mark failed, continue with non-dependent tasks
+          - stop: Halt execution immediately
+          - escalate: Pause for human decision
+      checkpoint_frequency:
+        type: string
+        enum:
+          - task
+          - wave
+          - never
+        default: wave
+        description: When to persist state checkpoints
