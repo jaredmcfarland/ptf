@@ -9,16 +9,16 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Foundation
 
-- [ ] **FOUND-01**: YAML schema for Task (id, name, description, inputs, outputs, verify, context_notes, on_failure)
-- [ ] **FOUND-02**: YAML schema for Artifact (path, type, produced_by, consumed_by, checksum, verified)
-- [ ] **FOUND-03**: YAML schema for Dependency (from, to, type, confidence, reason)
-- [ ] **FOUND-04**: YAML schema for Wave (number, tasks, status, depends_on_waves)
-- [ ] **FOUND-05**: YAML schema for Plan (id, goal, analysis, tasks, dependencies, waves, execution_policy)
-- [ ] **FOUND-06**: Context budget fields in Task schema (estimated tokens, max context percentage)
-- [ ] **FOUND-07**: SKILL.md documenting framework concepts, core principles, command reference
-- [ ] **FOUND-08**: Plugin directory structure (commands/, agents/, skills/, hooks/, adapters/, schemas/)
-- [ ] **FOUND-09**: Example task definition files demonstrating schema usage
-- [ ] **FOUND-10**: Example plan files demonstrating wave structure
+- [x] **FOUND-01**: YAML schema for Task (id, name, description, inputs, outputs, verify, context_notes, on_failure)
+- [x] **FOUND-02**: YAML schema for Artifact (path, type, produced_by, consumed_by, checksum, verified)
+- [x] **FOUND-03**: YAML schema for Dependency (from, to, type, confidence, reason)
+- [x] **FOUND-04**: YAML schema for Wave (number, tasks, status, depends_on_waves)
+- [x] **FOUND-05**: YAML schema for Plan (id, goal, analysis, tasks, dependencies, waves, execution_policy)
+- [x] **FOUND-06**: Context budget fields in Task schema (estimated tokens, max context percentage)
+- [x] **FOUND-07**: SKILL.md documenting framework concepts, core principles, command reference
+- [x] **FOUND-08**: Plugin directory structure (commands/, agents/, skills/, hooks/, adapters/, schemas/)
+- [x] **FOUND-09**: Example task definition files demonstrating schema usage
+- [x] **FOUND-10**: Example plan files demonstrating wave structure
 
 ### Decomposition
 
@@ -184,16 +184,16 @@ Phase assignments for all v1 requirements.
 ### Phase 1: Foundation
 | Requirement | Description | Status |
 |-------------|-------------|--------|
-| FOUND-01 | YAML schema for Task | Pending |
-| FOUND-02 | YAML schema for Artifact | Pending |
-| FOUND-03 | YAML schema for Dependency | Pending |
-| FOUND-04 | YAML schema for Wave | Pending |
-| FOUND-05 | YAML schema for Plan | Pending |
-| FOUND-06 | Context budget fields in Task schema | Pending |
-| FOUND-07 | SKILL.md documenting framework concepts | Pending |
-| FOUND-08 | Plugin directory structure | Pending |
-| FOUND-09 | Example task definition files | Pending |
-| FOUND-10 | Example plan files | Pending |
+| FOUND-01 | YAML schema for Task | Complete |
+| FOUND-02 | YAML schema for Artifact | Complete |
+| FOUND-03 | YAML schema for Dependency | Complete |
+| FOUND-04 | YAML schema for Wave | Complete |
+| FOUND-05 | YAML schema for Plan | Complete |
+| FOUND-06 | Context budget fields in Task schema | Complete |
+| FOUND-07 | SKILL.md documenting framework concepts | Complete |
+| FOUND-08 | Plugin directory structure | Complete |
+| FOUND-09 | Example task definition files | Complete |
+| FOUND-10 | Example plan files | Complete |
 
 ### Phase 2: Decomposition
 | Requirement | Description | Status |
