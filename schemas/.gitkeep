@@ -1,0 +1,10 @@
+# YAML Schema Definitions Directory
+#
+# Contains JSON Schema (Draft 7) definitions for PTF data structures:
+# - task.schema.yaml       - Atomic unit of work
+# - artifact.schema.yaml   - File produced/consumed by tasks
+# - dependency.schema.yaml - Relationship between tasks
+# - wave.schema.yaml       - Set of parallel tasks
+# - plan.schema.yaml       - Complete execution blueprint
+#
+# Schemas enable IDE validation and documentation generation.

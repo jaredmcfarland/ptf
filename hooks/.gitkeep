@@ -1,0 +1,12 @@
+# Event Hooks Directory
+#
+# Contains event hook definitions:
+# - hooks.json - Event handler configuration
+#
+# Supported events:
+# - pre-wave-start   - Before wave execution begins
+# - post-task-complete - After each task completes
+# - post-wave-complete - After wave execution completes
+# - on-verification-fail - When task verification fails
+#
+# Hooks enable custom actions like logging, notifications, metrics.

@@ -1,0 +1,9 @@
+# PTF Skills Directory
+#
+# Contains SKILL.md documenting PTF framework concepts:
+# - Core concepts (Task, Wave, Artifact, Dependency, Plan)
+# - Context budget heuristics
+# - Command reference
+# - Subagent reference
+#
+# SKILL.md is loaded by Claude Code when PTF commands are invoked.

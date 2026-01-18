@@ -1,0 +1,12 @@
+# Domain Adapters Directory
+#
+# Contains domain-specific adapter definitions:
+# - software-development.yaml - Software development domain
+# - research.yaml             - Research domain
+# - template.yaml             - Template for creating custom adapters
+#
+# Adapters provide domain-shaped:
+# - Questioning patterns for goal clarification
+# - Task decomposition heuristics
+# - Verification criteria templates
+# - Constitution principles

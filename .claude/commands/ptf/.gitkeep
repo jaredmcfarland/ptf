@@ -1,0 +1,14 @@
+# PTF Slash Commands Directory
+#
+# This directory will contain PTF slash commands:
+# - init.md      - Initialize project, run goal analysis (/ptf:init)
+# - decompose.md - Run full 5-step decomposition (/ptf:decompose)
+# - plan.md      - Generate human-readable plan (/ptf:plan)
+# - execute.md   - Execute single wave or all waves (/ptf:execute)
+# - status.md    - Show execution state (/ptf:status)
+# - verify.md    - Run verification on task (/ptf:verify)
+# - resume.md    - Resume from interruption (/ptf:resume)
+# - retry.md     - Retry failed task (/ptf:retry)
+# - abort.md     - Stop execution, preserve state (/ptf:abort)
+#
+# Commands invoke PTF subagents defined in .claude/agents/
