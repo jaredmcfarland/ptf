@@ -12,7 +12,7 @@ PTF transforms complex goals into atomic tasks with dependency-aware parallel ex
 
 - [x] **Phase 1: Foundation** - YAML schemas, plugin structure, skill documentation
 - [x] **Phase 2: Decomposition** - Goal analysis, recursive task breakdown, validation
-- [ ] **Phase 3: Dependency Analysis** - Multi-pass inference, cycle detection, wave computation
+- [x] **Phase 3: Dependency Analysis** - Multi-pass inference, cycle detection, wave computation
 - [ ] **Phase 4: State Management** - File-based persistence, checkpoints, resume capability
 - [ ] **Phase 5: Execution Engine** - Wave-based parallel execution, fresh context dispatch
 - [ ] **Phase 6: Verification** - Multi-modal verification, independent verifier subagent
@@ -69,9 +69,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Create ptf-dependency-analyzer subagent (5-pass inference, Kahn's, Tarjan's)
-- [ ] 03-02-PLAN.md — Create /ptf:plan command (orchestrate analyzer, cycle handling, plan.md)
-- [ ] 03-03-PLAN.md — Create examples and update SKILL.md with dependency analysis concepts
+- [x] 03-01-PLAN.md — Create ptf-dependency-analyzer subagent (5-pass inference, Kahn's, Tarjan's)
+- [x] 03-02-PLAN.md — Create /ptf:plan command (orchestrate analyzer, cycle handling, plan.md)
+- [x] 03-03-PLAN.md — Create examples and update SKILL.md with dependency analysis concepts
 
 ### Phase 4: State Management
 **Goal**: Enable reliable state persistence and session resumption
@@ -169,7 +169,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
 | 2. Decomposition | 4/4 | Complete | 2026-01-18 |
-| 3. Dependency Analysis | 0/3 | Planned | - |
+| 3. Dependency Analysis | 3/3 | Complete | 2026-01-18 |
 | 4. State Management | 0/TBD | Not started | - |
 | 5. Execution Engine | 0/TBD | Not started | - |
 | 6. Verification | 0/TBD | Not started | - |

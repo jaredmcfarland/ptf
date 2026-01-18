@@ -36,17 +36,17 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Dependencies
 
-- [ ] **DEP-01**: Automatic dependency inference from task inputs/outputs (artifact matching)
-- [ ] **DEP-02**: Type-based dependency inference (pattern/glob matching)
-- [ ] **DEP-03**: Semantic dependency inference (LLM analysis of descriptions)
-- [ ] **DEP-04**: Domain heuristic dependency inference (adapter-provided patterns)
-- [ ] **DEP-05**: Resource conflict detection (tasks modifying same files)
-- [ ] **DEP-06**: Cycle detection in dependency graph
-- [ ] **DEP-07**: Cycle resolution guidance (suggest which dependency to break)
-- [ ] **DEP-08**: Wave computation via topological sort
-- [ ] **DEP-09**: Dependency analyzer subagent executes inference and wave computation
-- [ ] **DEP-10**: `/ptf:plan` command generates human-readable plan from decomposition
-- [ ] **DEP-11**: Dependency graph state persists to .orchestrator/decomposition/graph.yaml
+- [x] **DEP-01**: Automatic dependency inference from task inputs/outputs (artifact matching)
+- [x] **DEP-02**: Type-based dependency inference (pattern/glob matching)
+- [x] **DEP-03**: Semantic dependency inference (LLM analysis of descriptions)
+- [x] **DEP-04**: Domain heuristic dependency inference (adapter-provided patterns)
+- [x] **DEP-05**: Resource conflict detection (tasks modifying same files)
+- [x] **DEP-06**: Cycle detection in dependency graph
+- [x] **DEP-07**: Cycle resolution guidance (suggest which dependency to break)
+- [x] **DEP-08**: Wave computation via topological sort
+- [x] **DEP-09**: Dependency analyzer subagent executes inference and wave computation
+- [x] **DEP-10**: `/ptf:plan` command generates human-readable plan from decomposition
+- [x] **DEP-11**: Dependency graph state persists to .orchestrator/decomposition/graph.yaml
 
 ### Execution
 
@@ -125,7 +125,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **CMD-01**: `/ptf:init [goal]` — initialize project, run goal analysis
 - [ ] **CMD-02**: `/ptf:decompose` — run full 5-step decomposition
-- [ ] **CMD-03**: `/ptf:plan` — generate human-readable plan
+- [x] **CMD-03**: `/ptf:plan` — generate human-readable plan
 - [ ] **CMD-04**: `/ptf:execute [wave]` — execute single wave
 - [ ] **CMD-05**: `/ptf:execute-all` — execute all waves
 - [ ] **CMD-06**: `/ptf:status` — show execution state
