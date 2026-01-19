@@ -1,0 +1,435 @@
+# Domain Adapter Schema
+# Defines the formal structure for PTF domain adapters
+# Enables IDE validation and autocompletion when editing adapters
+
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/adapter.schema.yaml"
+title: Domain Adapter
+description: |
+  Schema for PTF domain adapters. Adapters customize decomposition,
+  verification, and dependency inference for specific domains.
+type: object
+required:
+  - name
+  - description
+  - version
+  - questioning
+  - decomposition
+  - constitution
+  - artifacts
+  - dependencies
+additionalProperties: false
+
+properties:
+  # ============================================================================
+  # Header - Basic adapter identification
+  # ============================================================================
+  name:
+    type: string
+    pattern: "^[a-z][a-z0-9-]*$"
+    description: |
+      Unique identifier for this domain adapter.
+      Used in file paths, references, and configuration.
+      Must be lowercase with hyphens (e.g., "software-development", "research").
+
+  description:
+    type: string
+    minLength: 10
+    description: |
+      Human-readable description of what this domain covers.
+      Should include typical use cases and task types.
+
+  version:
+    type: string
+    pattern: "^\\d+\\.\\d+(\\.\\d+)?$"
+    description: |
+      Semantic version of this adapter.
+      Bump when making changes to adapter behavior.
+
+  # ============================================================================
+  # Questioning - Drives the /ptf:init clarification process
+  # ============================================================================
+  questioning:
+    type: object
+    required:
+      - init_questions
+    additionalProperties: false
+    description: |
+      Configuration for the clarification process during project initialization.
+      Questions help gather context that shapes decomposition decisions.
+    properties:
+      init_questions:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/definitions/InitQuestion"
+        description: |
+          Array of questions asked during /ptf:init.
+          Each question probes a specific aspect of the goal.
+
+  # ============================================================================
+  # Decomposition - Drives the /ptf:decompose process
+  # ============================================================================
+  decomposition:
+    type: object
+    required:
+      - subgoal_heuristics
+      - atomicity_criteria
+    additionalProperties: false
+    description: |
+      Configuration for how goals are broken down into tasks.
+      Defines cutting strategies and criteria for atomic tasks.
+    properties:
+      subgoal_heuristics:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/definitions/SubgoalHeuristic"
+        description: |
+          Strategies for identifying subgoals within a larger goal.
+          Each heuristic provides a different "cutting" approach.
+
+      atomicity_criteria:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/definitions/AtomicityCriterion"
+        description: |
+          Criteria for determining if a task is atomic (small enough).
+          If any criterion fails, the task should be decomposed further.
+
+      max_recursion_depth:
+        type: integer
+        minimum: 1
+        maximum: 10
+        default: 5
+        description: |
+          Maximum depth of recursive decomposition.
+          Deeper = smaller tasks, but more coordination overhead.
+
+  # ============================================================================
+  # Constitution - Template for project-specific principles
+  # ============================================================================
+  constitution:
+    type: object
+    required:
+      - template
+    additionalProperties: false
+    description: |
+      Template for generating project-specific immutable principles.
+      The constitution defines constraints that all tasks must follow.
+    properties:
+      template:
+        type: string
+        minLength: 100
+        description: |
+          Multi-line template with placeholders for constitution generation.
+          Available placeholders: {project_name}, {project_constraints}, {timestamp}
+
+  # ============================================================================
+  # Artifacts - Types and verification strategies
+  # ============================================================================
+  artifacts:
+    type: object
+    required:
+      - types
+      - verification_strategies
+    additionalProperties: false
+    description: |
+      Defines what kinds of outputs this domain produces and how to verify them.
+      Maps artifact types to verification methods.
+    properties:
+      types:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/definitions/ArtifactType"
+        description: |
+          List of artifact types this domain produces.
+          Each type has associated file extensions and description.
+
+      verification_strategies:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            $ref: "#/definitions/VerificationMethod"
+        description: |
+          Verification strategies keyed by artifact type name.
+          Each strategy is an array of verification methods.
+
+  # ============================================================================
+  # Dependencies - Common patterns for dependency inference
+  # ============================================================================
+  dependencies:
+    type: object
+    required:
+      - common_patterns
+    additionalProperties: false
+    description: |
+      Configuration for automatic dependency inference between tasks.
+      Helps the framework identify task ordering requirements.
+    properties:
+      common_patterns:
+        type: array
+        items:
+          $ref: "#/definitions/DependencyPattern"
+        description: |
+          Known dependency patterns between artifact types.
+          Used for artifact-based dependency inference.
+
+      inference_hints:
+        type: array
+        items:
+          $ref: "#/definitions/InferenceHint"
+        description: |
+          Regex patterns that hint at dependencies in content.
+          Used for semantic dependency inference.
+
+# ============================================================================
+# Definitions - Reusable schema components
+# ============================================================================
+definitions:
+  InitQuestion:
+    type: object
+    required:
+      - category
+      - question
+      - why
+    additionalProperties: false
+    description: A question asked during project initialization
+    properties:
+      category:
+        type: string
+        minLength: 1
+        description: |
+          Category name for this question (e.g., "core_value", "scope", "methodology").
+          Used for organizing and referencing answers.
+
+      question:
+        type: string
+        minLength: 10
+        description: |
+          The actual question presented to the user.
+          Should be clear and actionable.
+
+      why:
+        type: string
+        minLength: 10
+        description: |
+          Explanation of why this question matters for decomposition.
+          Helps users understand the relevance of their answer.
+
+      options_template:
+        type: array
+        items:
+          type: string
+        description: |
+          Template options to guide user responses.
+          Can include placeholders like {feature_name}.
+
+  SubgoalHeuristic:
+    type: object
+    required:
+      - name
+      - description
+      - examples
+      - when_to_use
+    additionalProperties: false
+    description: A strategy for splitting goals into subgoals
+    properties:
+      name:
+        type: string
+        pattern: "^[a-z][a-z0-9-]*$"
+        description: |
+          Unique identifier for this heuristic (e.g., "by-layer", "by-feature").
+
+      description:
+        type: string
+        minLength: 10
+        description: |
+          How this heuristic splits goals.
+          Should be actionable guidance.
+
+      examples:
+        type: array
+        minItems: 1
+        items:
+          type: string
+        description: |
+          Concrete examples of cuts this heuristic produces.
+          Helps users understand the approach.
+
+      when_to_use:
+        type: string
+        minLength: 10
+        description: |
+          Conditions when this heuristic applies.
+          Guides selection of appropriate heuristic.
+
+  AtomicityCriterion:
+    type: object
+    required:
+      - criterion
+      - check
+      - fail_signal
+    additionalProperties: false
+    description: A criterion for determining if a task is atomic
+    properties:
+      criterion:
+        type: string
+        minLength: 1
+        description: |
+          Name of this criterion (e.g., "single-file", "verifiable").
+
+      check:
+        type: string
+        minLength: 10
+        description: |
+          How to verify this criterion is met.
+          Should be a concrete check.
+
+      fail_signal:
+        type: string
+        minLength: 10
+        description: |
+          Signs that this criterion is violated.
+          Helps identify tasks that need further decomposition.
+
+  ArtifactType:
+    type: object
+    required:
+      - name
+      - extensions
+      - description
+    additionalProperties: false
+    description: A type of artifact this domain produces
+    properties:
+      name:
+        type: string
+        pattern: "^[a-z][a-z0-9-]*$"
+        description: |
+          Unique identifier for this artifact type.
+          Used as key in verification_strategies.
+
+      extensions:
+        type: array
+        minItems: 1
+        items:
+          type: string
+          pattern: "^\\..+$"
+        description: |
+          File extensions associated with this artifact type.
+          Must start with a dot (e.g., ".ts", ".yaml").
+
+      description:
+        type: string
+        minLength: 5
+        description: |
+          What this artifact type represents.
+
+  VerificationMethod:
+    type: object
+    required:
+      - method
+      - description
+    additionalProperties: false
+    description: A method for verifying an artifact
+    properties:
+      method:
+        type: string
+        enum:
+          - exists
+          - contains
+          - runs
+          - syntax
+          - references
+          - integrates
+          - custom
+        description: |
+          Type of verification to perform.
+          - exists: File exists at expected path
+          - contains: File has required content
+          - runs: Command executes successfully
+          - syntax: File parses without syntax errors
+          - references: Content references sources
+          - integrates: References multiple inputs
+          - custom: Domain-specific verification
+
+      description:
+        type: string
+        minLength: 5
+        description: |
+          What this verification method checks.
+
+      command_template:
+        type: string
+        description: |
+          Command template for "runs" verification type.
+          Can include {path} placeholder for artifact path.
+
+  DependencyPattern:
+    type: object
+    required:
+      - name
+      - from_type
+      - to_type
+      - description
+      - confidence
+    additionalProperties: false
+    description: A known dependency pattern between artifact types
+    properties:
+      name:
+        type: string
+        pattern: "^[a-z][a-z0-9-]*$"
+        description: |
+          Unique identifier for this pattern.
+
+      from_type:
+        type: string
+        description: |
+          Source artifact type (the dependency).
+
+      to_type:
+        type: string
+        description: |
+          Dependent artifact type (depends on from_type).
+
+      description:
+        type: string
+        minLength: 10
+        description: |
+          Why this dependency exists.
+
+      confidence:
+        type: string
+        enum:
+          - high
+          - medium
+          - low
+        description: |
+          Confidence level for this inference.
+          - high: Almost always true
+          - medium: Usually true
+          - low: Sometimes true
+
+  InferenceHint:
+    type: object
+    required:
+      - pattern
+      - implies
+    additionalProperties: false
+    description: A regex pattern that hints at dependencies
+    properties:
+      pattern:
+        type: string
+        minLength: 1
+        description: |
+          Regex pattern to match in artifact content.
+          Used for semantic dependency inference.
+
+      implies:
+        type: string
+        minLength: 5
+        description: |
+          What this pattern suggests about dependencies.
