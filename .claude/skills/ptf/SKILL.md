@@ -238,14 +238,84 @@ Tarjan's algorithm detects circular dependencies. Reports exact tasks involved a
 
 ## Failure Handling
 
-| Strategy | Behavior |
-|----------|----------|
-| `retry` | Retry task up to max_attempts (default 3) |
-| `skip` | Mark failed, continue with dependents blocked |
-| `escalate` | Stop execution, surface for human decision |
-| `replan` | Trigger re-decomposition from current state |
+PTF provides graceful failure recovery instead of terminating on first error.
 
-**Cascade behavior:** When a task fails, all dependent tasks are marked `blocked`.
+### Failure Strategies
+
+Each task can define an `on_failure` policy:
+
+| Strategy | Behavior | Use When |
+|----------|----------|----------|
+| **retry** | Retry with exponential backoff up to max_attempts | Transient failures, flaky operations |
+| **skip** | Mark task skipped, continue execution | Non-critical tasks, optional features |
+| **escalate** | Pause execution, present options to human | Critical failures, need human decision |
+| **replan** | Re-decompose portion of plan | Wrong approach, need different breakdown |
+
+### Backoff Configuration
+
+Retry strategy supports configurable backoff:
+
+```yaml
+on_failure:
+  strategy: retry
+  max_attempts: 3
+  backoff_type: exponential  # none | linear | exponential
+  backoff_base_seconds: 2
+  backoff_max_seconds: 60
+  final_fallback: escalate   # escalate | skip (after retries exhausted)
+```
+
+| Backoff Type | Attempt 1 | Attempt 2 | Attempt 3 | Attempt 4 |
+|--------------|-----------|-----------|-----------|-----------|
+| none | 0s | 0s | 0s | 0s |
+| linear (base=2) | 2s | 4s | 6s | 8s |
+| exponential (base=2) | 2s | 4s | 8s | 16s |
+
+### Cascade Policy
+
+When a task fails, its dependents are affected:
+
+```yaml
+on_failure:
+  propagate_failure: true   # Default: block dependents
+```
+
+- **propagate_failure: true** (default): Dependent tasks are marked "blocked"
+- **propagate_failure: false**: Dependents attempt anyway (will fail on missing input)
+- **dependency.required: false**: Optional dependency - dependent can proceed without
+
+### Failure Records
+
+Full debugging context is saved to `.orchestrator/failures/`:
+
+```
+.orchestrator/failures/
+  auth-service-attempt-1.yaml
+  auth-service-attempt-2.yaml
+  data-migration-attempt-1.yaml
+```
+
+Each record contains:
+- Task identification (id, name, wave)
+- Timing (started, failed, duration)
+- Error details (type, category, message)
+- Context (inputs loaded, files written)
+- Recovery action taken
+
+### Recovery Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/ptf:retry task-id` | Reset task state, retry with fresh context |
+| `/ptf:abort` | Stop execution cleanly, preserve state |
+| `/ptf:resume` | Continue from last checkpoint |
+| `/ptf:status` | View current state including failures |
+
+### Human Escalation
+
+When escalation triggers, options are presented: retry, skip, abort, or replan. Review `.orchestrator/failures/` before choosing.
+
+**Best practices**: Set max_attempts 2-3 for quick failures, 5-10 for flaky ops. Use skip for non-critical tasks. Escalate by default for unknowns.
 
 ## Domain Adapters
 
