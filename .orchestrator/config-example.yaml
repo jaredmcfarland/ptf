@@ -35,6 +35,9 @@ execution:
     # Use for rate-limited APIs or resource contention
     iteration_delay: 0
 
+    # On max_iterations reached, trigger failure handling
+    on_exhausted: escalate            # Use failure handling flow
+
   single_shot:
     # Whether to retry failed tasks in single-shot mode
     # If false, task failure immediately fails the task
@@ -81,20 +84,67 @@ hooks:
   on_session_end:
     - final_checkpoint
 
-# Failure handling configuration (Phase 7)
-# Controls how failed tasks affect execution
+# Failure Handling Configuration
 failure:
-  # Default strategy for failed tasks
-  # Options: retry, skip, escalate, replan
+  # Default strategy for tasks without explicit on_failure
   default_strategy: retry
 
-  # Maximum retry attempts per task
-  # After exhausting retries, failure.default_strategy applies
-  max_retries: 3
+  # Default retry settings
+  default_max_attempts: 3
+  default_backoff_type: exponential   # none | linear | exponential
+  default_backoff_base_seconds: 2
+  default_backoff_max_seconds: 60
 
-  # How failures cascade to dependent tasks
-  # Options:
-  #   block_dependents: Mark tasks depending on failed task as blocked
-  #   skip_dependents: Skip dependent tasks but continue execution
-  #   fail_fast: Stop execution immediately on any failure
-  cascade_policy: block_dependents
+  # What to do when retries exhausted
+  default_final_fallback: escalate    # escalate | skip
+
+  # Cascade behavior
+  default_propagate_failure: true     # Block dependents on failure
+
+  # Failure record settings
+  records:
+    enabled: true
+    directory: .orchestrator/failures
+    retain_on_success: false          # Keep records even after successful retry
+    max_records_per_task: 10          # Limit records to prevent disk bloat
+
+# Strategy-specific settings
+strategies:
+  retry:
+    # Retry is the default, settings in failure section apply
+    # No additional settings needed
+
+  skip:
+    # Skip strategy specific settings
+    log_warning: true                 # Warn user when task skipped
+    cascade_on_skip: true             # Apply cascade policy when skipping
+
+  escalate:
+    # Escalate strategy specific settings
+    pause_immediately: true           # Pause execution on first escalation
+    show_failure_record: true         # Include failure record path in output
+    options:                          # Options to present to user
+      - retry
+      - skip
+      - abort
+      - replan
+
+  replan:
+    # Replan strategy specific settings
+    preserve_completed: true          # Keep work from completed tasks
+    scope: failed_subtree             # failed_task | failed_subtree | full_plan
+
+# Integration Notes:
+#
+# Failure handling flow:
+# 1. Task fails (executor returns error or blocked)
+# 2. Orchestrator reads task's on_failure policy (or defaults from here)
+# 3. Orchestrator invokes handle_failure operation
+# 4. State manager creates failure record
+# 5. Strategy applied (retry/skip/escalate)
+# 6. Cascade policy enforced if applicable
+#
+# Configuration precedence:
+# 1. Task-level on_failure (in task definition)
+# 2. These config defaults
+# 3. Hardcoded defaults (retry, 3 attempts, exponential backoff)
