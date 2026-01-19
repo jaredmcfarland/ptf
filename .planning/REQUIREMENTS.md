@@ -90,17 +90,17 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Failure Handling
 
-- [ ] **FAIL-01**: Retry strategy with configurable max attempts
-- [ ] **FAIL-02**: Exponential backoff between retry attempts
-- [ ] **FAIL-03**: Skip strategy (mark task skipped, continue execution)
-- [ ] **FAIL-04**: Escalate strategy (pause execution, present to human)
-- [ ] **FAIL-05**: Failure cascade handling (block dependents when task fails)
-- [ ] **FAIL-06**: Cascade policy per task (propagate_failure: true/false)
-- [ ] **FAIL-07**: `/ptf:retry [task]` command retries failed task
-- [ ] **FAIL-08**: `/ptf:abort` command stops execution and preserves state
-- [ ] **FAIL-09**: Failure records in failures/ directory with full context
-- [ ] **FAIL-10**: Human escalation with options (retry, skip, abort, replan)
-- [ ] **FAIL-11**: Replan capability (re-decompose portion after failure)
+- [x] **FAIL-01**: Retry strategy with configurable max attempts
+- [x] **FAIL-02**: Exponential backoff between retry attempts
+- [x] **FAIL-03**: Skip strategy (mark task skipped, continue execution)
+- [x] **FAIL-04**: Escalate strategy (pause execution, present to human)
+- [x] **FAIL-05**: Failure cascade handling (block dependents when task fails)
+- [x] **FAIL-06**: Cascade policy per task (propagate_failure: true/false)
+- [x] **FAIL-07**: `/ptf:retry [task]` command retries failed task
+- [x] **FAIL-08**: `/ptf:abort` command stops execution and preserves state
+- [x] **FAIL-09**: Failure records in failures/ directory with full context
+- [x] **FAIL-10**: Human escalation with options (retry, skip, abort, replan)
+- [x] **FAIL-11**: Replan capability (re-decompose portion after failure)
 
 ### Domain Adapters
 
@@ -282,20 +282,20 @@ Phase assignments for all v1 requirements.
 ### Phase 7: Failure Handling
 | Requirement | Description | Status |
 |-------------|-------------|--------|
-| FAIL-01 | Retry with max attempts | Pending |
-| FAIL-02 | Exponential backoff | Pending |
-| FAIL-03 | Skip strategy | Pending |
-| FAIL-04 | Escalate strategy | Pending |
-| FAIL-05 | Failure cascade handling | Pending |
-| FAIL-06 | Cascade policy per task | Pending |
-| FAIL-07 | /ptf:retry [task] command | Pending |
-| FAIL-08 | /ptf:abort command | Pending |
-| FAIL-09 | Failure records | Pending |
-| FAIL-10 | Human escalation options | Pending |
-| FAIL-11 | Replan capability | Pending |
-| CMD-07 | /ptf:resume command interface | Pending |
-| CMD-09 | /ptf:retry command interface | Pending |
-| CMD-10 | /ptf:abort command interface | Pending |
+| FAIL-01 | Retry with max attempts | Complete |
+| FAIL-02 | Exponential backoff | Complete |
+| FAIL-03 | Skip strategy | Complete |
+| FAIL-04 | Escalate strategy | Complete |
+| FAIL-05 | Failure cascade handling | Complete |
+| FAIL-06 | Cascade policy per task | Complete |
+| FAIL-07 | /ptf:retry [task] command | Complete |
+| FAIL-08 | /ptf:abort command | Complete |
+| FAIL-09 | Failure records | Complete |
+| FAIL-10 | Human escalation options | Complete |
+| FAIL-11 | Replan capability | Complete |
+| CMD-07 | /ptf:resume command interface | Complete |
+| CMD-09 | /ptf:retry command interface | Complete |
+| CMD-10 | /ptf:abort command interface | Complete |
 
 ### Phase 8: Domain Adapters
 | Requirement | Description | Status |
