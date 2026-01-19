@@ -117,12 +117,11 @@ Plans:
   3. User can run `/ptf:verify [task]` to manually trigger verification for any task
   4. Verification results recorded in task state and influence retry/continue decisions
   5. Multi-modal verification possible (e.g., exists AND contains AND runs for same artifact)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: TBD (verifier subagent)
-- [ ] 06-02: TBD (verification types implementation)
-- [ ] 06-03: TBD (verify command and state integration)
+- [ ] 06-01-PLAN.md — Create ptf-verifier subagent with 5 verification types
+- [ ] 06-02-PLAN.md — Create /ptf:verify command and state integration
 
 ### Phase 7: Failure Handling
 **Goal**: Handle failures gracefully with retry, escalation, and recovery strategies
@@ -172,7 +171,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 3. Dependency Analysis | 3/3 | Complete | 2026-01-18 |
 | 4. State Management | 3/3 | Complete | 2026-01-19 |
 | 5. Execution Engine | 3/3 | Complete | 2026-01-19 |
-| 6. Verification | 0/TBD | Not started | - |
+| 6. Verification | 0/2 | Planned | - |
 | 7. Failure Handling | 0/TBD | Not started | - |
 | 8. Domain Adapters | 0/TBD | Not started | - |
 
@@ -213,4 +212,5 @@ Note: The count discrepancy suggests CMD-* requirements duplicate functionality 
 *Phase 3 planned: 2026-01-18*
 *Phase 4 planned: 2026-01-18*
 *Phase 5 planned: 2026-01-19*
+*Phase 6 planned: 2026-01-19*
 *Depth: comprehensive (8 phases)*
