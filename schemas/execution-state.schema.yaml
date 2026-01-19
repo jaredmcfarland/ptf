@@ -1,0 +1,129 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/execution-state.schema.yaml"
+title: ExecutionState
+description: Master state file for PTF execution - single source of truth for "where are we?"
+type: object
+required:
+  - status
+  - current_wave
+  - waves_total
+  - progress
+properties:
+  status:
+    type: string
+    enum:
+      - pending
+      - running
+      - paused
+      - completed
+      - failed
+    description: Overall execution status
+  current_wave:
+    type: integer
+    minimum: 1
+    description: Wave currently executing or next to execute
+  waves_total:
+    type: integer
+    minimum: 1
+    description: Total number of waves in plan
+  progress:
+    $ref: "#/definitions/Progress"
+    description: Task completion counts
+  wave_summary:
+    type: object
+    additionalProperties:
+      type: string
+      enum:
+        - pending
+        - running
+        - completed
+        - partial
+        - failed
+    description: Status by wave number (1, 2, 3...)
+  session:
+    $ref: "#/definitions/Session"
+    description: Current session metadata
+  blockers:
+    type: array
+    items:
+      type: string
+    default: []
+    description: List of blocking issues preventing progress
+  recent_events:
+    type: array
+    items:
+      $ref: "#/definitions/RecentEvent"
+    maxItems: 10
+    description: Last 10 events for quick status display
+
+definitions:
+  Progress:
+    type: object
+    required:
+      - tasks_total
+      - tasks_completed
+      - tasks_pending
+    properties:
+      tasks_total:
+        type: integer
+        minimum: 0
+        description: Total number of tasks in plan
+      tasks_completed:
+        type: integer
+        minimum: 0
+        description: Tasks that have finished successfully
+      tasks_running:
+        type: integer
+        minimum: 0
+        default: 0
+        description: Tasks currently executing
+      tasks_pending:
+        type: integer
+        minimum: 0
+        description: Tasks waiting to start
+      tasks_failed:
+        type: integer
+        minimum: 0
+        default: 0
+        description: Tasks that have failed
+      tasks_blocked:
+        type: integer
+        minimum: 0
+        default: 0
+        description: Tasks blocked by dependencies or issues
+
+  Session:
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: "^session-[0-9]+$"
+        description: Unique session identifier
+      started:
+        type: string
+        format: date-time
+        description: ISO 8601 timestamp when session began
+      last_update:
+        type: string
+        format: date-time
+        description: ISO 8601 timestamp of last state change
+
+  RecentEvent:
+    type: object
+    required:
+      - timestamp
+      - event
+    properties:
+      timestamp:
+        type: string
+        format: date-time
+        description: ISO 8601 timestamp of event
+      event:
+        type: string
+        description: Event type (e.g., task_started, task_completed, wave_started)
+      task:
+        type: string
+        description: Task ID if event relates to a task
+      wave:
+        type: integer
+        description: Wave number if event relates to a wave

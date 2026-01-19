@@ -1,0 +1,147 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/task-state.schema.yaml"
+title: TaskState
+description: Per-task execution state stored in .orchestrator/state/tasks/{task-id}.yaml
+type: object
+required:
+  - task_id
+  - wave
+  - status
+properties:
+  task_id:
+    type: string
+    pattern: "^[a-z0-9-]+$"
+    description: Unique task identifier
+  wave:
+    type: integer
+    minimum: 1
+    description: Wave number this task belongs to
+  status:
+    type: string
+    enum:
+      - pending
+      - ready
+      - running
+      - completed
+      - failed
+      - blocked
+      - skipped
+    default: pending
+    description: |
+      Current task status:
+      - pending: Not yet ready to run (dependencies incomplete)
+      - ready: Dependencies satisfied, can be executed
+      - running: Currently executing
+      - completed: Successfully finished
+      - failed: Execution failed
+      - blocked: Cannot proceed due to blocker
+      - skipped: Intentionally not executed
+  attempts:
+    type: array
+    items:
+      $ref: "#/definitions/Attempt"
+    default: []
+    description: History of execution attempts
+  outputs_produced:
+    type: array
+    items:
+      $ref: "#/definitions/ProducedOutput"
+    default: []
+    description: Artifacts created by this task
+  verification:
+    $ref: "#/definitions/Verification"
+    description: Verification check results
+  blocked_by:
+    type: array
+    items:
+      type: string
+    description: Task IDs this task is waiting for
+  error:
+    type: string
+    description: Error message if status is failed
+
+definitions:
+  Attempt:
+    type: object
+    required:
+      - attempt
+      - started
+      - status
+    properties:
+      attempt:
+        type: integer
+        minimum: 1
+        description: Attempt number (1-indexed)
+      started:
+        type: string
+        format: date-time
+        description: ISO 8601 timestamp when attempt began
+      completed:
+        type: string
+        format: date-time
+        description: ISO 8601 timestamp when attempt ended
+      status:
+        type: string
+        enum:
+          - running
+          - completed
+          - failed
+        description: Outcome of this attempt
+      duration_seconds:
+        type: number
+        minimum: 0
+        description: Time taken for this attempt
+      error:
+        type: string
+        description: Error message if attempt failed
+
+  ProducedOutput:
+    type: object
+    required:
+      - path
+    properties:
+      path:
+        type: string
+        description: File path relative to project root
+      checksum:
+        type: string
+        pattern: "^sha256:[a-f0-9]{64}$"
+        description: SHA-256 hash with prefix for integrity verification
+      size_bytes:
+        type: integer
+        minimum: 0
+        description: File size in bytes
+
+  Verification:
+    type: object
+    properties:
+      status:
+        type: string
+        enum:
+          - pending
+          - passed
+          - failed
+          - skipped
+        default: pending
+        description: Overall verification status
+      results:
+        type: array
+        items:
+          $ref: "#/definitions/VerificationResult"
+        description: Individual check results
+
+  VerificationResult:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Verification type (exists, contains, runs, syntax, custom)
+      target:
+        type: string
+        description: File or command being verified
+      passed:
+        type: boolean
+        description: Whether this check passed
+      message:
+        type: string
+        description: Human-readable result message
