@@ -1,0 +1,164 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/event-log.schema.yaml"
+title: EventLogEntry
+description: |
+  Single event in the append-only JSONL event log (.orchestrator/history/events.jsonl).
+
+  Key properties:
+  - Append-only: Never modify existing lines
+  - Line-level atomicity: Each line is a complete event
+  - Replayable: Can reconstruct state from events
+  - Greppable: Easy to filter with grep/jq
+type: object
+required:
+  - ts
+  - event
+properties:
+  ts:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when event occurred
+
+  event:
+    type: string
+    enum:
+      # Session events
+      - session_started
+      - session_resumed
+      - session_paused
+      - session_completed
+      - session_failed
+      # Wave events
+      - wave_started
+      - wave_completed
+      - wave_failed
+      # Task events
+      - task_started
+      - task_completed
+      - task_failed
+      - task_skipped
+      - task_retry
+      # Artifact events
+      - artifact_produced
+      - artifact_verified
+      - artifact_validation_failed
+      # Checkpoint events
+      - checkpoint_started
+      - checkpoint_completed
+      # System events
+      - goal_received
+      - plan_generated
+      - error
+    description: Event type
+
+  # Context fields (vary by event type)
+  session:
+    type: string
+    pattern: "^session-[0-9]+$"
+    description: Session ID (session events)
+
+  wave:
+    type: integer
+    minimum: 1
+    description: Wave number (wave/task events)
+
+  task:
+    type: string
+    description: Task ID (task events)
+
+  attempt:
+    type: integer
+    minimum: 1
+    description: Attempt number (task_retry, task_failed)
+
+  duration_s:
+    type: number
+    minimum: 0
+    description: Duration in seconds (completed events)
+
+  path:
+    type: string
+    description: File path (artifact events)
+
+  checksum:
+    type: string
+    pattern: "^sha256:[a-f0-9]{64}$"
+    description: SHA-256 checksum with prefix (artifact events)
+
+  reason:
+    type: string
+    description: Explanation (failures, skips)
+
+  goal_hash:
+    type: string
+    description: Hash of goal content (goal_received)
+
+  error:
+    type: string
+    description: Error message (error events)
+
+  outputs:
+    type: array
+    items:
+      type: string
+    description: Output paths (task_completed)
+
+examples:
+  - ts: "2026-01-18T10:30:00Z"
+    event: goal_received
+    goal_hash: "abc123def456"
+
+  - ts: "2026-01-18T10:32:00Z"
+    event: session_started
+    session: "session-001"
+
+  - ts: "2026-01-18T10:32:01Z"
+    event: wave_started
+    wave: 1
+
+  - ts: "2026-01-18T10:32:02Z"
+    event: task_started
+    task: "auth-schema"
+    wave: 1
+    attempt: 1
+
+  - ts: "2026-01-18T10:35:00Z"
+    event: task_completed
+    task: "auth-schema"
+    wave: 1
+    duration_s: 179
+    outputs:
+      - "prisma/schema.prisma"
+
+  - ts: "2026-01-18T10:35:01Z"
+    event: artifact_produced
+    task: "auth-schema"
+    path: "prisma/schema.prisma"
+    checksum: "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+
+  - ts: "2026-01-18T10:35:02Z"
+    event: checkpoint_started
+    wave: 1
+
+  - ts: "2026-01-18T10:35:03Z"
+    event: checkpoint_completed
+    wave: 1
+
+  - ts: "2026-01-18T10:35:04Z"
+    event: wave_completed
+    wave: 1
+    duration_s: 182
+
+  - ts: "2026-01-18T10:40:00Z"
+    event: task_failed
+    task: "user-repository"
+    wave: 2
+    attempt: 1
+    error: "Type mismatch in User model"
+    reason: "Compilation failed"
+
+  - ts: "2026-01-18T10:40:01Z"
+    event: task_retry
+    task: "user-repository"
+    wave: 2
+    attempt: 2
