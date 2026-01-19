@@ -100,12 +100,12 @@ Plans:
   3. Each task runs in fresh subagent context with only declared inputs loaded
   4. Ralph-style execution mode repeats tasks until verification passes (configurable max iterations)
   5. Event logging captures task_started, task_completed, wave_started, wave_completed in JSONL format
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: TBD (orchestrator subagent)
-- [ ] 05-02: TBD (task executor with fresh context)
-- [ ] 05-03: TBD (execute commands and hooks)
+- [ ] 05-01-PLAN.md — Create ptf-executor subagent (fresh context, Ralph-style iteration)
+- [ ] 05-02-PLAN.md — Create ptf-orchestrator subagent (wave coordination, parallel dispatch)
+- [ ] 05-03-PLAN.md — Create execute commands and hook infrastructure
 
 ### Phase 6: Verification
 **Goal**: Independently verify task outputs with multi-modal strategies
@@ -171,7 +171,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 2. Decomposition | 4/4 | Complete | 2026-01-18 |
 | 3. Dependency Analysis | 3/3 | Complete | 2026-01-18 |
 | 4. State Management | 3/3 | Complete | 2026-01-19 |
-| 5. Execution Engine | 0/TBD | Not started | - |
+| 5. Execution Engine | 0/3 | Planned | - |
 | 6. Verification | 0/TBD | Not started | - |
 | 7. Failure Handling | 0/TBD | Not started | - |
 | 8. Domain Adapters | 0/TBD | Not started | - |
@@ -212,4 +212,5 @@ Note: The count discrepancy suggests CMD-* requirements duplicate functionality 
 *Phase 2 planned: 2026-01-18*
 *Phase 3 planned: 2026-01-18*
 *Phase 4 planned: 2026-01-18*
+*Phase 5 planned: 2026-01-19*
 *Depth: comprehensive (8 phases)*
