@@ -50,18 +50,18 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Execution
 
-- [ ] **EXEC-01**: `/ptf:execute [wave]` command executes single wave or next pending wave
-- [ ] **EXEC-02**: `/ptf:execute-all` command executes all waves with parallel dispatch
-- [ ] **EXEC-03**: Wave-based parallel execution (all tasks in wave execute simultaneously)
-- [ ] **EXEC-04**: Fresh context dispatch (each task runs in fresh subagent context)
-- [ ] **EXEC-05**: Context loading limited to declared task inputs only
-- [ ] **EXEC-06**: Task executor subagent executes single task with fresh context
-- [ ] **EXEC-07**: Orchestrator subagent coordinates wave-by-wave execution
-- [ ] **EXEC-08**: Ralph-style execution mode (repeat task until verified)
-- [ ] **EXEC-09**: Completion promise pattern (agent must output specific phrase to signal done)
-- [ ] **EXEC-10**: Configurable max iterations per task for Ralph-style execution
-- [ ] **EXEC-11**: JSONL event logging (task_started, task_completed, wave_started, wave_completed)
-- [ ] **EXEC-12**: Respect max_parallel_tasks configuration
+- [x] **EXEC-01**: `/ptf:execute [wave]` command executes single wave or next pending wave
+- [x] **EXEC-02**: `/ptf:execute-all` command executes all waves with parallel dispatch
+- [x] **EXEC-03**: Wave-based parallel execution (all tasks in wave execute simultaneously)
+- [x] **EXEC-04**: Fresh context dispatch (each task runs in fresh subagent context)
+- [x] **EXEC-05**: Context loading limited to declared task inputs only
+- [x] **EXEC-06**: Task executor subagent executes single task with fresh context
+- [x] **EXEC-07**: Orchestrator subagent coordinates wave-by-wave execution
+- [x] **EXEC-08**: Ralph-style execution mode (repeat task until verified)
+- [x] **EXEC-09**: Completion promise pattern (agent must output specific phrase to signal done)
+- [x] **EXEC-10**: Configurable max iterations per task for Ralph-style execution
+- [x] **EXEC-11**: JSONL event logging (task_started, task_completed, wave_started, wave_completed)
+- [x] **EXEC-12**: Respect max_parallel_tasks configuration
 
 ### State
 
@@ -126,8 +126,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **CMD-01**: `/ptf:init [goal]` — initialize project, run goal analysis
 - [ ] **CMD-02**: `/ptf:decompose` — run full 5-step decomposition
 - [x] **CMD-03**: `/ptf:plan` — generate human-readable plan
-- [ ] **CMD-04**: `/ptf:execute [wave]` — execute single wave
-- [ ] **CMD-05**: `/ptf:execute-all` — execute all waves
+- [x] **CMD-04**: `/ptf:execute [wave]` — execute single wave
+- [x] **CMD-05**: `/ptf:execute-all` — execute all waves
 - [ ] **CMD-06**: `/ptf:status` — show execution state
 - [ ] **CMD-07**: `/ptf:resume` — resume from interruption
 - [ ] **CMD-08**: `/ptf:verify [task]` — verify specific task
@@ -136,10 +136,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Hooks
 
-- [ ] **HOOK-01**: post-task-complete hook (log events, update state)
-- [ ] **HOOK-02**: pre-wave-start hook (checkpoint state)
-- [ ] **HOOK-03**: on-failure hook (failure handling trigger)
-- [ ] **HOOK-04**: on-session-end hook (cleanup, final state save)
+- [x] **HOOK-01**: post-task-complete hook (log events, update state)
+- [x] **HOOK-02**: pre-wave-start hook (checkpoint state)
+- [x] **HOOK-03**: on-failure hook (failure handling trigger)
+- [x] **HOOK-04**: on-session-end hook (cleanup, final state save)
 
 ## v2 Requirements
 
@@ -246,24 +246,24 @@ Phase assignments for all v1 requirements.
 ### Phase 5: Execution Engine
 | Requirement | Description | Status |
 |-------------|-------------|--------|
-| EXEC-01 | /ptf:execute [wave] command | Pending |
-| EXEC-02 | /ptf:execute-all command | Pending |
-| EXEC-03 | Wave-based parallel execution | Pending |
-| EXEC-04 | Fresh context dispatch | Pending |
-| EXEC-05 | Context loading from declared inputs | Pending |
-| EXEC-06 | Task executor subagent | Pending |
-| EXEC-07 | Orchestrator subagent | Pending |
-| EXEC-08 | Ralph-style execution mode | Pending |
-| EXEC-09 | Completion promise pattern | Pending |
-| EXEC-10 | Configurable max iterations | Pending |
-| EXEC-11 | JSONL event logging | Pending |
-| EXEC-12 | max_parallel_tasks config | Pending |
-| CMD-04 | /ptf:execute command interface | Pending |
-| CMD-05 | /ptf:execute-all command interface | Pending |
-| HOOK-01 | post-task-complete hook | Pending |
-| HOOK-02 | pre-wave-start hook | Pending |
-| HOOK-03 | on-failure hook | Pending |
-| HOOK-04 | on-session-end hook | Pending |
+| EXEC-01 | /ptf:execute [wave] command | Complete |
+| EXEC-02 | /ptf:execute-all command | Complete |
+| EXEC-03 | Wave-based parallel execution | Complete |
+| EXEC-04 | Fresh context dispatch | Complete |
+| EXEC-05 | Context loading from declared inputs | Complete |
+| EXEC-06 | Task executor subagent | Complete |
+| EXEC-07 | Orchestrator subagent | Complete |
+| EXEC-08 | Ralph-style execution mode | Complete |
+| EXEC-09 | Completion promise pattern | Complete |
+| EXEC-10 | Configurable max iterations | Complete |
+| EXEC-11 | JSONL event logging | Complete |
+| EXEC-12 | max_parallel_tasks config | Complete |
+| CMD-04 | /ptf:execute command interface | Complete |
+| CMD-05 | /ptf:execute-all command interface | Complete |
+| HOOK-01 | post-task-complete hook | Complete |
+| HOOK-02 | pre-wave-start hook | Complete |
+| HOOK-03 | on-failure hook | Complete |
+| HOOK-04 | on-session-end hook | Complete |
 
 ### Phase 6: Verification
 | Requirement | Description | Status |

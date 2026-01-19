@@ -14,7 +14,7 @@ PTF transforms complex goals into atomic tasks with dependency-aware parallel ex
 - [x] **Phase 2: Decomposition** - Goal analysis, recursive task breakdown, validation
 - [x] **Phase 3: Dependency Analysis** - Multi-pass inference, cycle detection, wave computation
 - [x] **Phase 4: State Management** - File-based persistence, checkpoints, resume capability
-- [ ] **Phase 5: Execution Engine** - Wave-based parallel execution, fresh context dispatch
+- [x] **Phase 5: Execution Engine** - Wave-based parallel execution, fresh context dispatch
 - [ ] **Phase 6: Verification** - Multi-modal verification, independent verifier subagent
 - [ ] **Phase 7: Failure Handling** - Retry strategies, cascade handling, recovery commands
 - [ ] **Phase 8: Domain Adapters** - Software/research adapters, templates, documentation
@@ -103,9 +103,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Create ptf-executor subagent (fresh context, Ralph-style iteration)
-- [ ] 05-02-PLAN.md — Create ptf-orchestrator subagent (wave coordination, parallel dispatch)
-- [ ] 05-03-PLAN.md — Create execute commands and hook infrastructure
+- [x] 05-01-PLAN.md — Create ptf-executor subagent (fresh context, Ralph-style iteration)
+- [x] 05-02-PLAN.md — Create ptf-orchestrator subagent (wave coordination, parallel dispatch)
+- [x] 05-03-PLAN.md — Create execute commands and hook infrastructure
 
 ### Phase 6: Verification
 **Goal**: Independently verify task outputs with multi-modal strategies
@@ -171,7 +171,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 2. Decomposition | 4/4 | Complete | 2026-01-18 |
 | 3. Dependency Analysis | 3/3 | Complete | 2026-01-18 |
 | 4. State Management | 3/3 | Complete | 2026-01-19 |
-| 5. Execution Engine | 0/3 | Planned | - |
+| 5. Execution Engine | 3/3 | Complete | 2026-01-19 |
 | 6. Verification | 0/TBD | Not started | - |
 | 7. Failure Handling | 0/TBD | Not started | - |
 | 8. Domain Adapters | 0/TBD | Not started | - |
