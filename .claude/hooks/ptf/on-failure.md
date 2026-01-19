@@ -3,6 +3,8 @@ name: on-failure
 description: Hook fired when a task fails after all retries exhausted
 trigger: task_failure_exhausted
 hook_id: HOOK-03
+# NOTE: This file is a design specification, not executable code.
+# Actual behavior is implemented by ptf-orchestrator and ptf-state-manager.
 ---
 
 <when>

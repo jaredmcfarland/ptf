@@ -3,6 +3,8 @@ name: post-task-complete
 description: Hook fired after each task completes (success or failure)
 trigger: task_completion
 hook_id: HOOK-01
+# NOTE: This file is a design specification, not executable code.
+# Actual behavior is implemented by ptf-orchestrator and ptf-state-manager.
 ---
 
 <when>

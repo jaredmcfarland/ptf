@@ -3,6 +3,8 @@ name: pre-wave-start
 description: Hook fired before first task in a wave is dispatched
 trigger: wave_start
 hook_id: HOOK-02
+# NOTE: This file is a design specification, not executable code.
+# Actual behavior is implemented by ptf-orchestrator and ptf-state-manager.
 ---
 
 <when>

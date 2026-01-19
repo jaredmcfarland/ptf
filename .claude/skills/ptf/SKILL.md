@@ -206,6 +206,8 @@ PTF stores runtime state in `.orchestrator/`:
 | `ptf-state-manager` | Checkpoint operations, event logging, artifact tracking |
 | `ptf-orchestrator` | Coordinate wave-by-wave execution, dispatch subagents |
 
+**Agent Dispatch**: PTF uses Claude Code's `Task` tool with `subagent_type` parameter to spawn specialized agents. Agent definitions live in `.claude/agents/ptf-*.md`. Example: `Task(prompt="...", subagent_type="ptf-executor")` loads the ptf-executor agent with its configured role and tools.
+
 ## Dependency Analysis
 
 PTF automatically infers task dependencies through multi-pass analysis:
@@ -375,6 +377,19 @@ inference_hints: [{pattern: "import.*from", implies: "..."}]
 | `/ptf:plan` | Uses dependency patterns for inference |
 | `/ptf:verify` | Applies verification_strategies |
 | Constitution | Generated from template during init |
+
+## Hooks
+
+PTF defines 4 lifecycle hooks that fire during execution:
+
+| Hook | When | Actions |
+|------|------|---------|
+| `pre-wave-start` | Before first task in wave | checkpoint_state, validate_dependencies |
+| `post-task-complete` | After each task | log_event, update_state, register_artifacts |
+| `on-failure` | When task fails | log_failure, check_cascade_policy |
+| `on-session-end` | Execution ends | final_checkpoint, cleanup |
+
+**Important**: Hook `.md` files in `.claude/hooks/ptf/` are **design specifications**, not executable code. They document the behavior that `ptf-orchestrator` and `ptf-state-manager` implement. Editing hook files does not change runtime behavior — modify the agent files instead.
 
 ## Key Terms
 

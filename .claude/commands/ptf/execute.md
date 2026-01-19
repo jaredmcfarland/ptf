@@ -55,7 +55,9 @@ if [ ! -f .orchestrator/decomposition/graph.yaml ]; then
 fi
 
 if [ ! -f .orchestrator/state/execution.yaml ]; then
-  echo "ERROR: Execution not initialized. Run /ptf:init or initialize state first."
+  echo "ERROR: Execution state not initialized."
+  echo "→ Run /ptf:plan to generate plan and initialize execution state."
+  echo "  (If you already have graph.yaml, re-running /ptf:plan will create execution.yaml)"
   exit 1
 fi
 ```
@@ -337,7 +339,7 @@ ERROR: graph.yaml not found
 → Run /ptf:plan to generate execution plan first.
 
 ERROR: execution.yaml not found
-→ Run /ptf:init to initialize project, or initialize execution state.
+→ Run /ptf:plan to generate plan and initialize execution state.
 ```
 
 ### Wave not ready

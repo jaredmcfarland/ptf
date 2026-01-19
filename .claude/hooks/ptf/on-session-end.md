@@ -3,6 +3,8 @@ name: on-session-end
 description: Hook fired when execution ends (complete, abort, or interrupt)
 trigger: session_end
 hook_id: HOOK-04
+# NOTE: This file is a design specification, not executable code.
+# Actual behavior is implemented by ptf-orchestrator and ptf-state-manager.
 ---
 
 <when>
