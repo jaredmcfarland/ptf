@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Fresh context execution for every task — context windows are the scarce resource in AI computation
-**Current focus:** Phase 8 in progress - Domain Adapters (2/3 plans complete)
+**Current focus:** Phase 8 complete - Domain Adapters (3/3 plans complete)
 
 ## Current Position
 
 Phase: 8 of 8 (Domain Adapters)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-01-18 — Completed 08-02-PLAN.md (Adapter Documentation)
+Plan: 3 of 3 in current phase
+Status: COMPLETE
+Last activity: 2026-01-18 — Completed 08-03-PLAN.md (Domain Demo Examples)
 
-Progress: [███████████████████████░] ~92%
+Progress: [████████████████████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
-- Average duration: 2m 26s
-- Total execution time: ~57 min
+- Total plans completed: 24
+- Average duration: 2m 24s
+- Total execution time: ~59 min
 
 **By Phase:**
 
@@ -34,11 +34,11 @@ Progress: [███████████████████████
 | 05-execution-engine | 3 | 11m 9s | 3m 43s |
 | 06-verification | 2 | 5m 9s | 2m 35s |
 | 07-failure-handling | 3 | 7m 17s | 2m 26s |
-| 08-domain-adapters | 2 | 5m 28s | 2m 44s |
+| 08-domain-adapters | 3 | 7m 28s | 2m 29s |
 
 **Recent Trend:**
-- Last 5 plans: 07-01 (3m), 07-02 (1m 34s), 07-03 (2m 43s), 08-01 (1m 28s), 08-02 (4m)
-- Trend: Documentation plans take slightly longer due to content condensation
+- Last 5 plans: 07-02 (1m 34s), 07-03 (2m 43s), 08-01 (1m 28s), 08-02 (4m), 08-03 (2m)
+- Trend: Consistent execution, documentation plans take slightly longer
 
 *Updated after each plan completion*
 
@@ -120,6 +120,10 @@ Recent decisions affecting current work:
 - [08-01]: 7 reusable definitions in adapter schema (InitQuestion, SubgoalHeuristic, etc.)
 - [08-02]: Condensed YAML examples to keep SKILL.md under 400 lines (391 actual)
 - [08-02]: Section overview tables for adapter sections and integration points
+- [08-03]: Auth API for software demo (realistic, matches research phase examples)
+- [08-03]: Tech debt literature review for research demo (practical research question)
+- [08-03]: Complete .orchestrator state rather than partial (shows real post-init structure)
+- [08-03]: Side-by-side comparison tables in README and demos for quick domain understanding
 
 ### Pending Todos
 
@@ -132,8 +136,8 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: Completed 08-02-PLAN.md (Adapter Documentation)
+Stopped at: Completed 08-03-PLAN.md (Domain Demo Examples) - PROJECT COMPLETE
 Resume file: None
 
 ---
-*Next action: Execute 08-03-PLAN.md*
+*All 24 plans across 8 phases complete. PTF v1 specification documented.*
