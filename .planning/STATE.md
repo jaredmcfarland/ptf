@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Fresh context execution for every task — context windows are the scarce resource in AI computation
-**Current focus:** Phase 5 in progress - Execution Engine (2/3 plans complete)
+**Current focus:** Phase 5 complete - Execution Engine (3/3 plans complete)
 
 ## Current Position
 
 Phase: 5 of 8 (Execution Engine)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-01-19 — Completed 05-02-PLAN.md (Wave Orchestrator)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-01-19 — Completed 05-03-PLAN.md (Execution Commands)
 
-Progress: [██████████░░] ~60%
+Progress: [████████████░░] ~65%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: 2m 15s
-- Total execution time: ~34 min
+- Total plans completed: 16
+- Average duration: 2m 24s
+- Total execution time: ~38 min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Progress: [██████████░░] ~60%
 | 02-decomposition | 4 | 9m 12s | 2m 18s |
 | 03-dependency-analysis | 3 | 6m 40s | 2m 13s |
 | 04-state-management | 3 | 7m 1s | 2m 20s |
-| 05-execution-engine | 2 | 6m 28s | 3m 14s |
+| 05-execution-engine | 3 | 11m 9s | 3m 43s |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (1m 31s), 04-02 (2m 37s), 04-03 (2m 53s), 05-01 (3m 28s), 05-02 (3m)
-- Trend: Stable
+- Last 5 plans: 04-02 (2m 37s), 04-03 (2m 53s), 05-01 (3m 28s), 05-02 (3m), 05-03 (4m 41s)
+- Trend: Slight increase (more complex integration plans)
 
 *Updated after each plan completion*
 
@@ -89,6 +89,9 @@ Recent decisions affecting current work:
 - [05-02]: Batched dispatch for max_parallel_tasks (chunk tasks, execute batch, wait, next batch)
 - [05-02]: State manager handles ALL persistence (orchestrator never writes state directly)
 - [05-02]: Wave dependencies validated before dispatch
+- [05-03]: Single-wave mode for /ptf:execute, full-plan mode for /ptf:execute-all
+- [05-03]: Hooks as documentation files (orchestrator executes via state manager)
+- [05-03]: Hook IDs (HOOK-01 through HOOK-04) for traceability
 
 ### Pending Todos
 
@@ -100,9 +103,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-19 00:42 UTC
-Stopped at: Completed 05-02-PLAN.md (Wave Orchestrator)
+Last session: 2026-01-19 00:49 UTC
+Stopped at: Completed 05-03-PLAN.md (Execution Commands) - Phase 5 complete
 Resume file: None
 
 ---
-*Next action: Execute 05-03-PLAN.md (Execution Commands)*
+*Next action: Execute Phase 6 plans (Verification)*
