@@ -17,7 +17,7 @@ PTF transforms complex goals into atomic tasks with dependency-aware parallel ex
 - [x] **Phase 5: Execution Engine** - Wave-based parallel execution, fresh context dispatch
 - [x] **Phase 6: Verification** - Multi-modal verification, independent verifier subagent
 - [x] **Phase 7: Failure Handling** - Retry strategies, cascade handling, recovery commands
-- [ ] **Phase 8: Domain Adapters** - Software/research adapters, templates, documentation
+- [ ] **Phase 8: Domain Adapters** - Formal schema, documentation, example projects
 
 ## Phase Details
 
@@ -141,7 +141,7 @@ Plans:
 - [x] 07-03-PLAN.md — Update on-failure hook, SKILL.md, and config with failure handling
 
 ### Phase 8: Domain Adapters
-**Goal**: Prove framework generalization with software and research domain adapters
+**Goal**: Complete adapter system with formal schema, documentation, and example projects
 **Depends on**: Phases 1-7 (requires stable core framework)
 **Requirements**: ADAPT-01, ADAPT-02, ADAPT-03, ADAPT-04, ADAPT-05, ADAPT-06, ADAPT-07, ADAPT-08, ADAPT-09, ADAPT-10, ADAPT-11, ADAPT-12, ADAPT-13, ADAPT-14, ADAPT-15, ADAPT-16
 **Success Criteria** (what must be TRUE):
@@ -150,13 +150,12 @@ Plans:
   3. Template adapter enables users to create custom domain adapters
   4. Adapters integrate with all framework phases (decomposition, verification, dependencies)
   5. Example projects demonstrate both software and research domains end-to-end
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 08-01: TBD (adapter interface and loading)
-- [ ] 08-02: TBD (software development adapter)
-- [ ] 08-03: TBD (research adapter)
-- [ ] 08-04: TBD (template adapter and documentation)
+- [ ] 08-01-PLAN.md — Create formal adapter schema (schemas/adapter.schema.yaml)
+- [ ] 08-02-PLAN.md — Expand SKILL.md with comprehensive adapter documentation
+- [ ] 08-03-PLAN.md — Create software-demo and research-demo example projects
 
 ## Progress
 
@@ -173,7 +172,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 5. Execution Engine | 3/3 | Complete | 2026-01-19 |
 | 6. Verification | 2/2 | Complete | 2026-01-18 |
 | 7. Failure Handling | 3/3 | Complete | 2026-01-18 |
-| 8. Domain Adapters | 0/TBD | Not started | - |
+| 8. Domain Adapters | 0/3 | Planned | - |
 
 ## Requirement Coverage
 
@@ -214,4 +213,5 @@ Note: The count discrepancy suggests CMD-* requirements duplicate functionality 
 *Phase 5 planned: 2026-01-19*
 *Phase 6 planned: 2026-01-19*
 *Phase 7 planned: 2026-01-18*
+*Phase 8 planned: 2026-01-18*
 *Depth: comprehensive (8 phases)*
