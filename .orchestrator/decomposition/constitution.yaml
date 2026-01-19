@@ -1,56 +1,50 @@
 # Project Constitution
 # These principles are IMMUTABLE for this project
 
-generated: 2026-01-18T23:20:00Z
-domain: research
+generated: 2026-01-19T00:00:00Z
+domain: mixpanel-analytics
 
 principles: |
-  # Ralph Wiggum Loop Research Constitution
+  # Purchase Spike Investigation Constitution
 
-  These principles are IMMUTABLE for this research project.
-  Violating them compromises research integrity.
+  These principles are IMMUTABLE for this analytics project.
+  Violating them compromises analysis integrity.
 
   ## Core Principles
 
   1. **Artifact Integrity**: Every task produces exactly the artifacts declared
-     in its outputs. No undeclared findings or summaries.
+     in its outputs. No undeclared data files or reports.
 
-  2. **Dependency Honesty**: All source dependencies are declared in inputs.
-     Hidden dependencies make findings unverifiable.
+  2. **Dependency Honesty**: All data dependencies are declared in inputs.
+     Hidden dependencies make results unreproducible.
 
   3. **Fresh Context**: Every task must be completable by an agent starting
      with empty context, loading only declared inputs.
 
-  4. **Verification**: Every finding has a concrete verification step.
-     "Seems reasonable" is not verification.
+  4. **Verification**: Every output has a concrete verification step.
+     "Looks reasonable" is not verification.
 
-  ## Domain Principles (Research)
+  ## Domain Principles (Mixpanel Analytics)
 
-  5. **Source Integrity**: Always cite sources. Every claim traces to evidence.
-     No unsourced assertions.
+  5. **Data Integrity**: Query results must be reproducible with same parameters.
+     Include date ranges, filters, and query parameters in task definition.
 
-  6. **Claim-Evidence Binding**: Every claim in a finding must reference
-     the specific evidence supporting it.
-
-  7. **Methodology Consistency**: Apply the same evaluation criteria
-     across all sources within a task.
-
-  8. **Bias Awareness**: Document potential biases in sources and
-     limitations in findings.
+  6. **Source Attribution**: All metrics must trace back to specific events
+     and properties. Document which Mixpanel events power each insight.
 
   ## Project-Specific Constraints
 
-  9. **Mixed Methods Rigor**: Literature review findings must be verified
-     through empirical testing where possible.
+  7. **Date Precision**: All queries must explicitly specify November 2021 date
+     ranges. Never use relative dates that could shift meaning.
 
-  10. **Comparative Context**: Techniques must be compared against at least
-      two other self-referential patterns to establish relative positioning.
+  8. **Baseline Comparison**: Every spike metric must include baseline comparison.
+     Raw numbers without context do not prove causation.
 
-  11. **Attribution**: All content from Geoff Huntley's work must be
-      properly attributed to the original source.
+  9. **Evidence Chain**: Root cause claims must link specific data points to
+     the spike. Correlation observations require explicit caveats.
 
-  12. **Practical Focus**: Emphasis on "how it works" over theoretical
-      abstraction - findings should be implementable.
+  10. **Live Query Focus**: Use Mixpanel API directly via mp CLI.
+      Prioritize real-time querying over data extraction workflows.
 
 enforcement:
   - Every task must be validated against these principles

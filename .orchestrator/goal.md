@@ -1,5 +1,5 @@
 ---
-received: 2026-01-18T23:20:00Z
+received: 2026-01-19T00:00:00Z
 ---
 
-Research the Ralph Wiggum Loop technique for self-referential prompting AI agents, created by Geoff Huntley.
+There was a massive spike in purchases on November 6th and 7th, 2021. Let's find out what happened.

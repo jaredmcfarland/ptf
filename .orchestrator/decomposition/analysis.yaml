@@ -1,40 +1,42 @@
 step: 1-goal-analysis
-created: 2026-01-18T23:20:00Z
+created: 2026-01-19T00:00:00Z
 status: complete
 
 objective: |
-  Understand how the Ralph Wiggum Loop technique works for self-referential
-  prompting in AI agents, including its mechanism, implementation patterns,
-  and comparison with similar self-referential techniques in the field.
+  Identify the root cause of the massive purchase spike that occurred on
+  November 6th and 7th, 2021. Determine what triggered the anomalous behavior
+  by analyzing Mixpanel event data around these dates.
 
 scope:
   included:
-    - Ralph Wiggum Loop mechanism and implementation
-    - Geoff Huntley's original work and documentation
-    - Community implementations and derivative works
-    - Comparison with other self-referential prompting patterns
-    - Practical experimentation with the technique
+    - Purchase event analysis for Nov 6-7, 2021
+    - Comparison with baseline periods (before/after spike)
+    - User acquisition source analysis
+    - Marketing campaign/promotion correlation
+    - Feature release correlation
+    - External event correlation (if discoverable)
   excluded:
-    - Unrelated AI prompting techniques
-    - Non-self-referential agent patterns
-    - Production deployment considerations
+    - Long-term trend analysis beyond spike context
+    - Revenue forecasting
+    - User retention analysis (unless directly relevant)
+    - Data export for external BI tools
 
 constraints:
-  - Mixed methods: combine literature review with empirical testing
-  - Focus on how the technique works (mechanism over theory)
-  - Compare with broader self-referential patterns for context
+  - Use live Mixpanel API queries via mp CLI
+  - Focus date range: November 1-14, 2021 (context window around spike)
+  - Output format: Written Markdown analysis
+  - Single project scope (default Mixpanel project)
 
 success_criteria:
-  - Document the core mechanism of Ralph Wiggum Loop
-  - Identify key implementation patterns and examples
-  - Compare with at least 2 other self-referential techniques
-  - Create working demonstration of the technique
-  - Synthesize findings into actionable understanding
+  - Identify the primary driver(s) of the purchase spike
+  - Quantify the spike magnitude vs baseline
+  - Provide evidence trail linking cause to effect
+  - Document methodology for reproducibility
 
-domain: research
+domain: mixpanel-analytics
 
 clarification_summary:
-  research_question: "How does the Ralph Wiggum Loop technique work?"
-  prior_knowledge: "Some familiarity with the topic"
-  methodology: "Mixed methods - literature review and empirical analysis"
-  scope_bounds: "Broader self-referential patterns for comparison"
+  analysis_goal: Root cause identification
+  output_format: Written analysis (Markdown)
+  tooling: Live Mixpanel API
+  date_range: November 6-7, 2021 (with context window)
