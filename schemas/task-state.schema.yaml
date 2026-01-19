@@ -55,10 +55,23 @@ properties:
     type: array
     items:
       type: string
-    description: Task IDs this task is waiting for
+    description: Task IDs that blocked this task (for cascade failures)
   error:
     type: string
     description: Error message if status is failed
+  failure_record:
+    type: string
+    description: Path to detailed failure record file (.orchestrator/failures/{task-id}-attempt-{N}.yaml)
+  skipped_reason:
+    type: string
+    description: Reason for skipping if status is skipped
+  skipped_at:
+    type: string
+    format: date-time
+    description: Timestamp when task was skipped
+  backoff:
+    $ref: "#/definitions/BackoffState"
+    description: Retry backoff state for failed tasks
 
 definitions:
   Attempt:
@@ -145,3 +158,20 @@ definitions:
       message:
         type: string
         description: Human-readable result message
+
+  BackoffState:
+    type: object
+    description: Retry backoff tracking for failed tasks
+    properties:
+      attempts_remaining:
+        type: integer
+        minimum: 0
+        description: Number of retry attempts remaining
+      next_retry_at:
+        type: string
+        format: date-time
+        description: Earliest timestamp for next retry attempt
+      last_backoff_seconds:
+        type: integer
+        minimum: 0
+        description: Delay used for current backoff period

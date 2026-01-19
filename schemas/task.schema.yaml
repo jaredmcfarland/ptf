@@ -129,10 +129,40 @@ definitions:
           - retry
           - skip
           - escalate
+          - replan
         default: retry
         description: How to handle task failure
       max_attempts:
         type: integer
         minimum: 1
         default: 3
-        description: Maximum retry attempts before escalation
+        description: Maximum retry attempts before fallback
+      backoff_type:
+        type: string
+        enum:
+          - none
+          - linear
+          - exponential
+        default: exponential
+        description: Delay strategy between retry attempts
+      backoff_base_seconds:
+        type: integer
+        minimum: 0
+        default: 2
+        description: Base delay in seconds (actual delay depends on backoff_type)
+      backoff_max_seconds:
+        type: integer
+        minimum: 0
+        default: 60
+        description: Maximum delay cap for exponential backoff
+      propagate_failure:
+        type: boolean
+        default: true
+        description: Whether to block dependent tasks on failure
+      final_fallback:
+        type: string
+        enum:
+          - escalate
+          - skip
+        default: escalate
+        description: Action when max_attempts exhausted
