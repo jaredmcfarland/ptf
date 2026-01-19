@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Fresh context execution for every task — context windows are the scarce resource in AI computation
-**Current focus:** Phase 7 complete - Failure Handling (3/3 plans complete)
+**Current focus:** Phase 8 in progress - Domain Adapters (1/3 plans complete)
 
 ## Current Position
 
-Phase: 7 of 8 (Failure Handling)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-01-18 — Completed 07-03-PLAN.md (Auto-Recovery Integration)
+Phase: 8 of 8 (Domain Adapters)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 08-01-PLAN.md (Adapter Schema)
 
-Progress: [████████████████████░] ~83%
+Progress: [██████████████████████░] ~88%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21
-- Average duration: 2m 26s
-- Total execution time: ~52 min
+- Total plans completed: 22
+- Average duration: 2m 24s
+- Total execution time: ~53 min
 
 **By Phase:**
 
@@ -34,10 +34,11 @@ Progress: [████████████████████░] ~83%
 | 05-execution-engine | 3 | 11m 9s | 3m 43s |
 | 06-verification | 2 | 5m 9s | 2m 35s |
 | 07-failure-handling | 3 | 7m 17s | 2m 26s |
+| 08-domain-adapters | 1 | 1m 28s | 1m 28s |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (2m 32s), 06-02 (2m 37s), 07-01 (3m), 07-02 (1m 34s), 07-03 (2m 43s)
-- Trend: Consistent execution times for documentation-focused plans
+- Last 5 plans: 06-02 (2m 37s), 07-01 (3m), 07-02 (1m 34s), 07-03 (2m 43s), 08-01 (1m 28s)
+- Trend: Fast execution for schema-focused plans
 
 *Updated after each plan completion*
 
@@ -113,6 +114,10 @@ Recent decisions affecting current work:
 - [07-03]: Hooks document behavior, orchestrator executes via state manager
 - [07-03]: Failure records include full debugging context (inputs, outputs, timing)
 - [07-03]: Configuration precedence: task-level > config defaults > hardcoded defaults
+- [08-01]: JSON Schema Draft 7 for adapter validation (consistent with existing schemas)
+- [08-01]: yaml-language-server directive for IDE integration
+- [08-01]: additionalProperties: false for strict validation
+- [08-01]: 7 reusable definitions in adapter schema (InitQuestion, SubgoalHeuristic, etc.)
 
 ### Pending Todos
 
@@ -124,9 +129,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-18
-Stopped at: Completed 07-03-PLAN.md (Auto-Recovery Integration)
+Last session: 2026-01-19
+Stopped at: Completed 08-01-PLAN.md (Adapter Schema)
 Resume file: None
 
 ---
-*Next action: Begin Phase 8 (Completion) planning*
+*Next action: Execute 08-02-PLAN.md (Custom Adapter Guide)*
