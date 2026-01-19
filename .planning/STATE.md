@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Fresh context execution for every task — context windows are the scarce resource in AI computation
-**Current focus:** Phase 8 in progress - Domain Adapters (1/3 plans complete)
+**Current focus:** Phase 8 in progress - Domain Adapters (2/3 plans complete)
 
 ## Current Position
 
 Phase: 8 of 8 (Domain Adapters)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 08-01-PLAN.md (Adapter Schema)
+Last activity: 2026-01-18 — Completed 08-02-PLAN.md (Adapter Documentation)
 
-Progress: [██████████████████████░] ~88%
+Progress: [███████████████████████░] ~92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
-- Average duration: 2m 24s
-- Total execution time: ~53 min
+- Total plans completed: 23
+- Average duration: 2m 26s
+- Total execution time: ~57 min
 
 **By Phase:**
 
@@ -34,11 +34,11 @@ Progress: [██████████████████████░
 | 05-execution-engine | 3 | 11m 9s | 3m 43s |
 | 06-verification | 2 | 5m 9s | 2m 35s |
 | 07-failure-handling | 3 | 7m 17s | 2m 26s |
-| 08-domain-adapters | 1 | 1m 28s | 1m 28s |
+| 08-domain-adapters | 2 | 5m 28s | 2m 44s |
 
 **Recent Trend:**
-- Last 5 plans: 06-02 (2m 37s), 07-01 (3m), 07-02 (1m 34s), 07-03 (2m 43s), 08-01 (1m 28s)
-- Trend: Fast execution for schema-focused plans
+- Last 5 plans: 07-01 (3m), 07-02 (1m 34s), 07-03 (2m 43s), 08-01 (1m 28s), 08-02 (4m)
+- Trend: Documentation plans take slightly longer due to content condensation
 
 *Updated after each plan completion*
 
@@ -118,6 +118,8 @@ Recent decisions affecting current work:
 - [08-01]: yaml-language-server directive for IDE integration
 - [08-01]: additionalProperties: false for strict validation
 - [08-01]: 7 reusable definitions in adapter schema (InitQuestion, SubgoalHeuristic, etc.)
+- [08-02]: Condensed YAML examples to keep SKILL.md under 400 lines (391 actual)
+- [08-02]: Section overview tables for adapter sections and integration points
 
 ### Pending Todos
 
@@ -129,9 +131,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-19
-Stopped at: Completed 08-01-PLAN.md (Adapter Schema)
+Last session: 2026-01-18
+Stopped at: Completed 08-02-PLAN.md (Adapter Documentation)
 Resume file: None
 
 ---
-*Next action: Execute 08-02-PLAN.md (Custom Adapter Guide)*
+*Next action: Execute 08-03-PLAN.md*
