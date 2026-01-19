@@ -1,0 +1,100 @@
+# PTF Configuration Example
+# Copy to .orchestrator/config.yaml and customize
+
+# Domain adapter for goal analysis and decomposition
+# Options: software-development, research
+# See adapters/ directory for available adapters
+domain: software-development
+
+# Execution settings
+execution:
+  # Execution mode for tasks
+  # ralph: Repeat task until verification passes (default)
+  # single-shot: Run task once, fail if verification fails
+  default_mode: ralph
+
+  # Maximum concurrent tasks per wave
+  # Tasks are batched if wave has more than this many
+  # Higher values = faster execution but more resource usage
+  max_parallel_tasks: 5
+
+  ralph:
+    # Default max iterations for Ralph-style execution
+    # Task fails after this many attempts without success
+    max_iterations: 10
+
+    # Phrase that signals task completion
+    # Executor must output this exact phrase when verified
+    completion_promise: "VERIFICATION PASSED"
+
+    # Phrase prefix that signals task is blocked
+    # Executor outputs this with reason when cannot proceed
+    blocked_phrase: "BLOCKED:"
+
+    # Delay between iterations (seconds, 0 for immediate)
+    # Use for rate-limited APIs or resource contention
+    iteration_delay: 0
+
+  single_shot:
+    # Whether to retry failed tasks in single-shot mode
+    # If false, task failure immediately fails the task
+    retry_on_failure: false
+
+# Checkpoint configuration
+checkpoints:
+  # Enable automatic checkpointing
+  # If disabled, state is only written at session end
+  enabled: true
+
+  # Always checkpoint at wave boundaries
+  # Strongly recommended - enables reliable resume
+  at_wave_boundary: true
+
+  # Optional: checkpoint after each task (more granular but slower)
+  # Useful for long-running tasks where wave checkpoints are too coarse
+  on_task_complete: false
+
+# Hook configuration
+# Hooks run at defined points in execution lifecycle
+hooks:
+  # Enable hook execution
+  enabled: true
+
+  # Hooks run at different lifecycle points
+  # Each hook is a list of actions to execute
+
+  # HOOK-02: Before first task in wave dispatched
+  pre_wave_start:
+    - checkpoint_state
+
+  # HOOK-01: After task executor returns
+  post_task_complete:
+    - log_event
+    - update_state
+
+  # HOOK-03: When task fails after retries
+  on_failure:
+    - log_failure
+    - check_retry
+
+  # HOOK-04: Execution ends (complete/abort/interrupt)
+  on_session_end:
+    - final_checkpoint
+
+# Failure handling configuration (Phase 7)
+# Controls how failed tasks affect execution
+failure:
+  # Default strategy for failed tasks
+  # Options: retry, skip, escalate, replan
+  default_strategy: retry
+
+  # Maximum retry attempts per task
+  # After exhausting retries, failure.default_strategy applies
+  max_retries: 3
+
+  # How failures cascade to dependent tasks
+  # Options:
+  #   block_dependents: Mark tasks depending on failed task as blocked
+  #   skip_dependents: Skip dependent tasks but continue execution
+  #   fail_fast: Stop execution immediately on any failure
+  cascade_policy: block_dependents
