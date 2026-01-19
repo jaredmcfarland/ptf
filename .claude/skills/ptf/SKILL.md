@@ -105,6 +105,62 @@ Tasks execute with bounded retries:
 Bounded retry attempts prevent infinite loops. Default: 10 iterations.
 After exhaustion: task escalates to human or marks as blocked.
 
+## Verification Concepts
+
+### Independent Verification
+
+Verification runs in a separate context from execution. The verifier:
+- Does not trust executor claims
+- Loads only task definition and expected outputs
+- Runs all declared verification checks
+- Reports pass/fail with details
+
+Why independent? Executor may hallucinate success. Fresh context prevents bias.
+
+### Verification Types
+
+| Type | What it checks | Example |
+|------|----------------|---------|
+| exists | File exists at path | `[ -f "src/auth.ts" ]` |
+| contains | File contains pattern | `grep -q "export function" file` |
+| runs | Command exits successfully | `npm test -- auth.test.ts` |
+| syntax | File parses correctly | `npx tsc --noEmit file.ts` |
+| custom | User-defined check | Any command returning 0 on success |
+
+### Multi-Modal Verification
+
+Combine checks for comprehensive validation:
+
+```yaml
+verify:
+  - type: exists
+    target: src/auth.ts
+  - type: syntax
+    target: src/auth.ts
+  - type: contains
+    target: src/auth.ts
+    expected: "export function authenticate"
+  - type: runs
+    target: "npm test -- auth"
+```
+
+Execution order: exists -> syntax -> contains -> runs -> custom (fail-fast).
+
+### Verification Results
+
+Results are recorded in task state:
+
+```yaml
+verification:
+  status: passed | failed
+  results:
+    - type: exists
+      passed: true
+      message: "File exists"
+```
+
+Use `/ptf:verify task-id` to run verification manually.
+
 ## File Locations
 
 PTF stores runtime state in `.orchestrator/`:
@@ -146,6 +202,7 @@ PTF stores runtime state in `.orchestrator/`:
 | `ptf-decomposer` | Goal analysis, subgoal identification, recursive task breakdown |
 | `ptf-dependency-analyzer` | Multi-pass dependency inference, cycle detection, wave computation |
 | `ptf-executor` | Execute single task with fresh context, verify outputs |
+| `ptf-verifier` | Independently verify task outputs against criteria |
 | `ptf-state-manager` | Checkpoint operations, event logging, artifact tracking |
 | `ptf-orchestrator` | Coordinate wave-by-wave execution, dispatch subagents |
 
@@ -207,3 +264,6 @@ Adapters customize PTF for specific domains (`adapters/`):
 | Wave | Set of independent tasks that can run in parallel |
 | Artifact | File produced/consumed by tasks, enables dependency inference |
 | Checkpoint | State save at wave boundary for resume capability |
+| Verification | Independent check that task outputs meet declared criteria |
+| Verifier | Subagent that runs verification checks in fresh context |
+| Multi-modal verification | Combining multiple check types (exists + contains + runs) |
