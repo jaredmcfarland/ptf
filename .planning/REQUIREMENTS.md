@@ -78,15 +78,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Verification
 
-- [ ] **VERIFY-01**: Verifier subagent runs verification checks independently
-- [ ] **VERIFY-02**: Verification type: exists (file exists at expected path)
-- [ ] **VERIFY-03**: Verification type: contains (file contains expected content)
-- [ ] **VERIFY-04**: Verification type: runs (command executes with expected exit code)
-- [ ] **VERIFY-05**: Verification type: syntax (file parses without syntax errors)
-- [ ] **VERIFY-06**: Verification type: custom (user-defined verification logic)
-- [ ] **VERIFY-07**: `/ptf:verify [task]` command runs verification for specific task
-- [ ] **VERIFY-08**: Verification results recorded in task state
-- [ ] **VERIFY-09**: Verification failure triggers retry or escalation per policy
+- [x] **VERIFY-01**: Verifier subagent runs verification checks independently
+- [x] **VERIFY-02**: Verification type: exists (file exists at expected path)
+- [x] **VERIFY-03**: Verification type: contains (file contains expected content)
+- [x] **VERIFY-04**: Verification type: runs (command executes with expected exit code)
+- [x] **VERIFY-05**: Verification type: syntax (file parses without syntax errors)
+- [x] **VERIFY-06**: Verification type: custom (user-defined verification logic)
+- [x] **VERIFY-07**: `/ptf:verify [task]` command runs verification for specific task
+- [x] **VERIFY-08**: Verification results recorded in task state
+- [x] **VERIFY-09**: Verification failure triggers retry or escalation per policy
 
 ### Failure Handling
 
@@ -130,7 +130,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **CMD-05**: `/ptf:execute-all` — execute all waves
 - [ ] **CMD-06**: `/ptf:status` — show execution state
 - [ ] **CMD-07**: `/ptf:resume` — resume from interruption
-- [ ] **CMD-08**: `/ptf:verify [task]` — verify specific task
+- [x] **CMD-08**: `/ptf:verify [task]` — verify specific task
 - [ ] **CMD-09**: `/ptf:retry [task]` — retry failed task
 - [ ] **CMD-10**: `/ptf:abort` — stop execution, preserve state
 
@@ -268,16 +268,16 @@ Phase assignments for all v1 requirements.
 ### Phase 6: Verification
 | Requirement | Description | Status |
 |-------------|-------------|--------|
-| VERIFY-01 | Verifier subagent | Pending |
-| VERIFY-02 | Verification: exists | Pending |
-| VERIFY-03 | Verification: contains | Pending |
-| VERIFY-04 | Verification: runs | Pending |
-| VERIFY-05 | Verification: syntax | Pending |
-| VERIFY-06 | Verification: custom | Pending |
-| VERIFY-07 | /ptf:verify [task] command | Pending |
-| VERIFY-08 | Verification results in state | Pending |
-| VERIFY-09 | Verification failure handling | Pending |
-| CMD-08 | /ptf:verify command interface | Pending |
+| VERIFY-01 | Verifier subagent | Complete |
+| VERIFY-02 | Verification: exists | Complete |
+| VERIFY-03 | Verification: contains | Complete |
+| VERIFY-04 | Verification: runs | Complete |
+| VERIFY-05 | Verification: syntax | Complete |
+| VERIFY-06 | Verification: custom | Complete |
+| VERIFY-07 | /ptf:verify [task] command | Complete |
+| VERIFY-08 | Verification results in state | Complete |
+| VERIFY-09 | Verification failure handling | Complete |
+| CMD-08 | /ptf:verify command interface | Complete |
 
 ### Phase 7: Failure Handling
 | Requirement | Description | Status |

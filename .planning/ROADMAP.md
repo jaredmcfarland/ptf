@@ -15,7 +15,7 @@ PTF transforms complex goals into atomic tasks with dependency-aware parallel ex
 - [x] **Phase 3: Dependency Analysis** - Multi-pass inference, cycle detection, wave computation
 - [x] **Phase 4: State Management** - File-based persistence, checkpoints, resume capability
 - [x] **Phase 5: Execution Engine** - Wave-based parallel execution, fresh context dispatch
-- [ ] **Phase 6: Verification** - Multi-modal verification, independent verifier subagent
+- [x] **Phase 6: Verification** - Multi-modal verification, independent verifier subagent
 - [ ] **Phase 7: Failure Handling** - Retry strategies, cascade handling, recovery commands
 - [ ] **Phase 8: Domain Adapters** - Software/research adapters, templates, documentation
 
@@ -120,8 +120,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Create ptf-verifier subagent with 5 verification types
-- [ ] 06-02-PLAN.md — Create /ptf:verify command and state integration
+- [x] 06-01-PLAN.md — Create ptf-verifier subagent with 5 verification types
+- [x] 06-02-PLAN.md — Create /ptf:verify command and state integration
 
 ### Phase 7: Failure Handling
 **Goal**: Handle failures gracefully with retry, escalation, and recovery strategies
@@ -171,7 +171,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 3. Dependency Analysis | 3/3 | Complete | 2026-01-18 |
 | 4. State Management | 3/3 | Complete | 2026-01-19 |
 | 5. Execution Engine | 3/3 | Complete | 2026-01-19 |
-| 6. Verification | 0/2 | Planned | - |
+| 6. Verification | 2/2 | Complete | 2026-01-18 |
 | 7. Failure Handling | 0/TBD | Not started | - |
 | 8. Domain Adapters | 0/TBD | Not started | - |
 
