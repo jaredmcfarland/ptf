@@ -410,6 +410,77 @@ fi
 **Output:** List of tasks requiring re-execution (if any)
 </operation>
 
+<operation name="record_verification">
+**Record Verification Results**
+
+Called after verification completes to update task state.
+
+**Input:** task_id, verification status, results array
+
+**Steps:**
+1. Read current task state from .orchestrator/state/tasks/{task-id}.yaml
+
+2. Update verification section:
+   ```yaml
+   verification:
+     status: {passed | failed}
+     last_verified: {timestamp}
+     results:
+       - type: exists
+         target: path/to/file
+         passed: true
+         message: "File exists at path"
+       - type: contains
+         target: path/to/file
+         passed: false
+         message: "Pattern 'expected' not found"
+   ```
+
+3. If verification failed and task was marked completed:
+   - Keep task status as-is (completed)
+   - Let verification.status indicate the issue
+   - Rationale: Task may have completed (outputs exist) but verification found issues
+   - This allows retry without re-running the full execution
+
+4. Append verification event to events.jsonl:
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"verification_completed","task":"'${TASK_ID}'","status":"'${STATUS}'","checks":'${CHECKS_COUNT}',"passed":'${PASSED_COUNT}'}' >> .orchestrator/history/events.jsonl
+   ```
+
+5. Update artifact manifest if verification changed artifact status:
+   - For passed verification: mark artifacts as verified: true
+   - For failed verification: mark artifacts as verified: false
+
+**Output:** Updated task state with verification results
+
+**Example state after verification:**
+```yaml
+task_id: auth-login
+wave: 2
+status: completed
+attempts:
+  - attempt: 1
+    started: 2026-01-18T10:30:00Z
+    completed: 2026-01-18T10:35:00Z
+    status: completed
+outputs_produced:
+  - path: src/auth/login.ts
+    checksum: sha256:abc123...
+verification:
+  status: passed
+  last_verified: 2026-01-18T10:36:00Z
+  results:
+    - type: exists
+      target: src/auth/login.ts
+      passed: true
+      message: "File exists"
+    - type: syntax
+      target: src/auth/login.ts
+      passed: true
+      message: "TypeScript compiles without errors"
+```
+</operation>
+
 </execution_flow>
 
 <event_logging>
@@ -455,6 +526,9 @@ Artifact events:
 - artifact_produced: New artifact created
 - artifact_verified: Existing artifact validated
 - artifact_validation_failed: Artifact missing or corrupted
+
+Verification events:
+- verification_completed: Task verification finished (pass or fail)
 
 Checkpoint events:
 - checkpoint_started: Beginning wave checkpoint
@@ -572,6 +646,34 @@ Return when operation fails:
 ### Recovery Suggestion
 
 {How to recover from this error}
+```
+
+---
+
+## VERIFICATION RECORDED
+
+Return after record_verification operation:
+
+```markdown
+## VERIFICATION RECORDED
+
+**Task:** {task_id}
+**Status:** {passed | failed}
+**Checks:** {passed}/{total}
+
+### Results Recorded
+
+| Type | Target | Status |
+|------|--------|--------|
+| exists | file.ts | PASS |
+| syntax | file.ts | PASS |
+| contains | file.ts | FAIL |
+
+### State Updated
+
+- Task state: .orchestrator/state/tasks/{task-id}.yaml
+- Event logged: verification_completed
+- Manifest updated: {N} artifacts marked verified
 ```
 
 </structured_returns>
