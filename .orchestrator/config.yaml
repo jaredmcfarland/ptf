@@ -1,8 +1,16 @@
 # PTF Project Configuration
-created: 2026-01-19T00:00:00Z
-domain: mixpanel-analytics
-adapter: adapters/mixpanel-analytics.yaml
+created: 2026-01-19T09:59:23Z
+domain: prediction-market
+adapter: adapters/prediction-market.yaml
 goal_file: .orchestrator/goal.md
+
+market:
+  platform: kalshi
+  id: kxfields-26
+  url: https://kalshi.com/markets/kxfields/fields-medal-recipients/kxfields-26
+  title: "Fields Medal 2026 Recipients"
+  resolution_date: 2026-12-31
+  settlement_authority: International Mathematical Union
 
 decomposition:
   max_recursion_depth: 4
@@ -15,3 +23,8 @@ execution:
 checkpoints:
   wave_boundary: true
   verification: true
+
+research_parameters:
+  edge_threshold: 15  # Conservative - 15%+ edge required
+  time_horizon: months  # Resolves Dec 31, 2026
+  existing_knowledge: minimal  # Mostly new territory

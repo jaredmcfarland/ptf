@@ -1,5 +1,6 @@
 ---
-received: 2026-01-19T00:00:00Z
+received: 2026-01-19T09:59:23Z
+immutable: true
 ---
 
-There was a massive spike in purchases on November 6th and 7th, 2021. Let's find out what happened.
+Research https://kalshi.com/markets/kxfields/fields-medal-recipients/kxfields-26 --domain prediction-market

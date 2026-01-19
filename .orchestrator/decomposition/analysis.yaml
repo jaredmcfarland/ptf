@@ -1,42 +1,77 @@
 step: 1-goal-analysis
-created: 2026-01-19T00:00:00Z
+created: 2026-01-19T09:59:23Z
 status: complete
 
 objective: |
-  Identify the root cause of the massive purchase spike that occurred on
-  November 6th and 7th, 2021. Determine what triggered the anomalous behavior
-  by analyzing Mixpanel event data around these dates.
+  Research the Kalshi Fields Medal 2026 prediction market to determine if any
+  candidate represents a 15%+ edge opportunity. Requires comprehensive research
+  from minimal starting knowledge of the mathematics community and candidates.
+
+market_snapshot:
+  date: 2026-01-19
+  candidates:
+    - name: Hong Wang
+      price: 0.81
+      implied_probability: 81%
+    - name: Jacob Tsimerman
+      price: 0.67
+      implied_probability: 67%
+    - name: John Pardon
+      price: 0.46
+      implied_probability: 46%
+    - name: Yu Deng
+      price: 0.36
+      implied_probability: 36%
+    - name: Julian Sahasrabudhe
+      price: 0.30
+      implied_probability: 30%
+    - name: Sam Raskin
+      price: 0.24
+      implied_probability: 24%
+    - name: Jack Thorne
+      price: 0.19
+      implied_probability: 19%
+    - name: Will Sawin
+      price: 0.16
+      implied_probability: 16%
+    - name: Aleksandr Logunov
+      price: 0.08
+      implied_probability: 8%
+    - name: Alexander Efimov
+      price: 0.07
+      implied_probability: 7%
 
 scope:
   included:
-    - Purchase event analysis for Nov 6-7, 2021
-    - Comparison with baseline periods (before/after spike)
-    - User acquisition source analysis
-    - Marketing campaign/promotion correlation
-    - Feature release correlation
-    - External event correlation (if discoverable)
+    - Fields Medal eligibility criteria and selection process
+    - Historical base rates and selection patterns
+    - Research profiles and impact of each candidate
+    - Multi-perspective probability estimation per candidate
+    - Edge calculation vs market prices
+    - Position recommendation with sizing
   excluded:
-    - Long-term trend analysis beyond spike context
-    - Revenue forecasting
-    - User retention analysis (unless directly relevant)
-    - Data export for external BI tools
+    - Markets on other prediction platforms (Polymarket, Metaculus)
+    - Other mathematics awards (Abel Prize, etc.)
+    - Execution/trading mechanics
+    - Portfolio-level position management
 
 constraints:
-  - Use live Mixpanel API queries via mp CLI
-  - Focus date range: November 1-14, 2021 (context window around spike)
-  - Output format: Written Markdown analysis
-  - Single project scope (default Mixpanel project)
+  - 15%+ edge required before recommending any position
+  - Must research from minimal knowledge base - no assumptions
+  - Multiple perspectives required before synthesis
+  - All probability estimates must cite evidence
 
 success_criteria:
-  - Identify the primary driver(s) of the purchase spike
-  - Quantify the spike magnitude vs baseline
-  - Provide evidence trail linking cause to effect
-  - Document methodology for reproducibility
+  - Understand Fields Medal selection criteria and historical patterns
+  - Research each candidate's mathematical contributions and eligibility
+  - Produce calibrated probability estimates from multiple perspectives
+  - Identify any candidates with 15%+ estimated edge vs market
+  - Deliver actionable recommendation (position or pass)
 
-domain: mixpanel-analytics
+domain: prediction-market
 
 clarification_summary:
-  analysis_goal: Root cause identification
-  output_format: Written analysis (Markdown)
-  tooling: Live Mixpanel API
-  date_range: November 6-7, 2021 (with context window)
+  market_focus: https://kalshi.com/markets/kxfields/fields-medal-recipients/kxfields-26
+  edge_threshold: "15%+ edge (conservative)"
+  time_horizon: "Resolves in months - deep research"
+  existing_knowledge: "Mostly new territory"
