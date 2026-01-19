@@ -1,11 +1,11 @@
 # PTF Project Configuration
-created: 2026-01-18T18:31:00Z
-domain: software-development
-adapter: adapters/software-development.yaml
+created: 2026-01-18T23:20:00Z
+domain: research
+adapter: adapters/research.yaml
 goal_file: .orchestrator/goal.md
 
 decomposition:
-  max_recursion_depth: 5
+  max_recursion_depth: 4  # From research adapter
 
 execution:
   max_parallel_tasks: 3

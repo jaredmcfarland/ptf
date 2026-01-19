@@ -1,57 +1,56 @@
 # Project Constitution
 # These principles are IMMUTABLE for this project
 
-generated: 2026-01-18T18:31:00Z
-domain: software-development
+generated: 2026-01-18T23:20:00Z
+domain: research
 
 principles: |
-  # React Calculator Constitution
+  # Ralph Wiggum Loop Research Constitution
 
-  These principles are IMMUTABLE for this project.
-  Violating them means the task is incorrectly defined.
+  These principles are IMMUTABLE for this research project.
+  Violating them compromises research integrity.
 
   ## Core Principles
 
   1. **Artifact Integrity**: Every task produces exactly the artifacts declared
-     in its outputs. No undeclared file modifications.
+     in its outputs. No undeclared findings or summaries.
 
-  2. **Dependency Honesty**: All file dependencies are declared in inputs.
-     Hidden dependencies break parallel execution.
+  2. **Dependency Honesty**: All source dependencies are declared in inputs.
+     Hidden dependencies make findings unverifiable.
 
   3. **Fresh Context**: Every task must be completable by an agent starting
      with empty context, loading only declared inputs.
 
-  4. **Verification**: Every artifact has a concrete verification step.
-     "Looks good" is not verification.
+  4. **Verification**: Every finding has a concrete verification step.
+     "Seems reasonable" is not verification.
 
-  ## Domain Principles (Software Development)
+  ## Domain Principles (Research)
 
-  5. **Type Safety**: Generated code must pass type checking.
-     Include type check in verification.
+  5. **Source Integrity**: Always cite sources. Every claim traces to evidence.
+     No unsourced assertions.
 
-  6. **Test Coverage**: Logic-containing code has corresponding tests.
-     Tests are separate tasks (code -> test dependency).
+  6. **Claim-Evidence Binding**: Every claim in a finding must reference
+     the specific evidence supporting it.
 
-  7. **API Contracts**: Endpoints follow existing patterns if present.
-     New patterns require explicit documentation.
+  7. **Methodology Consistency**: Apply the same evaluation criteria
+     across all sources within a task.
+
+  8. **Bias Awareness**: Document potential biases in sources and
+     limitations in findings.
 
   ## Project-Specific Constraints
 
-  8. **Arithmetic Correctness**: Basic arithmetic (add, subtract, multiply,
-     divide) must produce mathematically correct results. This is the core
-     value - no compromises.
+  9. **Mixed Methods Rigor**: Literature review findings must be verified
+     through empirical testing where possible.
 
-  9. **TypeScript Required**: All source code must be TypeScript (.tsx/.ts).
-     No JavaScript files. Type safety is mandatory.
+  10. **Comparative Context**: Techniques must be compared against at least
+      two other self-referential patterns to establish relative positioning.
 
-  10. **React Functional Components**: Use functional components with hooks.
-      No class components.
+  11. **Attribution**: All content from Geoff Huntley's work must be
+      properly attributed to the original source.
 
-  11. **Simple Architecture**: Target 1-5 files. Avoid over-engineering.
-      A calculator doesn't need Redux or complex state management.
-
-  12. **Keyboard Accessibility**: All operations must be accessible via
-      keyboard input. This is a declared feature requirement.
+  12. **Practical Focus**: Emphasis on "how it works" over theoretical
+      abstraction - findings should be implementable.
 
 enforcement:
   - Every task must be validated against these principles

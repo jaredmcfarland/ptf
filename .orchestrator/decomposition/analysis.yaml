@@ -1,51 +1,40 @@
 step: 1-goal-analysis
-created: 2026-01-18T18:31:00Z
+created: 2026-01-18T23:20:00Z
 status: complete
 
 objective: |
-  Build a full-featured calculator web application using TypeScript and React.
-  The calculator must support basic arithmetic (add, subtract, multiply, divide),
-  scientific functions (sin, cos, tan, log, sqrt, power), calculation history
-  with recall capability, and full keyboard input support.
+  Understand how the Ralph Wiggum Loop technique works for self-referential
+  prompting in AI agents, including its mechanism, implementation patterns,
+  and comparison with similar self-referential techniques in the field.
 
 scope:
   included:
-    - Basic arithmetic operations (add, subtract, multiply, divide)
-    - Scientific functions (sin, cos, tan, log, sqrt, power)
-    - History panel with recall functionality
-    - Keyboard shortcuts and input support
-    - React + TypeScript frontend
-    - Responsive UI design
+    - Ralph Wiggum Loop mechanism and implementation
+    - Geoff Huntley's original work and documentation
+    - Community implementations and derivative works
+    - Comparison with other self-referential prompting patterns
+    - Practical experimentation with the technique
   excluded:
-    - Backend/server components
-    - User authentication
-    - Data persistence beyond session
-    - Memory functions (M+, M-, MR, MC)
-    - Unit conversion
-    - Graphing capabilities
+    - Unrelated AI prompting techniques
+    - Non-self-referential agent patterns
+    - Production deployment considerations
 
 constraints:
-  - Greenfield project - no existing code patterns to follow
-  - Simple architecture (1-5 files target)
-  - TypeScript required for type safety
-  - React functional components with hooks
-  - Basic arithmetic must work flawlessly (core value)
+  - Mixed methods: combine literature review with empirical testing
+  - Focus on how the technique works (mechanism over theory)
+  - Compare with broader self-referential patterns for context
 
 success_criteria:
-  - Application builds without TypeScript errors
-  - Basic arithmetic operations produce correct results
-  - Scientific functions produce correct results
-  - History panel displays previous calculations
-  - Keyboard input works for all operations
-  - UI is responsive and visually coherent
+  - Document the core mechanism of Ralph Wiggum Loop
+  - Identify key implementation patterns and examples
+  - Compare with at least 2 other self-referential techniques
+  - Create working demonstration of the technique
+  - Synthesize findings into actionable understanding
 
-domain: software-development
+domain: research
 
 clarification_summary:
-  core_value: Basic arithmetic operations
-  code_patterns: Greenfield - starting fresh
-  features:
-    - Scientific functions
-    - History panel
-    - Keyboard shortcuts
-  scale: Simple (1-5 files)
+  research_question: "How does the Ralph Wiggum Loop technique work?"
+  prior_knowledge: "Some familiarity with the topic"
+  methodology: "Mixed methods - literature review and empirical analysis"
+  scope_bounds: "Broader self-referential patterns for comparison"
