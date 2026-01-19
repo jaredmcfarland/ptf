@@ -103,6 +103,63 @@ Orchestrator doesn't write to events.jsonl directly.
 
 </state_integration>
 
+<backoff_calculation>
+
+## Exponential Backoff
+
+Calculate delay between retry attempts:
+
+```bash
+calculate_backoff() {
+  local attempt="$1"
+  local backoff_type="${2:-exponential}"
+  local base_seconds="${3:-2}"
+  local max_seconds="${4:-60}"
+
+  case "$backoff_type" in
+    none)
+      echo 0
+      ;;
+    linear)
+      delay=$((base_seconds * attempt))
+      ;;
+    exponential)
+      # 2^(attempt-1) * base
+      delay=$((base_seconds * (1 << (attempt - 1))))
+      ;;
+  esac
+
+  # Cap at maximum
+  if [ "$delay" -gt "$max_seconds" ]; then
+    delay="$max_seconds"
+  fi
+
+  echo "$delay"
+}
+
+# Examples:
+# attempt 1 exponential: 2s
+# attempt 2 exponential: 4s
+# attempt 3 exponential: 8s
+# attempt 4 exponential: 16s
+# attempt 5 exponential: 32s
+# attempt 6 exponential: 60s (capped)
+```
+
+## Backoff Integration
+
+When a task fails with retry strategy:
+
+1. Read on_failure policy from task definition
+2. Calculate backoff: `delay = calculate_backoff(attempt, backoff_type, base, max)`
+3. Set next_retry_at: `current_time + delay`
+4. Update task state with backoff information
+5. Log retry_scheduled event
+
+The orchestrator respects next_retry_at before re-dispatching failed tasks.
+
+</backoff_calculation>
+
 <execution_flow>
 
 <operation name="execute_plan">
@@ -376,6 +433,29 @@ Processes results, triggers checkpoint, determines next action.
             subagent_type="ptf-state-manager")
    ```
 
+3b. **Handle failures (NEW - calls handle_failure operation):**
+    ```
+    for result in task_results where result.status == "failed":
+      # Load task's on_failure policy
+      on_failure = load_task_policy(result.task_id)
+
+      decision = handle_failure(
+        task_id=result.task_id,
+        error=result.error,
+        attempt=result.attempt,
+        max_attempts=on_failure.max_attempts,
+        on_failure=on_failure
+      )
+
+      if decision == "pause":
+        # Escalation triggered - stop wave processing
+        return "pause"
+      elif decision == "retry":
+        # Task will be retried - continue processing wave
+        pass
+      # decision == "continue" means skip strategy applied
+    ```
+
 4. Invoke checkpoint:
    ```
    Task(prompt="Checkpoint wave {wave_number}.
@@ -440,6 +520,84 @@ Checks that all predecessor waves are complete.
    ```
 
 **Output:** Boolean - true if all dependencies satisfied
+</operation>
+
+<operation name="handle_failure">
+**Handle Task Failure**
+
+Processes task failure according to on_failure policy.
+
+**Input:** task_id, error, attempt, max_attempts, on_failure policy
+
+**Steps:**
+
+1. **Log failure and create record:**
+   ```
+   Task(prompt="Create failure record for task {task_id}.
+        Attempt: {attempt}
+        Error: {error}
+        Failure mode: {failure_mode}
+        Context: {inputs_loaded, outputs_produced}",
+        subagent_type="ptf-state-manager")
+   ```
+
+2. **Determine strategy:**
+   - Read on_failure from task definition
+   - Get strategy (default: retry)
+   - Get max_attempts (default: 3)
+
+3. **If strategy == "retry" AND attempt < max_attempts:**
+   - Calculate backoff delay using calculate_backoff()
+   - Mark task ready with next_retry_at timestamp
+   - Update task state with backoff section:
+     ```yaml
+     backoff:
+       attempts_remaining: {max_attempts - attempt}
+       next_retry_at: {timestamp}
+       last_backoff_seconds: {delay}
+     ```
+   - Return "retry" (orchestrator will retry after delay)
+
+4. **If strategy == "skip" OR (retry exhausted AND final_fallback == "skip"):**
+   - Mark task skipped via state manager:
+     ```
+     Task(prompt="Mark task {task_id} as skipped.
+          Reason: {skip_reason}",
+          subagent_type="ptf-state-manager")
+     ```
+   - If propagate_failure: true, cascade to dependents (see step 6)
+   - Return "continue"
+
+5. **If strategy == "escalate" OR (retry exhausted AND final_fallback == "escalate"):**
+   - Present failure to human with options (return ESCALATION REQUIRED)
+   - Pause execution
+   - Return "pause"
+
+6. **Handle cascade (when propagate_failure: true):**
+   ```
+   # Find all tasks that depend on the failed task
+   dependents = find_dependents(task_id)  # from graph.yaml
+
+   for dependent in dependents:
+     Task(prompt="Mark task {dependent} as blocked.
+          Blocked by: {task_id}
+          Reason: cascade_failure",
+          subagent_type="ptf-state-manager")
+   ```
+
+**Output:** Decision string: "retry" | "continue" | "pause"
+
+**Example cascade handling:**
+```yaml
+# Task auth-login failed
+# graph.yaml shows user-dashboard depends on auth-login
+# If auth-login.on_failure.propagate_failure: true (default)
+# Then user-dashboard gets marked blocked
+
+# Result:
+# auth-login: status: failed
+# user-dashboard: status: blocked, blocked_by: [auth-login]
+```
 </operation>
 
 </execution_flow>
@@ -671,6 +829,42 @@ Return when cannot proceed:
 
 Progress preserved at wave {N-1} checkpoint.
 Resolve issue and run `/ptf:resume` to continue.
+```
+
+---
+
+## ESCALATION REQUIRED
+
+Return when task exhausts retries and final_fallback is escalate:
+
+```markdown
+## ESCALATION REQUIRED
+
+**Task:** {task_id}
+**Wave:** {wave}
+**Attempts:** {attempt}/{max_attempts}
+
+### Failure Details
+
+**Error Category:** {error_category}
+**Error:** {error_message}
+
+### Failure Record
+
+Full context: `.orchestrator/failures/{task_id}-attempt-{N}.yaml`
+
+### Blocked Tasks
+
+These tasks cannot proceed:
+{for each blocked task:}
+- {dependent_id}: depends on {task_id}
+
+### Options
+
+1. **`/ptf:retry {task_id}`** - Reset attempts, try again
+2. **`/ptf:skip {task_id}`** - Mark skipped, continue (blocks {N} dependents)
+3. **`/ptf:abort`** - Stop execution, preserve state
+4. **`/ptf:replan`** - Re-decompose from current state
 ```
 
 </structured_returns>
