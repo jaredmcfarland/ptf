@@ -1,0 +1,86 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/artifact-manifest.schema.yaml"
+title: ArtifactManifest
+description: Registry of all produced artifacts for resume validation
+type: object
+required:
+  - artifacts
+properties:
+  artifacts:
+    type: array
+    items:
+      $ref: "#/definitions/ManifestEntry"
+    default: []
+    description: All artifacts produced during execution
+  pending:
+    type: array
+    items:
+      $ref: "#/definitions/PendingArtifact"
+    default: []
+    description: Artifacts expected but not yet produced
+  last_updated:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp of last manifest update
+
+definitions:
+  ManifestEntry:
+    type: object
+    required:
+      - path
+      - type
+      - produced_by
+      - checksum
+    properties:
+      path:
+        type: string
+        description: File path relative to project root
+      type:
+        type: string
+        enum:
+          - source-code
+          - config
+          - test
+          - migration
+          - documentation
+          - data
+          - schema
+        description: Artifact type for verification routing
+      produced_by:
+        type: string
+        description: Task ID that created this artifact
+      produced_at:
+        type: string
+        format: date-time
+        description: ISO 8601 timestamp when artifact was created
+      verified:
+        type: boolean
+        default: false
+        description: Whether artifact has passed verification checks
+      checksum:
+        type: string
+        pattern: "^sha256:[a-f0-9]{64}$"
+        description: SHA-256 hash with prefix for integrity verification
+      consumed_by:
+        type: array
+        items:
+          type: string
+        description: Task IDs that use this artifact as input
+
+  PendingArtifact:
+    type: object
+    required:
+      - path
+      - expected_from
+    properties:
+      path:
+        type: string
+        description: Expected file path
+      expected_from:
+        type: string
+        description: Task ID expected to produce this artifact
+      needed_by:
+        type: array
+        items:
+          type: string
+        description: Task IDs waiting for this artifact

@@ -1,0 +1,82 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://ptf.dev/schemas/wave-state.schema.yaml"
+title: WaveState
+description: Per-wave execution state stored in .orchestrator/state/waves/wave-{N}.yaml
+type: object
+required:
+  - wave
+  - status
+  - tasks
+properties:
+  wave:
+    type: integer
+    minimum: 1
+    description: Wave number
+  status:
+    type: string
+    enum:
+      - pending
+      - running
+      - completed
+      - partial
+      - failed
+    default: pending
+    description: |
+      Wave completion status:
+      - pending: Not yet started
+      - running: Currently executing
+      - completed: All tasks succeeded
+      - partial: Some tasks succeeded, others failed
+      - failed: Wave execution failed
+  tasks:
+    type: array
+    minItems: 1
+    items:
+      $ref: "#/definitions/WaveTask"
+    description: Tasks in this wave with their status
+  depends_on_waves:
+    type: array
+    items:
+      type: integer
+      minimum: 1
+    default: []
+    description: Wave numbers that must complete before this wave
+  started_at:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when wave execution began
+  completed_at:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when wave execution finished
+  duration_seconds:
+    type: number
+    minimum: 0
+    description: Time taken to complete wave
+  checkpoint_file:
+    type: string
+    description: Path to checkpoint file if created
+
+definitions:
+  WaveTask:
+    type: object
+    required:
+      - task_id
+      - status
+    properties:
+      task_id:
+        type: string
+        description: Task identifier
+      status:
+        type: string
+        enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - skipped
+        description: Task status within this wave
+      duration_seconds:
+        type: number
+        minimum: 0
+        description: Time taken for this task
