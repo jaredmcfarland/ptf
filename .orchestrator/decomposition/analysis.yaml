@@ -1,0 +1,51 @@
+step: 1-goal-analysis
+created: 2026-01-18T18:31:00Z
+status: complete
+
+objective: |
+  Build a full-featured calculator web application using TypeScript and React.
+  The calculator must support basic arithmetic (add, subtract, multiply, divide),
+  scientific functions (sin, cos, tan, log, sqrt, power), calculation history
+  with recall capability, and full keyboard input support.
+
+scope:
+  included:
+    - Basic arithmetic operations (add, subtract, multiply, divide)
+    - Scientific functions (sin, cos, tan, log, sqrt, power)
+    - History panel with recall functionality
+    - Keyboard shortcuts and input support
+    - React + TypeScript frontend
+    - Responsive UI design
+  excluded:
+    - Backend/server components
+    - User authentication
+    - Data persistence beyond session
+    - Memory functions (M+, M-, MR, MC)
+    - Unit conversion
+    - Graphing capabilities
+
+constraints:
+  - Greenfield project - no existing code patterns to follow
+  - Simple architecture (1-5 files target)
+  - TypeScript required for type safety
+  - React functional components with hooks
+  - Basic arithmetic must work flawlessly (core value)
+
+success_criteria:
+  - Application builds without TypeScript errors
+  - Basic arithmetic operations produce correct results
+  - Scientific functions produce correct results
+  - History panel displays previous calculations
+  - Keyboard input works for all operations
+  - UI is responsive and visually coherent
+
+domain: software-development
+
+clarification_summary:
+  core_value: Basic arithmetic operations
+  code_patterns: Greenfield - starting fresh
+  features:
+    - Scientific functions
+    - History panel
+    - Keyboard shortcuts
+  scale: Simple (1-5 files)
