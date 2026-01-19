@@ -1,0 +1,93 @@
+id: calc-ui
+name: Calculator UI Component
+from_subgoal: calc-ui
+
+description: |
+  Create the main Calculator React component with display and button grid.
+
+  ## Requirements
+
+  1. **Display Area**
+     - Show current input/expression
+     - Show result after calculation
+     - Clear display capability
+
+  2. **Button Grid**
+     - Digits 0-9
+     - Decimal point
+     - Basic operators: +, -, *, /
+     - Scientific functions: sin, cos, tan, log, sqrt, ^
+     - Equals (=) to evaluate
+     - Clear (C) to reset
+     - Parentheses for grouping
+
+  3. **Keyboard Support**
+     - Numbers: 0-9
+     - Operators: +, -, *, /
+     - Enter: evaluate expression
+     - Escape: clear
+     - Backspace: delete last character
+
+  4. **Props Interface**
+     ```typescript
+     interface CalculatorProps {
+       onCalculation?: (entry: HistoryEntry) => void;
+     }
+
+     interface HistoryEntry {
+       expression: string;
+       result: string;
+       timestamp: Date;
+     }
+     ```
+
+  ## Implementation Notes
+  - Use calculator.ts for all calculations
+  - Functional component with useState hooks
+  - useEffect for keyboard event listeners
+  - Call onCalculation when a calculation completes
+
+  ## What NOT to Include
+  - No history display (that's History component)
+  - No CSS (that's styles task)
+  - No app-level state management
+
+inputs:
+  - path: src/calculator.ts
+    description: Calculator engine with operation functions
+    required: true
+
+outputs:
+  - path: src/Calculator.tsx
+    type: source-code
+
+verify:
+  - type: exists
+    target: src/Calculator.tsx
+    expected: file exists
+
+  - type: syntax
+    target: src/Calculator.tsx
+    expected: valid TypeScript/JSX syntax
+
+  - type: runs
+    target: "npx tsc --noEmit src/Calculator.tsx"
+    expected: no TypeScript errors
+
+  - type: contains
+    target: src/Calculator.tsx
+    expected: imports from ./calculator, useEffect for keyboard events
+
+context_notes: |
+  - Import calculation functions from ./calculator
+  - Use keyboard event listener in useEffect with cleanup
+  - Button onClick handlers should update display state
+  - Consider: what happens when user types invalid expression?
+
+context_budget:
+  estimated_input_tokens: 2000
+  max_context_percentage: 10
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

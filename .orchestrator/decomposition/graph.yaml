@@ -1,0 +1,86 @@
+step: 5-dependency-graph
+created: 2026-01-18T18:52:00Z
+status: complete
+
+task_count: 6
+subgoal_count: 6
+
+# Explicit artifact dependencies (high confidence - from declared inputs/outputs)
+dependencies:
+  - from: calc-engine
+    to: calc-ui
+    type: artifact
+    confidence: high
+    artifact: src/calculator.ts
+    reason: "calc-ui requires src/calculator.ts produced by calc-engine"
+
+  - from: calc-engine
+    to: engine-tests
+    type: artifact
+    confidence: high
+    artifact: src/calculator.ts
+    reason: "engine-tests requires src/calculator.ts produced by calc-engine"
+
+  - from: calc-ui
+    to: app-integration
+    type: artifact
+    confidence: high
+    artifact: src/Calculator.tsx
+    reason: "app-integration requires src/Calculator.tsx produced by calc-ui"
+
+  - from: history-ui
+    to: app-integration
+    type: artifact
+    confidence: high
+    artifact: src/History.tsx
+    reason: "app-integration requires src/History.tsx produced by history-ui"
+
+# Tasks with no dependencies (can run in wave 1)
+roots:
+  - calc-engine
+  - history-ui
+  - styles
+
+# Final deliverables (outputs not consumed by other tasks)
+leaves:
+  - app-integration
+  - styles
+  - engine-tests
+
+# Visual representation of dependency graph
+#
+#   [calc-engine] ----+----> [calc-ui] ----+
+#        |                                 |
+#        +----> [engine-tests]             +----> [app-integration]
+#                                          |
+#   [history-ui] --------------------------+
+#
+#   [styles] (independent)
+#
+
+# Wave assignment preview (for Phase 3 planning)
+wave_preview:
+  wave_1:
+    tasks: [calc-engine, history-ui, styles]
+    parallelizable: true
+    rationale: "No dependencies - can all start immediately"
+
+  wave_2:
+    tasks: [calc-ui, engine-tests]
+    parallelizable: true
+    rationale: "Both depend only on calc-engine (wave 1)"
+
+  wave_3:
+    tasks: [app-integration]
+    parallelizable: false
+    rationale: "Depends on calc-ui and history-ui"
+
+# Critical path analysis
+critical_path:
+  path: [calc-engine, calc-ui, app-integration]
+  length: 3
+  rationale: "Longest dependency chain through the graph"
+
+# Parallelization opportunity
+max_parallel_tasks: 3
+parallelization_ratio: "3 waves for 6 tasks = 2 tasks/wave average"

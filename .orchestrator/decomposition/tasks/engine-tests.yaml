@@ -1,0 +1,101 @@
+id: engine-tests
+name: Calculator Engine Tests
+from_subgoal: engine-tests
+
+description: |
+  Create comprehensive tests for the calculator engine.
+
+  ## Test Coverage
+
+  1. **Basic Arithmetic**
+     - add: positive, negative, decimals, zero
+     - subtract: positive, negative, decimals, zero
+     - multiply: positive, negative, decimals, zero
+     - divide: positive, negative, decimals, division by zero
+
+  2. **Scientific Functions**
+     - sin: 0, pi/2, pi, 3pi/2, 2pi
+     - cos: 0, pi/2, pi, 3pi/2, 2pi
+     - tan: 0, pi/4, undefined cases
+     - log: 1, e, positive values, edge cases (0, negative)
+     - sqrt: perfect squares, decimals, zero, negative
+     - power: positive exponents, zero, negative exponents, fractional
+
+  3. **Edge Cases**
+     - Very large numbers
+     - Very small numbers (precision)
+     - Infinity handling
+     - NaN handling
+
+  ## Test Framework
+  Use Jest (standard for React projects)
+
+  ## Example Tests
+  ```typescript
+  describe('Calculator Engine', () => {
+    describe('add', () => {
+      test('adds two positive numbers', () => {
+        expect(add(2, 3)).toBe(5);
+      });
+
+      test('adds negative numbers', () => {
+        expect(add(-2, -3)).toBe(-5);
+      });
+
+      test('adds with zero', () => {
+        expect(add(5, 0)).toBe(5);
+      });
+    });
+
+    describe('divide', () => {
+      test('divides two numbers', () => {
+        expect(divide(10, 2)).toBe(5);
+      });
+
+      test('handles division by zero', () => {
+        expect(divide(10, 0)).toBe(Infinity);
+      });
+    });
+  });
+  ```
+
+  ## What NOT to Include
+  - No UI tests (separate task if needed)
+  - No integration tests
+  - No mocking of external services
+
+inputs:
+  - path: src/calculator.ts
+    description: Calculator engine to test
+    required: true
+
+outputs:
+  - path: src/calculator.test.ts
+    type: test
+
+verify:
+  - type: exists
+    target: src/calculator.test.ts
+    expected: file exists
+
+  - type: syntax
+    target: src/calculator.test.ts
+    expected: valid TypeScript syntax
+
+  - type: runs
+    target: "npm test -- --testPathPattern=calculator.test.ts --passWithNoTests"
+    expected: tests pass (or no tests if jest not configured)
+
+context_notes: |
+  - Import functions from ./calculator
+  - Use describe/test structure for organization
+  - Test both happy paths and edge cases
+  - Arithmetic correctness is the core value - be thorough
+
+context_budget:
+  estimated_input_tokens: 2000
+  max_context_percentage: 10
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

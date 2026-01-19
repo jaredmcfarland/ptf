@@ -1,0 +1,88 @@
+id: calc-engine
+name: Calculator Engine
+from_subgoal: calc-engine
+
+description: |
+  Create a pure TypeScript calculation engine module.
+
+  ## Requirements
+
+  1. **Basic Arithmetic Operations**
+     - add(a: number, b: number): number
+     - subtract(a: number, b: number): number
+     - multiply(a: number, b: number): number
+     - divide(a: number, b: number): number
+     - Handle division by zero (return Infinity or throw)
+
+  2. **Scientific Functions**
+     - sin(x: number): number (radians)
+     - cos(x: number): number (radians)
+     - tan(x: number): number (radians)
+     - log(x: number): number (natural log)
+     - sqrt(x: number): number
+     - power(base: number, exponent: number): number
+
+  3. **Expression Evaluation (optional but recommended)**
+     - evaluate(expression: string): number
+     - Parse and evaluate expressions like "2 + 3 * 4"
+     - Respect operator precedence
+
+  ## TypeScript Interface
+
+  ```typescript
+  export interface CalculatorEngine {
+    add(a: number, b: number): number;
+    subtract(a: number, b: number): number;
+    multiply(a: number, b: number): number;
+    divide(a: number, b: number): number;
+    sin(x: number): number;
+    cos(x: number): number;
+    tan(x: number): number;
+    log(x: number): number;
+    sqrt(x: number): number;
+    power(base: number, exponent: number): number;
+  }
+  ```
+
+  ## What NOT to Include
+  - No React imports or dependencies
+  - No UI logic
+  - No state management
+  - No history tracking (that's App's job)
+
+inputs: []
+
+outputs:
+  - path: src/calculator.ts
+    type: source-code
+
+verify:
+  - type: exists
+    target: src/calculator.ts
+    expected: file exists
+
+  - type: syntax
+    target: src/calculator.ts
+    expected: valid TypeScript syntax
+
+  - type: runs
+    target: "npx tsc --noEmit src/calculator.ts"
+    expected: no TypeScript errors
+
+  - type: contains
+    target: src/calculator.ts
+    expected: exports add, subtract, multiply, divide, sin, cos, tan, log, sqrt, power
+
+context_notes: |
+  - Use Math.sin, Math.cos, Math.tan, Math.log, Math.sqrt, Math.pow for implementations
+  - All trigonometric functions use radians
+  - Export both individual functions and a calculator object
+  - Consider edge cases: division by zero, sqrt of negative, log of non-positive
+
+context_budget:
+  estimated_input_tokens: 0
+  max_context_percentage: 5
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

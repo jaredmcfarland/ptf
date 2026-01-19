@@ -1,0 +1,119 @@
+step: 2-subgoal-identification
+created: 2026-01-18T18:45:00Z
+status: complete
+
+goal_reference: .orchestrator/decomposition/analysis.yaml
+
+heuristic_used: by-file-boundary
+rationale: |
+  Simple 1-5 file target with clear module boundaries.
+  Separating pure calculation logic from React UI enables
+  independent testing and parallel development.
+
+subgoals:
+  - id: calc-engine
+    name: Calculator Engine
+    description: |
+      Pure TypeScript calculation engine with no React dependencies.
+      Handles all arithmetic and scientific operations.
+      Exposes typed interfaces for operations.
+    outputs:
+      - src/calculator.ts
+    depends_on_outputs_from: []
+    coverage_mapping:
+      - "Basic arithmetic operations produce correct results" (implements +,-,*,/)
+      - "Scientific functions produce correct results" (implements sin,cos,tan,log,sqrt,power)
+
+  - id: calc-ui
+    name: Calculator UI Component
+    description: |
+      Main calculator React component with display and button grid.
+      Uses calculator engine for operations.
+      Handles keyboard input events.
+    outputs:
+      - src/Calculator.tsx
+    depends_on_outputs_from:
+      - calc-engine
+    coverage_mapping:
+      - "Keyboard input works for all operations" (keyboard event handling)
+      - "UI is responsive and visually coherent" (button layout and display)
+
+  - id: history-ui
+    name: History Panel Component
+    description: |
+      React component displaying calculation history.
+      Supports recall of previous calculations.
+    outputs:
+      - src/History.tsx
+    depends_on_outputs_from: []
+    coverage_mapping:
+      - "History panel displays previous calculations" (history list rendering)
+
+  - id: app-integration
+    name: App Integration
+    description: |
+      Root App component that integrates Calculator and History.
+      Manages shared state for history entries.
+    outputs:
+      - src/App.tsx
+    depends_on_outputs_from:
+      - calc-ui
+      - history-ui
+    coverage_mapping:
+      - "UI is responsive and visually coherent" (overall layout)
+      - "History panel displays previous calculations" (state management for history)
+
+  - id: styles
+    name: Application Styles
+    description: |
+      CSS styles for calculator and history components.
+      Responsive design for various screen sizes.
+    outputs:
+      - src/App.css
+    depends_on_outputs_from: []
+    coverage_mapping:
+      - "UI is responsive and visually coherent" (CSS media queries and layout)
+
+  - id: engine-tests
+    name: Calculator Engine Tests
+    description: |
+      Test suite for calculator engine covering all operations.
+      Verifies arithmetic and scientific function correctness.
+    outputs:
+      - src/calculator.test.ts
+    depends_on_outputs_from:
+      - calc-engine
+    coverage_mapping:
+      - "Basic arithmetic operations produce correct results" (test verification)
+      - "Scientific functions produce correct results" (test verification)
+      - "Application builds without TypeScript errors" (test compilation)
+
+validation:
+  coverage: |
+    All 6 success criteria mapped:
+    1. "Application builds without TypeScript errors" - covered by engine-tests (compile check)
+    2. "Basic arithmetic operations produce correct results" - calc-engine + engine-tests
+    3. "Scientific functions produce correct results" - calc-engine + engine-tests
+    4. "History panel displays previous calculations" - history-ui + app-integration
+    5. "Keyboard input works for all operations" - calc-ui
+    6. "UI is responsive and visually coherent" - calc-ui + app-integration + styles
+
+  overlap: |
+    No overlap - each subgoal produces distinct files:
+    - calc-engine: src/calculator.ts
+    - calc-ui: src/Calculator.tsx
+    - history-ui: src/History.tsx
+    - app-integration: src/App.tsx
+    - styles: src/App.css
+    - engine-tests: src/calculator.test.ts
+
+  coupling: |
+    Linear dependency chain with minimal coupling:
+    - calc-engine: no dependencies (foundation)
+    - calc-ui: depends on calc-engine
+    - history-ui: no dependencies (independent)
+    - app-integration: depends on calc-ui, history-ui
+    - styles: no dependencies (parallel)
+    - engine-tests: depends on calc-engine
+
+    Parallelizable: calc-engine, history-ui, styles can run in wave 1
