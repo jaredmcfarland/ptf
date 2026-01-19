@@ -17,7 +17,7 @@ PTF transforms complex goals into atomic tasks with dependency-aware parallel ex
 - [x] **Phase 5: Execution Engine** - Wave-based parallel execution, fresh context dispatch
 - [x] **Phase 6: Verification** - Multi-modal verification, independent verifier subagent
 - [x] **Phase 7: Failure Handling** - Retry strategies, cascade handling, recovery commands
-- [ ] **Phase 8: Domain Adapters** - Formal schema, documentation, example projects
+- [x] **Phase 8: Domain Adapters** - Formal schema, documentation, example projects
 
 ## Phase Details
 
@@ -153,9 +153,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Create formal adapter schema (schemas/adapter.schema.yaml)
-- [ ] 08-02-PLAN.md — Expand SKILL.md with comprehensive adapter documentation
-- [ ] 08-03-PLAN.md — Create software-demo and research-demo example projects
+- [x] 08-01-PLAN.md — Create formal adapter schema (schemas/adapter.schema.yaml)
+- [x] 08-02-PLAN.md — Expand SKILL.md with comprehensive adapter documentation
+- [x] 08-03-PLAN.md — Create software-demo and research-demo example projects
 
 ## Progress
 
@@ -172,7 +172,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 5. Execution Engine | 3/3 | Complete | 2026-01-19 |
 | 6. Verification | 2/2 | Complete | 2026-01-18 |
 | 7. Failure Handling | 3/3 | Complete | 2026-01-18 |
-| 8. Domain Adapters | 0/3 | Planned | - |
+| 8. Domain Adapters | 3/3 | Complete | 2026-01-18 |
 
 ## Requirement Coverage
 

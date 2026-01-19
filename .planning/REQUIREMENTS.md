@@ -104,22 +104,22 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Domain Adapters
 
-- [ ] **ADAPT-01**: Domain adapter interface (decomposition, artifacts, dependencies, context)
-- [ ] **ADAPT-02**: Adapter loading and integration with all framework phases
-- [ ] **ADAPT-03**: Software development adapter with complete implementation
-- [ ] **ADAPT-04**: Software adapter: decomposition heuristics (by-layer, by-feature, by-file)
-- [ ] **ADAPT-05**: Software adapter: atomicity criteria (single-file, testable, focused)
-- [ ] **ADAPT-06**: Software adapter: artifact types (source-code, migration, config, test)
-- [ ] **ADAPT-07**: Software adapter: verification strategies per artifact type
-- [ ] **ADAPT-08**: Software adapter: dependency patterns (schema→repo, repo→service, code→test)
-- [ ] **ADAPT-09**: Research adapter with complete implementation
-- [ ] **ADAPT-10**: Research adapter: decomposition heuristics (by-question, by-source, by-stage)
-- [ ] **ADAPT-11**: Research adapter: atomicity criteria (single-question, bounded-sources)
-- [ ] **ADAPT-12**: Research adapter: artifact types (finding, summary, synthesis, data)
-- [ ] **ADAPT-13**: Research adapter: verification strategies per artifact type
-- [ ] **ADAPT-14**: Research adapter: dependency patterns (source→finding, finding→synthesis)
-- [ ] **ADAPT-15**: Template adapter for creating custom adapters
-- [ ] **ADAPT-16**: Adapter-specific constitution templates
+- [x] **ADAPT-01**: Domain adapter interface (decomposition, artifacts, dependencies, context)
+- [x] **ADAPT-02**: Adapter loading and integration with all framework phases
+- [x] **ADAPT-03**: Software development adapter with complete implementation
+- [x] **ADAPT-04**: Software adapter: decomposition heuristics (by-layer, by-feature, by-file)
+- [x] **ADAPT-05**: Software adapter: atomicity criteria (single-file, testable, focused)
+- [x] **ADAPT-06**: Software adapter: artifact types (source-code, migration, config, test)
+- [x] **ADAPT-07**: Software adapter: verification strategies per artifact type
+- [x] **ADAPT-08**: Software adapter: dependency patterns (schema→repo, repo→service, code→test)
+- [x] **ADAPT-09**: Research adapter with complete implementation
+- [x] **ADAPT-10**: Research adapter: decomposition heuristics (by-question, by-source, by-stage)
+- [x] **ADAPT-11**: Research adapter: atomicity criteria (single-question, bounded-sources)
+- [x] **ADAPT-12**: Research adapter: artifact types (finding, summary, synthesis, data)
+- [x] **ADAPT-13**: Research adapter: verification strategies per artifact type
+- [x] **ADAPT-14**: Research adapter: dependency patterns (source→finding, finding→synthesis)
+- [x] **ADAPT-15**: Template adapter for creating custom adapters
+- [x] **ADAPT-16**: Adapter-specific constitution templates
 
 ### Commands & Interface
 
@@ -300,22 +300,22 @@ Phase assignments for all v1 requirements.
 ### Phase 8: Domain Adapters
 | Requirement | Description | Status |
 |-------------|-------------|--------|
-| ADAPT-01 | Domain adapter interface | Pending |
-| ADAPT-02 | Adapter loading/integration | Pending |
-| ADAPT-03 | Software adapter (complete) | Pending |
-| ADAPT-04 | Software: decomposition heuristics | Pending |
-| ADAPT-05 | Software: atomicity criteria | Pending |
-| ADAPT-06 | Software: artifact types | Pending |
-| ADAPT-07 | Software: verification strategies | Pending |
-| ADAPT-08 | Software: dependency patterns | Pending |
-| ADAPT-09 | Research adapter (complete) | Pending |
-| ADAPT-10 | Research: decomposition heuristics | Pending |
-| ADAPT-11 | Research: atomicity criteria | Pending |
-| ADAPT-12 | Research: artifact types | Pending |
-| ADAPT-13 | Research: verification strategies | Pending |
-| ADAPT-14 | Research: dependency patterns | Pending |
-| ADAPT-15 | Template adapter | Pending |
-| ADAPT-16 | Constitution templates | Pending |
+| ADAPT-01 | Domain adapter interface | Complete |
+| ADAPT-02 | Adapter loading/integration | Complete |
+| ADAPT-03 | Software adapter (complete) | Complete |
+| ADAPT-04 | Software: decomposition heuristics | Complete |
+| ADAPT-05 | Software: atomicity criteria | Complete |
+| ADAPT-06 | Software: artifact types | Complete |
+| ADAPT-07 | Software: verification strategies | Complete |
+| ADAPT-08 | Software: dependency patterns | Complete |
+| ADAPT-09 | Research adapter (complete) | Complete |
+| ADAPT-10 | Research: decomposition heuristics | Complete |
+| ADAPT-11 | Research: atomicity criteria | Complete |
+| ADAPT-12 | Research: artifact types | Complete |
+| ADAPT-13 | Research: verification strategies | Complete |
+| ADAPT-14 | Research: dependency patterns | Complete |
+| ADAPT-15 | Template adapter | Complete |
+| ADAPT-16 | Constitution templates | Complete |
 
 ### Coverage Summary
 
