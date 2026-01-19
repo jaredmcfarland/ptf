@@ -133,12 +133,12 @@ Plans:
   3. `/ptf:retry [task]` retries a specific failed task; `/ptf:abort` stops execution preserving state
   4. Cascade handling blocks dependent tasks when prerequisite fails (configurable per task)
   5. Failure records in failures/ directory contain full context for debugging
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 07-01: TBD (retry strategies and backoff)
-- [ ] 07-02: TBD (cascade handling and failure records)
-- [ ] 07-03: TBD (recovery commands: resume, retry, abort)
+- [ ] 07-01-PLAN.md — Extend schemas and agents with failure strategy handlers and backoff
+- [ ] 07-02-PLAN.md — Create /ptf:retry and /ptf:abort commands
+- [ ] 07-03-PLAN.md — Update on-failure hook, SKILL.md, and config with failure handling
 
 ### Phase 8: Domain Adapters
 **Goal**: Prove framework generalization with software and research domain adapters
@@ -172,7 +172,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 4. State Management | 3/3 | Complete | 2026-01-19 |
 | 5. Execution Engine | 3/3 | Complete | 2026-01-19 |
 | 6. Verification | 2/2 | Complete | 2026-01-18 |
-| 7. Failure Handling | 0/TBD | Not started | - |
+| 7. Failure Handling | 0/3 | Planned | - |
 | 8. Domain Adapters | 0/TBD | Not started | - |
 
 ## Requirement Coverage
@@ -213,4 +213,5 @@ Note: The count discrepancy suggests CMD-* requirements duplicate functionality 
 *Phase 4 planned: 2026-01-18*
 *Phase 5 planned: 2026-01-19*
 *Phase 6 planned: 2026-01-19*
+*Phase 7 planned: 2026-01-18*
 *Depth: comprehensive (8 phases)*
