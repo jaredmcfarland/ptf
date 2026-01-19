@@ -1,0 +1,95 @@
+step: 5-dependency-graph
+created: 2026-01-19T00:00:00Z
+status: complete
+
+task_count: 7
+subgoal_count: 4
+
+# Explicit artifact dependencies inferred from input/output matching
+dependencies:
+  # spike-magnitude depends on baseline and spike data
+  - from: baseline-purchases
+    to: spike-magnitude
+    type: artifact
+    confidence: high
+    reason: "spike-magnitude needs baseline-purchases.json produced by baseline-purchases"
+
+  - from: spike-purchases
+    to: spike-magnitude
+    type: artifact
+    confidence: high
+    reason: "spike-magnitude needs spike-purchases.json produced by spike-purchases"
+
+  # root-cause-analysis depends on all prior analysis outputs
+  - from: baseline-purchases
+    to: root-cause-analysis
+    type: artifact
+    confidence: high
+    reason: "root-cause-analysis needs baseline-purchases.json produced by baseline-purchases"
+
+  - from: spike-purchases
+    to: root-cause-analysis
+    type: artifact
+    confidence: high
+    reason: "root-cause-analysis needs spike-purchases.json produced by spike-purchases"
+
+  - from: spike-magnitude
+    to: root-cause-analysis
+    type: artifact
+    confidence: high
+    reason: "root-cause-analysis needs spike-magnitude.md produced by spike-magnitude"
+
+  - from: acquisition-segments
+    to: root-cause-analysis
+    type: artifact
+    confidence: high
+    reason: "root-cause-analysis needs acquisition-segments.json produced by acquisition-segments"
+
+  - from: campaign-correlation
+    to: root-cause-analysis
+    type: artifact
+    confidence: high
+    reason: "root-cause-analysis needs campaign-correlation.json produced by campaign-correlation"
+
+  - from: user-property-segments
+    to: root-cause-analysis
+    type: artifact
+    confidence: high
+    reason: "root-cause-analysis needs user-property-segments.json produced by user-property-segments"
+
+# Tasks with no dependencies (can run in wave 1)
+roots:
+  - baseline-purchases
+  - spike-purchases
+  - acquisition-segments
+  - campaign-correlation
+  - user-property-segments
+
+# Final deliverables (outputs not consumed by other tasks)
+leaves:
+  - root-cause-analysis
+
+# Preliminary wave assignment (full computation in Phase 3)
+# Based on dependency structure:
+preliminary_waves:
+  wave_1:
+    - baseline-purchases
+    - spike-purchases
+    - acquisition-segments
+    - campaign-correlation
+    - user-property-segments
+    rationale: "No dependencies, can all run in parallel"
+
+  wave_2:
+    - spike-magnitude
+    rationale: "Depends on baseline-purchases and spike-purchases from wave 1"
+
+  wave_3:
+    - root-cause-analysis
+    rationale: "Depends on spike-magnitude (wave 2) and hypothesis tasks (wave 1)"
+
+# Cycle detection: No cycles found
+cycles_detected: false
+
+# Note: Full wave computation happens in Phase 3 (Dependency Analysis)
+# This graph captures what's evident from inputs/outputs only

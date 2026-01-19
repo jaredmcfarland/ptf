@@ -1,0 +1,51 @@
+id: user-property-segments
+name: Segment Spike Purchases by User Properties
+from_subgoal: hypothesis-investigation
+
+description: |
+  Query Mixpanel to segment spike-period purchases by user properties
+  to identify if a specific user cohort drove the anomaly.
+
+  Use mp CLI to run segmentation queries for the "Purchase" event:
+  - Date range: 2021-11-06 to 2021-11-07
+  - Group by relevant user properties:
+    - $country or $region (geographic concentration)
+    - $device (device type shift)
+    - user_type or plan_type (new vs existing users)
+    - Any custom user properties available
+
+  This helps identify if the spike was driven by:
+  - A specific geographic region (external event, holiday)
+  - New users vs returning users
+  - A specific user segment (enterprise, consumer)
+
+inputs:
+  - path: .orchestrator/artifacts/spike-purchases.json
+    description: Spike period purchase data for context
+    required: false
+
+outputs:
+  - path: .orchestrator/artifacts/user-property-segments.json
+    type: query-result
+    description: Spike purchases segmented by user properties
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/user-property-segments.json
+  - type: syntax
+    target: .orchestrator/artifacts/user-property-segments.json
+    expected: valid JSON
+
+context_notes: |
+  - Start with $country for geographic analysis
+  - Check $browser, $device for platform patterns
+  - Document which properties yielded meaningful segmentation
+  - Include baseline comparison if possible (is geographic distribution different?)
+
+context_budget:
+  estimated_input_tokens: 3000
+  max_context_percentage: 30
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

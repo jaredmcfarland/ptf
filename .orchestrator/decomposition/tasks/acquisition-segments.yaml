@@ -1,0 +1,49 @@
+id: acquisition-segments
+name: Segment Spike Purchases by Acquisition Source
+from_subgoal: hypothesis-investigation
+
+description: |
+  Query Mixpanel to segment spike-period purchases by user acquisition source
+  to identify if a specific channel drove the anomaly.
+
+  Use mp CLI to run a segmentation query for the "Purchase" event:
+  - Date range: 2021-11-06 to 2021-11-07
+  - Group by: $source, $initial_referring_domain, or utm_source property
+  - Compare: Check if one source dominates vs baseline distribution
+
+  This helps identify if the spike was driven by:
+  - A viral social media campaign
+  - A specific marketing channel
+  - Organic vs paid traffic shift
+  - Referral from a specific site
+
+inputs:
+  - path: .orchestrator/artifacts/spike-purchases.json
+    description: Spike period purchase data for context
+    required: false
+
+outputs:
+  - path: .orchestrator/artifacts/acquisition-segments.json
+    type: query-result
+    description: Spike purchases segmented by acquisition source
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/acquisition-segments.json
+  - type: syntax
+    target: .orchestrator/artifacts/acquisition-segments.json
+    expected: valid JSON
+
+context_notes: |
+  - Try multiple property names: $source, utm_source, $initial_referring_domain
+  - Document which property had the most meaningful data
+  - If no acquisition data exists, note this limitation in the output
+  - Include count per segment for comparison
+
+context_budget:
+  estimated_input_tokens: 3000
+  max_context_percentage: 30
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

@@ -1,0 +1,48 @@
+id: baseline-purchases
+name: Query Baseline Purchase Events
+from_subgoal: baseline-establishment
+
+description: |
+  Query Mixpanel for purchase events during baseline periods (Nov 1-5 and Nov 8-14, 2021)
+  to establish normal purchase volume and patterns.
+
+  Use mp CLI to run a segmentation query for the "Purchase" event:
+  - Date range: 2021-11-01 to 2021-11-05 AND 2021-11-08 to 2021-11-14
+  - Group by: day
+  - Output: Daily purchase counts
+
+  The query should return daily purchase counts that can be averaged to determine
+  baseline daily purchase volume.
+
+  DO NOT include Nov 6-7 in this query - those are the spike dates.
+
+inputs: []
+
+outputs:
+  - path: .orchestrator/artifacts/baseline-purchases.json
+    type: query-result
+    description: Daily purchase counts for baseline periods (Nov 1-5, Nov 8-14, 2021)
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/baseline-purchases.json
+  - type: syntax
+    target: .orchestrator/artifacts/baseline-purchases.json
+    expected: valid JSON
+  - type: contains
+    target: .orchestrator/artifacts/baseline-purchases.json
+    expected: "2021-11-01"
+
+context_notes: |
+  - Use `mp events --event "Purchase" --from 2021-11-01 --to 2021-11-05` format
+  - May need two queries (Nov 1-5 and Nov 8-14) combined into one output file
+  - Ensure output captures daily granularity for baseline averaging
+  - Document the exact mp CLI commands used for reproducibility
+
+context_budget:
+  estimated_input_tokens: 1000
+  max_context_percentage: 30
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
