@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=../../../../schemas/constitution.schema.yaml
+# Project Constitution - generated from research adapter template
+
+step: 3-constitution
+created: 2026-01-18T10:05:00Z
+status: complete
+
+# Immutable Principles
+principles:
+  # Core PTF Principles
+  - id: artifact-integrity
+    text: |
+      Every task produces exactly the artifacts declared in its outputs.
+      No undeclared findings or summaries.
+    enforcement: "Task verification fails if undeclared artifacts created"
+
+  - id: dependency-honesty
+    text: |
+      All source dependencies are declared in inputs.
+      Hidden dependencies make findings unverifiable.
+    enforcement: "Dependency analyzer flags undeclared sources"
+
+  - id: fresh-context
+    text: |
+      Every task must be completable by an agent starting with empty context,
+      loading only declared inputs.
+    enforcement: "Source summaries kept under 30% context window"
+
+  - id: verification
+    text: |
+      Every finding has a concrete verification step.
+      "Seems reasonable" is not verification.
+    enforcement: "Tasks without verify array are rejected"
+
+  # Domain Principles (Research)
+  - id: source-integrity
+    text: |
+      Always cite sources. Every claim traces to evidence.
+      No unsourced assertions.
+    enforcement: "Findings must have Source: field for each claim"
+
+  - id: claim-evidence-binding
+    text: |
+      Every claim in a finding must reference the specific evidence
+      supporting it.
+    enforcement: "Contains check for Evidence: section"
+
+  - id: methodology-consistency
+    text: |
+      Apply the same evaluation criteria across all sources within a task.
+    enforcement: "Methodology document defines criteria before analysis"
+
+  - id: bias-awareness
+    text: |
+      Document potential biases in sources and limitations in findings.
+    enforcement: "Findings must have Limitations: section"
+
+# Project-Specific Constraints
+project_constraints:
+  - id: time-period
+    text: "Only include sources from 2015-2024"
+    reason: "Focus on recent strategies relevant to modern practices"
+
+  - id: source-types
+    text: "Prioritize peer-reviewed academic papers and established industry reports"
+    reason: "Ensure evidence quality and credibility"
+
+  - id: evidence-threshold
+    text: "Strategies must have at least 2 independent supporting sources"
+    reason: "Avoid single-source claims in recommendations"
+
+  - id: actionable-focus
+    text: "Prioritize strategies that are implementable by development teams"
+    reason: "Practical value over theoretical interest"
+
+# Generated metadata
+generated:
+  timestamp: 2026-01-18T10:05:00Z
+  domain: research
+  adapter_version: "1.0"

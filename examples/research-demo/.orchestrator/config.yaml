@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=../../../schemas/config.schema.yaml
+# Project configuration - created by /ptf:init
+
+project_name: tech-debt-review
+goal: "Literature review: What are effective strategies for reducing technical debt?"
+domain_adapter: research
+created: 2026-01-18
+
+# Execution settings
+execution:
+  max_parallel_tasks: 2
+  checkpoint_frequency: wave
+  failure_strategy: escalate
+
+# State tracking
+status: initialized
+current_phase: decomposition

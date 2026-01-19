@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=../../../../schemas/analysis.schema.yaml
+# Goal Analysis - populated by /ptf:init after clarification
+
+step: 2-analyze
+created: 2026-01-18T10:00:00Z
+status: complete
+
+# Goal breakdown
+objective: |
+  Conduct a systematic literature review to identify effective strategies
+  for reducing technical debt in software projects. Synthesize findings
+  into actionable recommendations with supporting evidence.
+
+scope:
+  included:
+    - Definition and categorization of technical debt
+    - Causes and sources of technical debt
+    - Existing reduction strategies from literature
+    - Evidence of strategy effectiveness
+    - Synthesis of findings into recommendations
+  excluded:
+    - Original empirical research
+    - Tool-specific evaluations
+    - Cost-benefit analysis (financial)
+    - Organizational change management
+
+constraints:
+  - Time period: 2015-2024 (recent literature)
+  - Source types: Academic papers, industry reports
+  - Minimum sources: 10-15 relevant papers
+  - Maximum scope: 4 weeks of research time
+
+success_criteria:
+  - Clear definition of technical debt established
+  - At least 5 distinct reduction strategies identified
+  - Evidence assessment for each strategy
+  - Synthesis document with prioritized recommendations
+  - All claims trace to cited sources
+
+# Domain classification
+domain: research
+
+# Clarification responses (matched to adapter questions)
+clarifications:
+  research_question: "What strategies effectively reduce technical debt?"
+  existing_knowledge: "Some familiarity"
+  methodology: "Literature review"
+  scope_bounds:
+    time_period: "2015-2024"
+    source_types:
+      - "Academic papers"
+      - "Industry reports"
+    geographic_scope: "Global"
+    domain_constraints: "Software engineering focus"
+
+# Notes from clarification
+notes:
+  - "Focus on strategies with empirical evidence"
+  - "Include both academic and practitioner perspectives"
+  - "Prioritize actionable, implementable strategies"
