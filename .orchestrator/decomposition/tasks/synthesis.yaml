@@ -1,0 +1,53 @@
+id: synthesis
+name: Synthesize Research Findings
+from_subgoal: synthesis
+description: |
+  Integrate all research findings into a comprehensive synthesis that
+  provides actionable understanding of the Ralph Wiggum Loop technique.
+  This is the final deliverable of the research project.
+
+inputs:
+  - path: .orchestrator/artifacts/huntley-summary.md
+    type: summary
+    required: true
+  - path: .orchestrator/artifacts/mechanism-finding.md
+    type: finding
+    required: true
+  - path: .orchestrator/artifacts/patterns-finding.md
+    type: finding
+    required: true
+  - path: .orchestrator/artifacts/comparison-finding.md
+    type: finding
+    required: true
+  - path: .orchestrator/artifacts/demonstration.md
+    type: finding
+    required: true
+
+outputs:
+  - path: .orchestrator/artifacts/synthesis.md
+    type: synthesis
+    description: |
+      Final research synthesis including:
+      - Executive summary
+      - How the technique works (core mechanism)
+      - Implementation guidance
+      - Comparison with alternatives
+      - Practical demonstration
+      - Conclusions and recommendations
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/synthesis.md
+  - type: contains
+    target: .orchestrator/artifacts/synthesis.md
+    expected: "## Executive Summary"
+  - type: contains
+    target: .orchestrator/artifacts/synthesis.md
+    expected: "## Sources"
+  - type: contains
+    target: .orchestrator/artifacts/synthesis.md
+    expected: "## Conclusions"
+
+on_failure:
+  strategy: escalate
+  propagate_failure: true

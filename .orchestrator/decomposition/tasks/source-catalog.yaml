@@ -1,0 +1,28 @@
+id: source-catalog
+name: Catalog Primary Sources
+from_subgoal: literature-gathering
+description: |
+  Search for and catalog primary sources on the Ralph Wiggum Loop technique.
+  Focus on Geoff Huntley's original work, blog posts, GitHub repositories,
+  and community discussions. Create a structured catalog of sources with
+  metadata for later analysis.
+
+inputs: []  # Root task - gathers external sources
+
+outputs:
+  - path: .orchestrator/artifacts/source-catalog.yaml
+    type: data
+    description: |
+      Structured catalog of sources with URLs, authors, dates, and
+      brief descriptions of content. Categorized by source type.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/source-catalog.yaml
+  - type: contains
+    target: .orchestrator/artifacts/source-catalog.yaml
+    expected: "sources:"
+
+on_failure:
+  strategy: escalate
+  propagate_failure: true

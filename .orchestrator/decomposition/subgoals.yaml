@@ -1,0 +1,58 @@
+step: 2-subgoal-identification
+created: 2026-01-18T23:25:00Z
+status: complete
+
+subgoals:
+  - id: literature-gathering
+    name: Literature Gathering
+    description: |
+      Gather and catalog primary sources on the Ralph Wiggum Loop technique,
+      including Geoff Huntley's original work and community implementations.
+    success_criteria_mapped:
+      - "Identify key implementation patterns and examples"
+    outputs:
+      - .orchestrator/artifacts/source-catalog.yaml
+      - .orchestrator/artifacts/huntley-summary.md
+
+  - id: mechanism-analysis
+    name: Mechanism Analysis
+    description: |
+      Analyze and document how the Ralph Wiggum Loop technique works,
+      extracting the core mechanism and implementation patterns.
+    success_criteria_mapped:
+      - "Document the core mechanism of Ralph Wiggum Loop"
+      - "Identify key implementation patterns and examples"
+    outputs:
+      - .orchestrator/artifacts/mechanism-finding.md
+      - .orchestrator/artifacts/patterns-finding.md
+
+  - id: comparative-study
+    name: Comparative Study
+    description: |
+      Compare the Ralph Wiggum Loop with at least two other self-referential
+      prompting techniques to establish relative positioning.
+    success_criteria_mapped:
+      - "Compare with at least 2 other self-referential techniques"
+    outputs:
+      - .orchestrator/artifacts/comparison-finding.md
+
+  - id: empirical-testing
+    name: Empirical Testing
+    description: |
+      Create a working demonstration of the Ralph Wiggum Loop technique
+      to verify understanding through practical implementation.
+    success_criteria_mapped:
+      - "Create working demonstration of the technique"
+    outputs:
+      - .orchestrator/artifacts/demonstration.md
+      - demo-code/
+
+  - id: synthesis
+    name: Research Synthesis
+    description: |
+      Integrate all findings into actionable understanding of the
+      Ralph Wiggum Loop technique.
+    success_criteria_mapped:
+      - "Synthesize findings into actionable understanding"
+    outputs:
+      - .orchestrator/artifacts/synthesis.md

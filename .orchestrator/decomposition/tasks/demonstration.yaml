@@ -1,0 +1,41 @@
+id: demonstration
+name: Create Working Demonstration
+from_subgoal: empirical-testing
+description: |
+  Implement a working demonstration of the Ralph Wiggum Loop technique.
+  Create a simple but functional example that illustrates the core
+  mechanism in action.
+
+inputs:
+  - path: .orchestrator/artifacts/mechanism-finding.md
+    type: finding
+    required: true
+  - path: .orchestrator/artifacts/patterns-finding.md
+    type: finding
+    required: true
+
+outputs:
+  - path: .orchestrator/artifacts/demonstration.md
+    type: finding
+    description: |
+      Documentation of the demonstration including:
+      - What it demonstrates
+      - How to run it
+      - Expected behavior
+      - Observations from running it
+  - path: demo-code/
+    type: source-code
+    description: Working demonstration code
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/demonstration.md
+  - type: exists
+    target: demo-code/
+  - type: contains
+    target: .orchestrator/artifacts/demonstration.md
+    expected: "## Demonstration"
+
+on_failure:
+  strategy: escalate
+  propagate_failure: true

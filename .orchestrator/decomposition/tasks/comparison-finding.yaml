@@ -1,0 +1,36 @@
+id: comparison-finding
+name: Compare Self-Referential Techniques
+from_subgoal: comparative-study
+description: |
+  Compare the Ralph Wiggum Loop with at least two other self-referential
+  prompting techniques. Establish how it differs, its unique strengths,
+  and when to prefer one technique over another.
+
+inputs:
+  - path: .orchestrator/artifacts/mechanism-finding.md
+    type: finding
+    required: true
+
+outputs:
+  - path: .orchestrator/artifacts/comparison-finding.md
+    type: finding
+    description: |
+      Comparative analysis including:
+      - At least 2 other self-referential techniques
+      - Key differences and similarities
+      - Strengths and weaknesses of each
+      - When to use each technique
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/comparison-finding.md
+  - type: contains
+    target: .orchestrator/artifacts/comparison-finding.md
+    expected: "## Comparison"
+  - type: contains
+    target: .orchestrator/artifacts/comparison-finding.md
+    expected: "## Sources"
+
+on_failure:
+  strategy: escalate
+  propagate_failure: true

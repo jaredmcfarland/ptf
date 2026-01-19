@@ -1,0 +1,110 @@
+step: 5-dependency-graph
+created: 2026-01-18T23:25:00Z
+status: complete
+
+dependencies:
+  - from: source-catalog
+    to: huntley-summary
+    type: artifact
+    confidence: high
+    reason: "huntley-summary reads source-catalog.yaml"
+
+  - from: huntley-summary
+    to: mechanism-finding
+    type: artifact
+    confidence: high
+    reason: "mechanism-finding reads huntley-summary.md"
+
+  - from: mechanism-finding
+    to: patterns-finding
+    type: artifact
+    confidence: high
+    reason: "patterns-finding reads mechanism-finding.md"
+
+  - from: source-catalog
+    to: patterns-finding
+    type: artifact
+    confidence: high
+    reason: "patterns-finding reads source-catalog.yaml"
+
+  - from: mechanism-finding
+    to: comparison-finding
+    type: artifact
+    confidence: high
+    reason: "comparison-finding reads mechanism-finding.md"
+
+  - from: mechanism-finding
+    to: demonstration
+    type: artifact
+    confidence: high
+    reason: "demonstration reads mechanism-finding.md"
+
+  - from: patterns-finding
+    to: demonstration
+    type: artifact
+    confidence: high
+    reason: "demonstration reads patterns-finding.md"
+
+  - from: huntley-summary
+    to: synthesis
+    type: artifact
+    confidence: high
+    reason: "synthesis reads huntley-summary.md"
+
+  - from: mechanism-finding
+    to: synthesis
+    type: artifact
+    confidence: high
+    reason: "synthesis reads mechanism-finding.md"
+
+  - from: patterns-finding
+    to: synthesis
+    type: artifact
+    confidence: high
+    reason: "synthesis reads patterns-finding.md"
+
+  - from: comparison-finding
+    to: synthesis
+    type: artifact
+    confidence: high
+    reason: "synthesis reads comparison-finding.md"
+
+  - from: demonstration
+    to: synthesis
+    type: artifact
+    confidence: high
+    reason: "synthesis reads demonstration.md"
+
+waves:
+  - wave: 1
+    tasks: [source-catalog]
+    description: "Root task - gather sources"
+  - wave: 2
+    tasks: [huntley-summary]
+    description: "Summarize primary source"
+  - wave: 3
+    tasks: [mechanism-finding]
+    description: "Document core mechanism"
+  - wave: 4
+    tasks: [patterns-finding, comparison-finding]
+    description: "Parallel analysis tasks"
+  - wave: 5
+    tasks: [demonstration]
+    description: "Empirical testing"
+  - wave: 6
+    tasks: [synthesis]
+    description: "Final integration"
+
+critical_path:
+  - source-catalog
+  - huntley-summary
+  - mechanism-finding
+  - patterns-finding
+  - demonstration
+  - synthesis
+
+statistics:
+  total_tasks: 7
+  total_waves: 6
+  max_parallelism: 2
+  total_dependencies: 12
