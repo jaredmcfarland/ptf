@@ -481,6 +481,120 @@ verification:
 ```
 </operation>
 
+<operation name="mark_blocked">
+**Mark Task as Blocked**
+
+Called when a task cannot proceed due to dependency failure.
+
+**Input:** task_id, reason, blocked_by (task_id of failed dependency)
+
+**Steps:**
+
+1. Update task state file (.orchestrator/state/tasks/{task-id}.yaml):
+   ```yaml
+   task_id: {id}
+   status: blocked
+   blocked_by:
+     - {failed_task_id}
+   error: "Blocked by failed dependency: {failed_task_id}"
+   ```
+
+2. Update execution.yaml:
+   - Increment tasks_blocked (add field if not present)
+   - Decrement tasks_pending
+
+3. Append task_blocked event:
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"task_blocked","task":"'${TASK_ID}'","blocked_by":"'${FAILED_TASK}'","reason":"cascade_failure"}' >> .orchestrator/history/events.jsonl
+   ```
+
+**Output:** Task marked as blocked
+</operation>
+
+<operation name="create_failure_record">
+**Create Failure Record**
+
+Creates detailed failure record for debugging in .orchestrator/failures/.
+
+**Input:** task_id, attempt, failure_mode, error_details, context
+
+**Steps:**
+
+1. Create failures directory if needed:
+   ```bash
+   mkdir -p .orchestrator/failures
+   ```
+
+2. Write failure record:
+   ```bash
+   cat > .orchestrator/failures/${TASK_ID}-attempt-${ATTEMPT}.yaml << EOF
+   task_id: ${TASK_ID}
+   task_name: ${TASK_NAME}
+   wave: ${WAVE}
+   attempt: ${ATTEMPT}
+
+   started: ${STARTED}
+   failed: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+   duration_s: ${DURATION}
+
+   failure_mode: ${FAILURE_MODE}
+
+   error:
+     type: ${ERROR_TYPE}
+     category: ${ERROR_CATEGORY}
+     message: |
+       ${ERROR_MESSAGE}
+
+   context:
+     inputs_loaded: ${INPUTS}
+     files_written: ${OUTPUTS}
+
+   recovery_action: ${NEXT_ACTION}
+   EOF
+   ```
+
+3. Update task state with failure_record path:
+   ```yaml
+   failure_record: .orchestrator/failures/${TASK_ID}-attempt-${ATTEMPT}.yaml
+   ```
+
+4. Append failure_record_created event:
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"failure_record_created","task":"'${TASK_ID}'","attempt":'${ATTEMPT}',"path":"'${RECORD_PATH}'"}' >> .orchestrator/history/events.jsonl
+   ```
+
+**Output:** Failure record file path
+</operation>
+
+<operation name="mark_skipped">
+**Mark Task as Skipped**
+
+Called when skip strategy is applied to a failed task.
+
+**Input:** task_id, reason
+
+**Steps:**
+
+1. Update task state file:
+   ```yaml
+   task_id: {id}
+   status: skipped
+   skipped_reason: {reason}
+   skipped_at: {timestamp}
+   ```
+
+2. Update execution.yaml:
+   - Increment tasks_skipped (add field if not present)
+   - Decrement tasks_failed or tasks_pending as appropriate
+
+3. Append task_skipped event:
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"task_skipped","task":"'${TASK_ID}'","reason":"'${REASON}'"}' >> .orchestrator/history/events.jsonl
+   ```
+
+**Output:** Task marked as skipped
+</operation>
+
 </execution_flow>
 
 <event_logging>
@@ -519,8 +633,12 @@ Task events:
 - task_started: Task execution began
 - task_completed: Task finished successfully
 - task_failed: Task execution failed
-- task_skipped: Task skipped (optional dependency missing)
+- task_blocked: Task blocked by failed dependency (cascade failure)
+- task_skipped: Task skipped (skip strategy applied)
 - task_retry: Task being retried after failure
+
+Failure events:
+- failure_record_created: Detailed failure record written to .orchestrator/failures/
 
 Artifact events:
 - artifact_produced: New artifact created
@@ -674,6 +792,80 @@ Return after record_verification operation:
 - Task state: .orchestrator/state/tasks/{task-id}.yaml
 - Event logged: verification_completed
 - Manifest updated: {N} artifacts marked verified
+```
+
+---
+
+## TASK BLOCKED
+
+Return after mark_blocked operation:
+
+```markdown
+## TASK BLOCKED
+
+**Task:** {task_id}
+**Status:** blocked
+**Blocked By:** {failed_task_id}
+
+### Cascade Failure
+
+Task cannot proceed because dependency `{failed_task_id}` failed.
+
+### State Updated
+
+- Task state: .orchestrator/state/tasks/{task-id}.yaml
+- Status changed: pending -> blocked
+- Event logged: task_blocked
+- Execution counters: tasks_blocked++, tasks_pending--
+```
+
+---
+
+## FAILURE RECORD CREATED
+
+Return after create_failure_record operation:
+
+```markdown
+## FAILURE RECORD CREATED
+
+**Task:** {task_id}
+**Attempt:** {N}
+**Record:** .orchestrator/failures/{task_id}-attempt-{N}.yaml
+
+### Failure Details
+
+| Field | Value |
+|-------|-------|
+| Failure Mode | {failure_mode} |
+| Error Type | {error_type} |
+| Duration | {duration_s}s |
+
+### State Updated
+
+- Failure record: .orchestrator/failures/{task_id}-attempt-{N}.yaml
+- Task state: failure_record path updated
+- Event logged: failure_record_created
+```
+
+---
+
+## TASK SKIPPED
+
+Return after mark_skipped operation:
+
+```markdown
+## TASK SKIPPED
+
+**Task:** {task_id}
+**Status:** skipped
+**Reason:** {reason}
+
+### State Updated
+
+- Task state: .orchestrator/state/tasks/{task-id}.yaml
+- Status changed: {previous} -> skipped
+- Event logged: task_skipped
+- Execution counters: tasks_skipped++, tasks_{previous}--
 ```
 
 </structured_returns>
