@@ -13,7 +13,7 @@ PTF transforms complex goals into atomic tasks with dependency-aware parallel ex
 - [x] **Phase 1: Foundation** - YAML schemas, plugin structure, skill documentation
 - [x] **Phase 2: Decomposition** - Goal analysis, recursive task breakdown, validation
 - [x] **Phase 3: Dependency Analysis** - Multi-pass inference, cycle detection, wave computation
-- [ ] **Phase 4: State Management** - File-based persistence, checkpoints, resume capability
+- [x] **Phase 4: State Management** - File-based persistence, checkpoints, resume capability
 - [ ] **Phase 5: Execution Engine** - Wave-based parallel execution, fresh context dispatch
 - [ ] **Phase 6: Verification** - Multi-modal verification, independent verifier subagent
 - [ ] **Phase 7: Failure Handling** - Retry strategies, cascade handling, recovery commands
@@ -86,9 +86,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Create state schemas (execution-state, task-state, wave-state, artifact-manifest)
-- [ ] 04-02-PLAN.md — Create event-log schema and ptf-state-manager subagent (checkpoint protocol)
-- [ ] 04-03-PLAN.md — Create /ptf:status and /ptf:resume commands
+- [x] 04-01-PLAN.md — Create state schemas (execution-state, task-state, wave-state, artifact-manifest)
+- [x] 04-02-PLAN.md — Create event-log schema and ptf-state-manager subagent (checkpoint protocol)
+- [x] 04-03-PLAN.md — Create /ptf:status and /ptf:resume commands
 
 ### Phase 5: Execution Engine
 **Goal**: Execute tasks in parallel waves with fresh context per task
@@ -170,7 +170,7 @@ Note: Phases 3 and 4 can execute in parallel (no dependency between them).
 | 1. Foundation | 3/3 | Complete | 2026-01-18 |
 | 2. Decomposition | 4/4 | Complete | 2026-01-18 |
 | 3. Dependency Analysis | 3/3 | Complete | 2026-01-18 |
-| 4. State Management | 0/3 | Planned | - |
+| 4. State Management | 3/3 | Complete | 2026-01-19 |
 | 5. Execution Engine | 0/TBD | Not started | - |
 | 6. Verification | 0/TBD | Not started | - |
 | 7. Failure Handling | 0/TBD | Not started | - |

@@ -65,16 +65,16 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### State
 
-- [ ] **STATE-01**: File-based state persistence in .orchestrator/ directory
-- [ ] **STATE-02**: execution.yaml as master state file (status, wave, progress, blockers)
-- [ ] **STATE-03**: Per-task state files in state/tasks/ (status, attempts, outputs, verification)
-- [ ] **STATE-04**: Per-wave state files in state/waves/ (status, tasks, completion time)
-- [ ] **STATE-05**: Artifact manifest in artifacts/manifest.yaml (registry of produced files)
-- [ ] **STATE-06**: Event log in history/events.jsonl (append-only, structured events)
-- [ ] **STATE-07**: Wave boundary checkpoints (automatic state save after each wave)
-- [ ] **STATE-08**: `/ptf:status` command shows current execution state
-- [ ] **STATE-09**: `/ptf:resume` command resumes from interruption point
-- [ ] **STATE-10**: Resume validates existing outputs before continuing
+- [x] **STATE-01**: File-based state persistence in .orchestrator/ directory
+- [x] **STATE-02**: execution.yaml as master state file (status, wave, progress, blockers)
+- [x] **STATE-03**: Per-task state files in state/tasks/ (status, attempts, outputs, verification)
+- [x] **STATE-04**: Per-wave state files in state/waves/ (status, tasks, completion time)
+- [x] **STATE-05**: Artifact manifest in artifacts/manifest.yaml (registry of produced files)
+- [x] **STATE-06**: Event log in history/events.jsonl (append-only, structured events)
+- [x] **STATE-07**: Wave boundary checkpoints (automatic state save after each wave)
+- [x] **STATE-08**: `/ptf:status` command shows current execution state
+- [x] **STATE-09**: `/ptf:resume` command resumes from interruption point
+- [x] **STATE-10**: Resume validates existing outputs before continuing
 
 ### Verification
 
@@ -231,17 +231,17 @@ Phase assignments for all v1 requirements.
 ### Phase 4: State Management
 | Requirement | Description | Status |
 |-------------|-------------|--------|
-| STATE-01 | File-based state in .orchestrator/ | Pending |
-| STATE-02 | execution.yaml master state | Pending |
-| STATE-03 | Per-task state files | Pending |
-| STATE-04 | Per-wave state files | Pending |
-| STATE-05 | Artifact manifest | Pending |
-| STATE-06 | Event log (JSONL) | Pending |
-| STATE-07 | Wave boundary checkpoints | Pending |
-| STATE-08 | /ptf:status command | Pending |
-| STATE-09 | /ptf:resume command | Pending |
-| STATE-10 | Resume validation | Pending |
-| CMD-06 | /ptf:status command interface | Pending |
+| STATE-01 | File-based state in .orchestrator/ | Complete |
+| STATE-02 | execution.yaml master state | Complete |
+| STATE-03 | Per-task state files | Complete |
+| STATE-04 | Per-wave state files | Complete |
+| STATE-05 | Artifact manifest | Complete |
+| STATE-06 | Event log (JSONL) | Complete |
+| STATE-07 | Wave boundary checkpoints | Complete |
+| STATE-08 | /ptf:status command | Complete |
+| STATE-09 | /ptf:resume command | Complete |
+| STATE-10 | Resume validation | Complete |
+| CMD-06 | /ptf:status command interface | Complete |
 
 ### Phase 5: Execution Engine
 | Requirement | Description | Status |
