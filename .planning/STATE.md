@@ -19,9 +19,9 @@ Progress: [█████████████████░░] ~79%
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: 2m 22s
-- Total execution time: ~46 min
+- Total plans completed: 20
+- Average duration: 2m 25s
+- Total execution time: ~49 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Progress: [█████████████████░░] ~79%
 | 04-state-management | 3 | 7m 1s | 2m 20s |
 | 05-execution-engine | 3 | 11m 9s | 3m 43s |
 | 06-verification | 2 | 5m 9s | 2m 35s |
-| 07-failure-handling | 2 | 1m 34s | 0m 47s |
+| 07-failure-handling | 2 | 4m 34s | 2m 17s |
 
 **Recent Trend:**
-- Last 5 plans: 05-03 (4m 41s), 06-01 (2m 32s), 06-02 (2m 37s), 07-01 (N/A), 07-02 (1m 34s)
-- Trend: Fast execution for failure handling commands
+- Last 5 plans: 05-03 (4m 41s), 06-01 (2m 32s), 06-02 (2m 37s), 07-01 (3m), 07-02 (1m 34s)
+- Trend: Fast execution for failure handling phase
 
 *Updated after each plan completion*
 
@@ -102,6 +102,10 @@ Recent decisions affecting current work:
 - [06-02]: Three verification modes (single task, --all, --wave)
 - [06-02]: record_verification preserves task status while tracking verification failures
 - [06-02]: Verification results persisted to task state and event log
+- [07-01]: Exponential backoff as default (2^(attempt-1) * base_seconds)
+- [07-01]: propagate_failure defaults to true (cascade to dependents)
+- [07-01]: final_fallback determines action when max_attempts exhausted (default: escalate)
+- [07-01]: Failure records stored in .orchestrator/failures/{task-id}-attempt-{N}.yaml
 - [07-02]: Retry validates task status (only failed/blocked can be retried)
 - [07-02]: Cascade unblock on retry (dependents checked and potentially unblocked)
 - [07-02]: Abort preserves state via checkpoint protocol
