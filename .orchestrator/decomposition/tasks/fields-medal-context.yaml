@@ -1,0 +1,63 @@
+id: fields-medal-context
+name: Research Fields Medal Selection Process
+from_subgoal: fields-medal-context
+
+description: |
+  Research the Fields Medal award to understand:
+
+  1. **Eligibility Criteria**
+     - Age requirement (under 40 on January 1 of award year)
+     - What counts as qualifying mathematical work
+     - Whether ICM attendance/talk is required
+
+  2. **Selection Process**
+     - Who comprises the selection committee
+     - Timeline and announcement schedule
+     - How many medals awarded per cycle (typically 2-4)
+
+  3. **Historical Patterns**
+     - Past selection rates by field of mathematics
+     - Geographic/institutional distribution patterns
+     - Relationship between ICM invited talks and selection
+     - Any observable biases in selection history
+
+  4. **2026 Specific Context**
+     - When is ICM 2026 and where
+     - Announcement timing
+     - Any known committee composition
+
+  Output a structured summary that can be used to evaluate individual candidates.
+  Focus on FACTUAL information only - no speculation about specific candidates.
+
+inputs: []
+
+outputs:
+  - path: .orchestrator/artifacts/fields-medal-context.md
+    type: evidence
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/fields-medal-context.md
+  - type: contains
+    target: .orchestrator/artifacts/fields-medal-context.md
+    expected: "Eligibility"
+  - type: contains
+    target: .orchestrator/artifacts/fields-medal-context.md
+    expected: "Selection"
+  - type: contains
+    target: .orchestrator/artifacts/fields-medal-context.md
+    expected: "Historical"
+
+context_notes: |
+  - Start research from scratch - no assumed knowledge
+  - Use authoritative sources (IMU, past announcements, academic sources)
+  - Note uncertainty clearly where information is limited
+  - This output will be input to ALL subsequent candidate research tasks
+
+context_budget:
+  estimated_input_tokens: 0
+  max_context_percentage: 15
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

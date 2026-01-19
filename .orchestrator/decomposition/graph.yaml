@@ -1,0 +1,350 @@
+step: 5-dependency-graph
+created: 2026-01-19T10:25:00Z
+status: complete
+
+task_count: 16
+subgoal_count: 5
+
+# Explicit artifact dependencies based on declared inputs/outputs
+dependencies:
+  # Wave 1 -> Wave 2: Context to Candidates
+  - from: fields-medal-context
+    to: candidate-hong-wang
+    type: artifact
+    confidence: high
+    reason: "candidate-hong-wang needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-jacob-tsimerman
+    type: artifact
+    confidence: high
+    reason: "candidate-jacob-tsimerman needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-john-pardon
+    type: artifact
+    confidence: high
+    reason: "candidate-john-pardon needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-yu-deng
+    type: artifact
+    confidence: high
+    reason: "candidate-yu-deng needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-julian-sahasrabudhe
+    type: artifact
+    confidence: high
+    reason: "candidate-julian-sahasrabudhe needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-sam-raskin
+    type: artifact
+    confidence: high
+    reason: "candidate-sam-raskin needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-jack-thorne
+    type: artifact
+    confidence: high
+    reason: "candidate-jack-thorne needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-will-sawin
+    type: artifact
+    confidence: high
+    reason: "candidate-will-sawin needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-aleksandr-logunov
+    type: artifact
+    confidence: high
+    reason: "candidate-aleksandr-logunov needs fields-medal-context.md produced by fields-medal-context"
+
+  - from: fields-medal-context
+    to: candidate-alexander-efimov
+    type: artifact
+    confidence: high
+    reason: "candidate-alexander-efimov needs fields-medal-context.md produced by fields-medal-context"
+
+  # Wave 2 -> Wave 3: Candidates + Context to Estimates
+  # Each estimate task needs context AND all 10 candidate profiles
+  # Listing context dependency (already satisfied by Wave 1) and candidate dependencies
+
+  - from: fields-medal-context
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs fields-medal-context.md"
+
+  - from: candidate-hong-wang
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs hong-wang.md"
+
+  - from: candidate-jacob-tsimerman
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs jacob-tsimerman.md"
+
+  - from: candidate-john-pardon
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs john-pardon.md"
+
+  - from: candidate-yu-deng
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs yu-deng.md"
+
+  - from: candidate-julian-sahasrabudhe
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs julian-sahasrabudhe.md"
+
+  - from: candidate-sam-raskin
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs sam-raskin.md"
+
+  - from: candidate-jack-thorne
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs jack-thorne.md"
+
+  - from: candidate-will-sawin
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs will-sawin.md"
+
+  - from: candidate-aleksandr-logunov
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs aleksandr-logunov.md"
+
+  - from: candidate-alexander-efimov
+    to: estimate-base-rate
+    type: artifact
+    confidence: high
+    reason: "estimate-base-rate needs alexander-efimov.md"
+
+  # Narrative estimate dependencies (same pattern)
+  - from: fields-medal-context
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs fields-medal-context.md"
+
+  - from: candidate-hong-wang
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs hong-wang.md"
+
+  - from: candidate-jacob-tsimerman
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs jacob-tsimerman.md"
+
+  - from: candidate-john-pardon
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs john-pardon.md"
+
+  - from: candidate-yu-deng
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs yu-deng.md"
+
+  - from: candidate-julian-sahasrabudhe
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs julian-sahasrabudhe.md"
+
+  - from: candidate-sam-raskin
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs sam-raskin.md"
+
+  - from: candidate-jack-thorne
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs jack-thorne.md"
+
+  - from: candidate-will-sawin
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs will-sawin.md"
+
+  - from: candidate-aleksandr-logunov
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs aleksandr-logunov.md"
+
+  - from: candidate-alexander-efimov
+    to: estimate-narrative
+    type: artifact
+    confidence: high
+    reason: "estimate-narrative needs alexander-efimov.md"
+
+  # Contrarian estimate dependencies (same pattern)
+  - from: fields-medal-context
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs fields-medal-context.md"
+
+  - from: candidate-hong-wang
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs hong-wang.md"
+
+  - from: candidate-jacob-tsimerman
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs jacob-tsimerman.md"
+
+  - from: candidate-john-pardon
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs john-pardon.md"
+
+  - from: candidate-yu-deng
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs yu-deng.md"
+
+  - from: candidate-julian-sahasrabudhe
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs julian-sahasrabudhe.md"
+
+  - from: candidate-sam-raskin
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs sam-raskin.md"
+
+  - from: candidate-jack-thorne
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs jack-thorne.md"
+
+  - from: candidate-will-sawin
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs will-sawin.md"
+
+  - from: candidate-aleksandr-logunov
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs aleksandr-logunov.md"
+
+  - from: candidate-alexander-efimov
+    to: estimate-contrarian
+    type: artifact
+    confidence: high
+    reason: "estimate-contrarian needs alexander-efimov.md"
+
+  # Wave 3 -> Wave 4: Estimates to Synthesis
+  - from: estimate-base-rate
+    to: synthesis
+    type: artifact
+    confidence: high
+    reason: "synthesis needs base-rate-estimate.md"
+
+  - from: estimate-narrative
+    to: synthesis
+    type: artifact
+    confidence: high
+    reason: "synthesis needs narrative-estimate.md"
+
+  - from: estimate-contrarian
+    to: synthesis
+    type: artifact
+    confidence: high
+    reason: "synthesis needs contrarian-estimate.md"
+
+  # Wave 4 -> Wave 5: Synthesis to Recommendation
+  - from: synthesis
+    to: recommendation
+    type: artifact
+    confidence: high
+    reason: "recommendation needs synthesis.md"
+
+# Tasks with no dependencies (Wave 1)
+roots:
+  - fields-medal-context
+
+# Final deliverables (outputs not consumed by other tasks)
+leaves:
+  - recommendation
+
+# Preliminary wave assignment (will be refined in Phase 3)
+preliminary_waves:
+  wave_1:
+    tasks: [fields-medal-context]
+    description: "Research Fields Medal context and historical patterns"
+
+  wave_2:
+    tasks:
+      - candidate-hong-wang
+      - candidate-jacob-tsimerman
+      - candidate-john-pardon
+      - candidate-yu-deng
+      - candidate-julian-sahasrabudhe
+      - candidate-sam-raskin
+      - candidate-jack-thorne
+      - candidate-will-sawin
+      - candidate-aleksandr-logunov
+      - candidate-alexander-efimov
+    description: "Research all 10 candidates in parallel"
+
+  wave_3:
+    tasks:
+      - estimate-base-rate
+      - estimate-narrative
+      - estimate-contrarian
+    description: "Generate probability estimates from 3 perspectives in parallel"
+
+  wave_4:
+    tasks: [synthesis]
+    description: "Synthesize perspective estimates into calibrated probabilities"
+
+  wave_5:
+    tasks: [recommendation]
+    description: "Calculate edge and produce final recommendation"
+
+# Graph statistics
+stats:
+  total_tasks: 16
+  total_dependencies: 56
+  max_parallelism: 10  # Wave 2
+  critical_path_length: 5  # waves
+  average_dependencies_per_task: 3.5

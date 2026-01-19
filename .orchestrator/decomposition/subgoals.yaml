@@ -1,0 +1,90 @@
+step: 2-subgoal-identification
+created: 2026-01-19T10:15:00Z
+status: complete
+
+goal_reference: .orchestrator/decomposition/analysis.yaml
+
+# Using by-perspective heuristic from prediction-market adapter
+# Combined with by-stage workflow for research-heavy domain
+
+subgoals:
+  - id: fields-medal-context
+    name: Fields Medal Context Research
+    description: |
+      Research the Fields Medal selection process, eligibility criteria, and
+      historical patterns. This foundational knowledge is required before
+      evaluating any individual candidates.
+    outputs:
+      - .orchestrator/artifacts/fields-medal-context.md
+    depends_on_outputs_from: []
+    coverage_mapping:
+      - "Understand Fields Medal selection criteria and historical patterns" (direct)
+
+  - id: candidate-research
+    name: Candidate Profile Research
+    description: |
+      Research each of the 10 candidates' mathematical contributions, career
+      trajectory, and eligibility status. Produces individual profiles that
+      feed into perspective estimates.
+    outputs:
+      - .orchestrator/artifacts/candidates/hong-wang.md
+      - .orchestrator/artifacts/candidates/jacob-tsimerman.md
+      - .orchestrator/artifacts/candidates/john-pardon.md
+      - .orchestrator/artifacts/candidates/yu-deng.md
+      - .orchestrator/artifacts/candidates/julian-sahasrabudhe.md
+      - .orchestrator/artifacts/candidates/sam-raskin.md
+      - .orchestrator/artifacts/candidates/jack-thorne.md
+      - .orchestrator/artifacts/candidates/will-sawin.md
+      - .orchestrator/artifacts/candidates/aleksandr-logunov.md
+      - .orchestrator/artifacts/candidates/alexander-efimov.md
+    depends_on_outputs_from:
+      - fields-medal-context
+    coverage_mapping:
+      - "Research each candidate's mathematical contributions and eligibility" (direct)
+
+  - id: perspective-estimates
+    name: Multi-Perspective Probability Estimates
+    description: |
+      Generate independent probability estimates from three required perspectives:
+      Base Rate, Narrative, and Contrarian. Each perspective analyzes all
+      candidates using different analytical lenses.
+    outputs:
+      - .orchestrator/artifacts/estimates/base-rate-estimate.md
+      - .orchestrator/artifacts/estimates/narrative-estimate.md
+      - .orchestrator/artifacts/estimates/contrarian-estimate.md
+    depends_on_outputs_from:
+      - fields-medal-context
+      - candidate-research
+    coverage_mapping:
+      - "Produce calibrated probability estimates from multiple perspectives" (direct)
+
+  - id: synthesis
+    name: Probability Synthesis
+    description: |
+      Integrate the three perspective estimates into a calibrated consensus
+      probability for each candidate. Resolve disagreements between perspectives
+      with explicit reasoning.
+    outputs:
+      - .orchestrator/artifacts/synthesis.md
+    depends_on_outputs_from:
+      - perspective-estimates
+    coverage_mapping:
+      - "Produce calibrated probability estimates from multiple perspectives" (synthesis)
+
+  - id: recommendation
+    name: Edge Calculation and Recommendation
+    description: |
+      Calculate edge vs market prices for all candidates. Identify any candidates
+      with 15%+ edge. Produce final recommendation (position or pass).
+    outputs:
+      - .orchestrator/artifacts/recommendation.md
+    depends_on_outputs_from:
+      - synthesis
+    coverage_mapping:
+      - "Identify any candidates with 15%+ estimated edge vs market" (direct)
+      - "Deliver actionable recommendation (position or pass)" (direct)
+
+validation:
+  coverage: "All 5 success criteria mapped to subgoals. Fields Medal context, candidate research, multi-perspective estimates, edge calculation, and recommendation all covered."
+  overlap: "No overlap - each subgoal produces distinct artifacts with clear boundaries."
+  coupling: "Linear dependency chain: context -> candidates -> estimates -> synthesis -> recommendation. Minimal cross-cutting concerns."

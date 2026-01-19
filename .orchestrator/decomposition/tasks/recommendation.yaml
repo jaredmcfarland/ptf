@@ -1,0 +1,94 @@
+id: recommendation
+name: Edge Calculation and Position Recommendation
+from_subgoal: recommendation
+
+description: |
+  Calculate edge vs market prices and produce final recommendation.
+
+  **Edge Calculation:**
+
+  For each candidate, calculate:
+  ```
+  Edge = Estimated Probability - Market Price
+  ```
+
+  Market prices (from analysis.yaml):
+  - Hong Wang: 81%
+  - Jacob Tsimerman: 67%
+  - John Pardon: 46%
+  - Yu Deng: 36%
+  - Julian Sahasrabudhe: 30%
+  - Sam Raskin: 24%
+  - Jack Thorne: 19%
+  - Will Sawin: 16%
+  - Aleksandr Logunov: 8%
+  - Alexander Efimov: 7%
+
+  **Edge Threshold:**
+  Per constitution principle #9: No position recommended unless edge >= 15%.
+
+  **Analysis Required:**
+
+  1. **Edge Calculation Table**
+     | Candidate | Synthesis Est. | Market Price | Edge | Meets Threshold? |
+
+  2. **Position Candidates**
+     - Which candidates (if any) have edge >= 15%?
+     - For each: YES position (underpriced) or NO position (overpriced)?
+     - Confidence in the edge estimate
+
+  3. **Risk Assessment**
+     - What could make the edge estimate wrong?
+     - How uncertain is the synthesis estimate?
+     - Are there correlated risks across candidates?
+
+  4. **Final Recommendation**
+     One of:
+     - **POSITION**: Specific candidates to bet YES or NO on, with sizing guidance
+     - **PASS**: No candidates meet 15% edge threshold
+     - **MORE RESEARCH**: Edge is close to threshold, need more information
+
+  **Output Format:**
+  - Edge calculation table
+  - Position recommendation (or PASS)
+  - If positions: direction (YES/NO), confidence, risk factors
+  - Summary of key findings from research
+
+inputs:
+  - path: .orchestrator/artifacts/synthesis.md
+    description: Synthesized probability estimates
+    required: true
+  - path: .orchestrator/decomposition/analysis.yaml
+    description: Market prices and edge threshold
+    required: true
+
+outputs:
+  - path: .orchestrator/artifacts/recommendation.md
+    type: recommendation
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/recommendation.md
+  - type: contains
+    target: .orchestrator/artifacts/recommendation.md
+    expected: "Edge"
+  - type: contains
+    target: .orchestrator/artifacts/recommendation.md
+    expected: "15%"
+  - type: contains
+    target: .orchestrator/artifacts/recommendation.md
+    expected: "Recommendation"
+
+context_notes: |
+  - 15% edge threshold is STRICT - close calls are passes
+  - Both YES (underpriced) and NO (overpriced) positions are valid
+  - If no edge >= 15%, the right answer is PASS
+  - Include confidence levels - a 15% edge with low confidence is different than with high confidence
+
+context_budget:
+  estimated_input_tokens: 15000
+  max_context_percentage: 20
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

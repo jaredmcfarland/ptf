@@ -1,0 +1,112 @@
+id: estimate-narrative
+name: Narrative Probability Estimates
+from_subgoal: perspective-estimates
+
+description: |
+  Generate probability estimates for each candidate using NARRATIVE analysis.
+
+  **Narrative Perspective:**
+  Analyze candidates through the lens of current momentum, storylines, and
+  the mathematical community's narrative about who "deserves" recognition.
+
+  **Required Analysis per Candidate:**
+
+  1. **Current Momentum**
+     - Recent breakthroughs or major results
+     - Recent awards or recognition
+     - Buzz in the mathematical community
+     - Recent high-profile talks or publications
+
+  2. **Narrative Strength**
+     - How compelling is the "story" of this mathematician?
+     - Does their work solve longstanding problems?
+     - Are they seen as transforming a field?
+     - What do experts and peers say about them?
+
+  3. **Selection Committee Psychology**
+     - What message would selecting this candidate send?
+     - How does this candidate fit the "Fields Medal narrative"?
+     - Any political or symbolic considerations?
+
+  4. **Probability Estimate**
+     - Based on narrative strength and momentum
+     - Probability estimate (0-100%)
+     - Confidence in estimate (high/medium/low)
+     - Key uncertainties
+
+  **Output Format:**
+  For each of the 10 candidates, produce:
+  - Narrative summary (what's the story?)
+  - Recent momentum indicators
+  - Narrative probability estimate (0-100%)
+  - Confidence level
+  - Key uncertainties
+
+  IMPORTANT: This is ONE perspective only. Do not attempt synthesis.
+  Use narrative, momentum, and community perception as primary evidence.
+
+inputs:
+  - path: .orchestrator/artifacts/fields-medal-context.md
+    description: Selection criteria and patterns
+    required: true
+  - path: .orchestrator/artifacts/candidates/hong-wang.md
+    description: Hong Wang profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/jacob-tsimerman.md
+    description: Jacob Tsimerman profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/john-pardon.md
+    description: John Pardon profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/yu-deng.md
+    description: Yu Deng profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/julian-sahasrabudhe.md
+    description: Julian Sahasrabudhe profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/sam-raskin.md
+    description: Sam Raskin profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/jack-thorne.md
+    description: Jack Thorne profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/will-sawin.md
+    description: Will Sawin profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/aleksandr-logunov.md
+    description: Aleksandr Logunov profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/alexander-efimov.md
+    description: Alexander Efimov profile
+    required: true
+
+outputs:
+  - path: .orchestrator/artifacts/estimates/narrative-estimate.md
+    type: estimate
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/estimates/narrative-estimate.md
+  - type: contains
+    target: .orchestrator/artifacts/estimates/narrative-estimate.md
+    expected: "Narrative"
+  - type: contains
+    target: .orchestrator/artifacts/estimates/narrative-estimate.md
+    expected: "Hong Wang"
+  - type: contains
+    target: .orchestrator/artifacts/estimates/narrative-estimate.md
+    expected: "%"
+
+context_notes: |
+  - Focus on stories, momentum, and community perception
+  - What would make the committee excited to give this person an award?
+  - Consider recency - what has happened in last 2-4 years matters more
+  - This perspective may diverge from base rates - that's expected
+
+context_budget:
+  estimated_input_tokens: 30000
+  max_context_percentage: 25
+
+on_failure:
+  strategy: retry
+  max_attempts: 2

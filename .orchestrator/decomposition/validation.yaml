@@ -1,0 +1,96 @@
+step: 4-validation
+created: 2026-01-19T10:20:00Z
+status: passed
+
+task_count: 16
+
+checks:
+  coverage:
+    status: passed
+    details: |
+      All 5 success criteria mapped:
+      1. "Understand Fields Medal selection criteria and historical patterns"
+         -> fields-medal-context
+      2. "Research each candidate's mathematical contributions and eligibility"
+         -> candidate-* (10 tasks, one per candidate)
+      3. "Produce calibrated probability estimates from multiple perspectives"
+         -> estimate-base-rate, estimate-narrative, estimate-contrarian, synthesis
+      4. "Identify any candidates with 15%+ estimated edge vs market"
+         -> recommendation
+      5. "Deliver actionable recommendation (position or pass)"
+         -> recommendation
+
+  overlap:
+    status: passed
+    details: |
+      No overlapping outputs detected. Each task produces unique files:
+      - 1 context file
+      - 10 candidate profile files (in candidates/ subdirectory)
+      - 3 estimate files (in estimates/ subdirectory)
+      - 1 synthesis file
+      - 1 recommendation file
+      Total: 16 unique output paths
+
+  atomicity:
+    status: passed
+    details: |
+      All tasks pass atomicity criteria:
+      - single-perspective: Each estimate task uses ONE perspective only
+      - bounded-sources: Candidate tasks bounded to profile research
+      - verifiable-finding: All tasks produce concrete outputs with verify checks
+      - fresh-context-completable: All context budgets <= 30%
+
+      Detailed check:
+      | Task | Outputs | Context % | Verifiable |
+      |------|---------|-----------|------------|
+      | fields-medal-context | 1 | 15% | Yes (exists+contains) |
+      | candidate-* (x10) | 1 each | 20% | Yes (exists+contains) |
+      | estimate-base-rate | 1 | 25% | Yes (exists+contains) |
+      | estimate-narrative | 1 | 25% | Yes (exists+contains) |
+      | estimate-contrarian | 1 | 25% | Yes (exists+contains) |
+      | synthesis | 1 | 25% | Yes (exists+contains) |
+      | recommendation | 1 | 20% | Yes (exists+contains) |
+
+  input_coverage:
+    status: passed
+    details: |
+      All required inputs are either:
+      - Produced by another task in the decomposition, OR
+      - External files that exist (analysis.yaml)
+
+      Dependency chain verified:
+      1. fields-medal-context: No inputs (root task)
+      2. candidate-*: Requires fields-medal-context.md (produced by task 1)
+      3. estimate-*: Requires context + all candidate profiles (produced by tasks 1-11)
+      4. synthesis: Requires all estimate files (produced by estimate-* tasks)
+      5. recommendation: Requires synthesis.md + analysis.yaml (synthesis produced, analysis external)
+
+  output_usefulness:
+    status: passed
+    warnings: []
+    details: |
+      All outputs are either consumed or are final deliverables:
+      - fields-medal-context.md: Consumed by candidate-* and estimate-* tasks
+      - candidates/*.md: Consumed by estimate-* tasks
+      - estimates/*.md: Consumed by synthesis task
+      - synthesis.md: Consumed by recommendation task
+      - recommendation.md: FINAL DELIVERABLE (success criteria #5)
+
+issues: []
+
+summary: |
+  Decomposition validation PASSED.
+
+  Structure:
+  - 5 subgoals covering all success criteria
+  - 16 atomic tasks with clear dependencies
+  - Linear pipeline: context -> candidates -> estimates -> synthesis -> recommendation
+
+  Parallelism opportunities:
+  - Wave 1: fields-medal-context (1 task)
+  - Wave 2: candidate-* (10 parallel tasks)
+  - Wave 3: estimate-* (3 parallel tasks)
+  - Wave 4: synthesis (1 task)
+  - Wave 5: recommendation (1 task)
+
+  Total parallel efficiency: 16 tasks in 5 waves

@@ -1,0 +1,117 @@
+id: estimate-contrarian
+name: Contrarian Probability Estimates
+from_subgoal: perspective-estimates
+
+description: |
+  Generate probability estimates for each candidate using CONTRARIAN analysis.
+
+  **Contrarian Perspective:**
+  Explicitly look for reasons the market consensus might be WRONG.
+  Challenge the conventional wisdom for each candidate.
+
+  **Required Analysis per Candidate:**
+
+  1. **Consensus View Challenge**
+     - What is the market/consensus saying about this candidate?
+     - What assumptions underlie that consensus?
+     - What could make those assumptions wrong?
+
+  2. **Overlooked Factors**
+     - What might the market be missing?
+     - Non-obvious reasons this candidate might win/lose
+     - Recent developments not yet priced in
+     - Selection committee dynamics
+
+  3. **Overrated Analysis (for high-priced candidates)**
+     - Why might 81% for Hong Wang be too high?
+     - What risks or weaknesses are being ignored?
+     - Historical examples of frontrunners who didn't win
+
+  4. **Underrated Analysis (for low-priced candidates)**
+     - Why might 7% for Efimov be too low?
+     - Dark horse potential
+     - Factors that could cause an upset
+
+  5. **Contrarian Probability**
+     - If you had to bet AGAINST the market, where would you bet?
+     - Contrarian probability estimate (0-100%)
+     - Confidence in estimate (high/medium/low)
+     - What would have to be true for contrarian view to be right?
+
+  **Output Format:**
+  For each of the 10 candidates, produce:
+  - Market consensus summary
+  - Contrarian argument (bull case for underdogs, bear case for favorites)
+  - Contrarian probability estimate (0-100%)
+  - Confidence level
+  - What would validate/invalidate contrarian view
+
+  IMPORTANT: This perspective should INTENTIONALLY differ from market consensus.
+  The goal is to stress-test assumptions, not find the "right" answer.
+
+inputs:
+  - path: .orchestrator/artifacts/fields-medal-context.md
+    description: Selection criteria and patterns
+    required: true
+  - path: .orchestrator/artifacts/candidates/hong-wang.md
+    description: Hong Wang profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/jacob-tsimerman.md
+    description: Jacob Tsimerman profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/john-pardon.md
+    description: John Pardon profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/yu-deng.md
+    description: Yu Deng profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/julian-sahasrabudhe.md
+    description: Julian Sahasrabudhe profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/sam-raskin.md
+    description: Sam Raskin profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/jack-thorne.md
+    description: Jack Thorne profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/will-sawin.md
+    description: Will Sawin profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/aleksandr-logunov.md
+    description: Aleksandr Logunov profile
+    required: true
+  - path: .orchestrator/artifacts/candidates/alexander-efimov.md
+    description: Alexander Efimov profile
+    required: true
+
+outputs:
+  - path: .orchestrator/artifacts/estimates/contrarian-estimate.md
+    type: estimate
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/estimates/contrarian-estimate.md
+  - type: contains
+    target: .orchestrator/artifacts/estimates/contrarian-estimate.md
+    expected: "Contrarian"
+  - type: contains
+    target: .orchestrator/artifacts/estimates/contrarian-estimate.md
+    expected: "Hong Wang"
+  - type: contains
+    target: .orchestrator/artifacts/estimates/contrarian-estimate.md
+    expected: "%"
+
+context_notes: |
+  - Your job is to be the devil's advocate
+  - Don't just be contrarian for its own sake - find genuine weak points
+  - Market prices to challenge: Hong Wang 81%, Jacob Tsimerman 67%, John Pardon 46%
+  - Low prices to consider upside: Efimov 7%, Logunov 8%, Sawin 16%
+  - 15%+ edge is required - look for mispriced candidates
+
+context_budget:
+  estimated_input_tokens: 30000
+  max_context_percentage: 25
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
