@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2025-01-18)
 
 **Core value:** Fresh context execution for every task — context windows are the scarce resource in AI computation
-**Current focus:** Phase 5 (Execution Engine) - In Progress
+**Current focus:** Phase 5 in progress - Execution Engine (2/3 plans complete)
 
 ## Current Position
 
 Phase: 5 of 8 (Execution Engine)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 05-01-PLAN.md (Task Executor)
+Last activity: 2026-01-19 — Completed 05-02-PLAN.md (Wave Orchestrator)
 
-Progress: [██████████░░] ~56%
+Progress: [██████████░░] ~60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: 2m 15s
-- Total execution time: ~31 min
+- Total execution time: ~34 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [██████████░░] ~56%
 | 02-decomposition | 4 | 9m 12s | 2m 18s |
 | 03-dependency-analysis | 3 | 6m 40s | 2m 13s |
 | 04-state-management | 3 | 7m 1s | 2m 20s |
-| 05-execution-engine | 1 | 3m 28s | 3m 28s |
+| 05-execution-engine | 2 | 6m 28s | 3m 14s |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (1m 31s), 04-02 (2m 37s), 04-03 (2m 53s), 05-01 (3m 28s)
+- Last 5 plans: 04-01 (1m 31s), 04-02 (2m 37s), 04-03 (2m 53s), 05-01 (3m 28s), 05-02 (3m)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -86,6 +86,9 @@ Recent decisions affecting current work:
 - [05-01]: 5-step execution flow: understand, load_inputs, execute, verify, signal
 - [05-01]: BLOCKED reason categories: missing_input, verification_failed, execution_error, max_iterations
 - [05-01]: Executor has no memory between iterations (fresh context enforced)
+- [05-02]: Batched dispatch for max_parallel_tasks (chunk tasks, execute batch, wait, next batch)
+- [05-02]: State manager handles ALL persistence (orchestrator never writes state directly)
+- [05-02]: Wave dependencies validated before dispatch
 
 ### Pending Todos
 
@@ -98,8 +101,8 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-19 00:42 UTC
-Stopped at: Completed 05-01-PLAN.md (Task Executor)
+Stopped at: Completed 05-02-PLAN.md (Wave Orchestrator)
 Resume file: None
 
 ---
-*Next action: Execute 05-02-PLAN.md (Wave Orchestrator)*
+*Next action: Execute 05-03-PLAN.md (Execution Commands)*
