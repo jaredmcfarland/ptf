@@ -319,10 +319,62 @@ When escalation triggers, options are presented: retry, skip, abort, or replan. 
 
 ## Domain Adapters
 
-Adapters customize PTF for specific domains (`adapters/`):
+Adapters customize PTF for specific domains. Located in `adapters/`:
 - `software-development.yaml` - Code, tests, configs, deployments
 - `research.yaml` - Literature review, experiments, analysis, writing
 - `template.yaml` - Base for custom adapters
+
+### Adapter Sections
+
+| Section | Purpose | Used By |
+|---------|---------|---------|
+| `questioning` | Init clarification questions | `/ptf:init` |
+| `decomposition` | Heuristics and atomicity criteria | `ptf-decomposer` |
+| `constitution` | Project principles template | `/ptf:init` |
+| `artifacts` | Types and verification strategies | `ptf-verifier` |
+| `dependencies` | Inference patterns | `ptf-dependency-analyzer` |
+
+### Section Examples
+
+**Questioning** - init clarification: `{category, question, why, options_template}`
+
+**Decomposition** - task breakdown:
+```yaml
+subgoal_heuristics: [{name, description, when_to_use}]
+atomicity_criteria: [{criterion, check, fail_signal}]
+max_recursion_depth: 5
+```
+
+**Artifacts** - output types and verification:
+```yaml
+types: [{name: source-code, extensions: [.ts, .js]}]
+verification_strategies:
+  source-code: [{method: exists}, {method: syntax}]
+```
+
+**Dependencies** - inference patterns:
+```yaml
+common_patterns: [{name, from_type, to_type, confidence}]
+inference_hints: [{pattern: "import.*from", implies: "..."}]
+```
+
+### Creating Custom Adapters
+
+1. Copy `adapters/template.yaml` to `adapters/{your-domain}.yaml`
+2. Replace `[CUSTOMIZE]` markers with domain-specific content
+3. Test with `/ptf:init --domain={your-domain}`
+
+**Requirements:** 5 sections present, 3+ init_questions, 2+ heuristics, 3+ atomicity criteria, 2+ artifact types, 2+ dependency patterns.
+
+### Adapter Integration Points
+
+| Phase | How Adapter Is Used |
+|-------|---------------------|
+| `/ptf:init` | Loads questioning, asks init_questions |
+| `/ptf:decompose` | Applies heuristics, checks atomicity |
+| `/ptf:plan` | Uses dependency patterns for inference |
+| `/ptf:verify` | Applies verification_strategies |
+| Constitution | Generated from template during init |
 
 ## Key Terms
 
