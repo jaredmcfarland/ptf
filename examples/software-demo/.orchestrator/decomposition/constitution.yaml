@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../../../schemas/constitution.schema.yaml
+# Project Constitution - generated from software-development adapter template
+
+step: 3-constitution
+created: 2026-01-18T10:05:00Z
+status: complete
+
+# Immutable Principles
+principles:
+  # Core PTF Principles
+  - id: artifact-integrity
+    text: |
+      Every task produces exactly the artifacts declared in its outputs.
+      No undeclared file modifications.
+    enforcement: "Task verification fails if undeclared files created"
+
+  - id: dependency-honesty
+    text: |
+      All file dependencies are declared in inputs.
+      Hidden dependencies break parallel execution.
+    enforcement: "Dependency analyzer flags undeclared inputs"
+
+  - id: fresh-context
+    text: |
+      Every task must be completable by an agent starting with empty context,
+      loading only declared inputs.
+    enforcement: "Atomicity check ensures <30% context window"
+
+  - id: verification
+    text: |
+      Every artifact has a concrete verification step.
+      "Looks good" is not verification.
+    enforcement: "Tasks without verify array are rejected"
+
+  # Domain Principles (Software Development)
+  - id: type-safety
+    text: |
+      Generated code must pass type checking.
+      Include type check in verification.
+    enforcement: "npx tsc --noEmit in verify for .ts files"
+
+  - id: test-coverage
+    text: |
+      Logic-containing code has corresponding tests.
+      Tests are separate tasks (code -> test dependency).
+    enforcement: "Service/route tasks must have dependent test task"
+
+  - id: api-contracts
+    text: |
+      Endpoints follow existing patterns if present.
+      New patterns require explicit documentation.
+    enforcement: "API tasks verify against patterns doc if exists"
+
+# Project-Specific Constraints
+project_constraints:
+  - id: jwt-library
+    text: "Use jose library for all JWT operations (sign, verify, decode)"
+    reason: "Standardize on single JWT library for security audit"
+
+  - id: password-hashing
+    text: "Use bcrypt with 10 rounds for password hashing"
+    reason: "Industry standard, balance between security and performance"
+
+  - id: token-expiry
+    text: "Access tokens: 15 minutes, Refresh tokens: 7 days"
+    reason: "Short-lived access tokens limit exposure, refresh enables UX"
+
+  - id: prisma-orm
+    text: "Use Prisma for all database operations"
+    reason: "Type-safe ORM, migration support, consistent patterns"
+
+# Generated metadata
+generated:
+  timestamp: 2026-01-18T10:05:00Z
+  domain: software-development
+  adapter_version: "1.0"

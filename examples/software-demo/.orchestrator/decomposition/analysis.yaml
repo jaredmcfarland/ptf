@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=../../../../schemas/analysis.schema.yaml
+# Goal Analysis - populated by /ptf:init after clarification
+
+step: 2-analyze
+created: 2026-01-18T10:00:00Z
+status: complete
+
+# Goal breakdown
+objective: |
+  Implement a user authentication API with JWT tokens.
+  Support login, logout, and token refresh flows.
+  Store user credentials and sessions in database.
+
+scope:
+  included:
+    - User registration with email/password
+    - Login endpoint returning JWT access token
+    - Token refresh flow with refresh tokens
+    - Logout endpoint invalidating sessions
+    - Password hashing with bcrypt
+  excluded:
+    - OAuth/social login providers
+    - Two-factor authentication
+    - Password reset email flow
+    - Admin user management
+
+constraints:
+  - Must use Prisma for database access
+  - Must use jose library for JWT operations
+  - Access tokens expire in 15 minutes
+  - Refresh tokens expire in 7 days
+  - Passwords must be hashed with bcrypt (10 rounds)
+
+success_criteria:
+  - User can register with email and password
+  - User can login and receive access + refresh tokens
+  - User can refresh expired access token
+  - User can logout and invalidate all sessions
+  - Invalid/expired tokens are rejected with 401
+
+# Domain classification
+domain: software-development
+
+# Clarification responses (matched to adapter questions)
+clarifications:
+  core_value: "Token validation and refresh flow"
+  existing_code: "Greenfield"
+  integration_points:
+    - "Database (PostgreSQL via Prisma)"
+    - "Auth library (jose for JWT)"
+  scale: "Medium (5-15 files)"
+
+# Notes from clarification
+notes:
+  - "Critical path: Token validation must be fast and secure"
+  - "No existing patterns - define new conventions"
+  - "Database and auth library are only external deps"

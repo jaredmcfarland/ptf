@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=../../../schemas/config.schema.yaml
+# Project configuration - created by /ptf:init
+
+project_name: auth-api-demo
+goal: "Build a user authentication API with JWT tokens"
+domain_adapter: software-development
+created: 2026-01-18
+
+# Execution settings
+execution:
+  max_parallel_tasks: 3
+  checkpoint_frequency: wave
+  failure_strategy: escalate
+
+# State tracking
+status: initialized
+current_phase: decomposition
