@@ -1,0 +1,123 @@
+id: spec-ipc-api
+name: IPC and API Specification
+from_subgoal: ipc-api-spec
+
+description: |
+  Write the comprehensive IPC and API Specification for Data Codex. This
+  defines all inter-process communication messages, protocols, and API
+  surfaces between main process, renderer process, and worker threads.
+
+  The document must include:
+
+  1. **IPC Architecture Overview** (diagram)
+     - All IPC channels and their purpose
+     - Message flow directions (request/response, event push, streaming)
+     - Protocol per channel (ipcMain/ipcRenderer, MessagePort, Worker postMessage)
+
+  2. **Preload Bridge API** (contextBridge exposed methods)
+     Complete API surface with TypeScript signatures:
+     - Database namespace:
+       - query(sql: string, params?: any[]): Promise<ArrowBuffer>
+       - queryStream(sql: string, params?: any[]): AsyncIterable<ArrowChunk>
+       - getSchema(tableName: string): Promise<TableSchema>
+       - listTables(): Promise<TableInfo[]>
+     - DataSource namespace:
+       - addLocalSource(path: string): Promise<DataSourceId>
+       - addRemoteSource(config: ConnectorConfig): Promise<DataSourceId>
+       - removeSource(id: DataSourceId): Promise<void>
+       - listSources(): Promise<DataSource[]>
+       - refreshSource(id: DataSourceId): Promise<void>
+     - Search namespace:
+       - vectorSearch(query: string, topK: number): Promise<SearchResult[]>
+       - fullTextSearch(query: string, options: FTSOptions): Promise<SearchResult[]>
+       - hybridSearch(query: string, options: HybridOptions): Promise<SearchResult[]>
+     - AI namespace:
+       - sendMessage(conversationId: string, message: string): AsyncIterable<ChatChunk>
+       - listConversations(): Promise<Conversation[]>
+       - getConversation(id: string): Promise<Conversation>
+     - Publishing namespace:
+       - exportDashboard(id: string, options: ExportOptions): Promise<ExportResult>
+       - getTemplates(): Promise<Template[]>
+
+  3. **Arrow IPC Message Types**
+     - QueryRequest: { queryId, sql, params, options }
+     - QueryResponse: { queryId, schema, recordBatches[], complete }
+     - StreamChunk: { queryId, batchIndex, recordBatch, isLast }
+     - QueryError: { queryId, error, code, message }
+     - QueryCancel: { queryId }
+
+  4. **Worker Thread Protocols**
+     - Query Worker messages: execute, cancel, status
+     - Embedding Worker messages: embed, batchEmbed, status
+     - Ingestion Worker messages: parse, import, cancel, progress
+
+  5. **Event Bus Messages** (renderer-pushed events)
+     - source:added, source:updated, source:removed, source:error
+     - query:started, query:progress, query:completed, query:error
+     - ingestion:started, ingestion:progress, ingestion:completed
+     - ai:streaming, ai:tool-use, ai:completed, ai:error
+
+  6. **Error Codes and Handling**
+     - Error code taxonomy (E1xxx: database, E2xxx: connector, E3xxx: AI, etc.)
+     - Error response format
+     - Retry-eligible vs terminal errors
+
+  7. **Type Definitions** (TypeScript)
+     - All shared types used across IPC boundaries
+     - Arrow schema type mappings
+     - Request/response type pairs
+
+inputs:
+  - path: .orchestrator/artifacts/design/02-electron-process-model.md
+    required: true
+    description: Process model (IPC channels, preload bridge)
+  - path: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    required: true
+    description: Arrow data plane (IPC protocol design)
+  - path: .orchestrator/artifacts/design/04-database-integration.md
+    required: true
+    description: Database integration (query API surface)
+  - path: .orchestrator/artifacts/design/08-visualization-engine.md
+    required: true
+    description: Visualization engine (data request patterns)
+  - path: .orchestrator/artifacts/data-model/data-model-spec.md
+    required: true
+    description: Data model (entity types for API responses)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (Arrow-first)
+
+outputs:
+  - path: .orchestrator/artifacts/api-spec/ipc-api-spec.md
+    type: api-spec
+    description: |
+      Complete IPC and API specification with preload bridge API,
+      Arrow IPC messages, worker protocols, events, and type definitions.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/api-spec/ipc-api-spec.md
+  - type: contains
+    target: .orchestrator/artifacts/api-spec/ipc-api-spec.md
+    expected: "contextBridge"
+  - type: contains
+    target: .orchestrator/artifacts/api-spec/ipc-api-spec.md
+    expected: "ArrowBuffer"
+  - type: contains
+    target: .orchestrator/artifacts/api-spec/ipc-api-spec.md
+    expected: "QueryRequest"
+  - type: contains
+    target: .orchestrator/artifacts/api-spec/ipc-api-spec.md
+    expected: "Worker"
+  - type: contains
+    target: .orchestrator/artifacts/api-spec/ipc-api-spec.md
+    expected: "Error"
+
+context_budget:
+  estimated_tokens: 55000
+  category: acceptable
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

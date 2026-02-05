@@ -1,0 +1,120 @@
+id: spec-data-model
+name: Data Model Specification
+from_subgoal: data-model
+
+description: |
+  Write the comprehensive Data Model Specification for Data Codex. This
+  defines all persistent data entities, their relationships, which database
+  stores each entity, and all constraints.
+
+  The document must include:
+
+  1. **Data Model Overview**
+     - Entity relationship diagram (Mermaid ERD)
+     - Storage location map: which database stores which entities
+     - Data lifecycle: creation, update, archival, deletion
+
+  2. **DuckDB Entities** (analytical data)
+     - Registered Table: table_name, source_path, format, schema, created_at, row_count
+     - Registered View: view_name, sql_definition, dependencies
+     - Query History: query_id, sql, execution_time, row_count, timestamp
+     - Cached Remote Data: source_id, cache_table, ttl, last_refresh
+
+  3. **LanceDB Entities** (vector/search data)
+     - Schema Embedding: table_name, column_info, embedding_vector, updated_at
+     - Query Embedding: query_text, embedding_vector, timestamp
+     - Document Embedding: doc_id, chunk_text, embedding_vector, metadata
+     - Full-Text Index: indexed_content, tokenized_text, source_ref
+
+  4. **RxDB Entities** (UI state and metadata)
+     - DataSource: id, name, type (local/remote), path_or_url, config, status, last_scan
+     - DataSourceSchema: source_id, columns (name, type, nullable, stats)
+     - Dashboard: id, name, layout_config, panels, created_at, updated_at
+     - DashboardPanel: id, dashboard_id, type, config, position, size
+     - UserPreference: key, value, category
+     - Conversation: id, title, messages, created_at, updated_at
+     - ChatMessage: id, conversation_id, role, content, tool_calls, timestamp
+     - ConnectorConfig: id, type, name, config_schema, credentials_ref
+
+  5. **Entity Relationships**
+     - DataSource -> DataSourceSchema (1:many)
+     - DataSource -> RegisteredTable (1:1)
+     - Dashboard -> DashboardPanel (1:many)
+     - Conversation -> ChatMessage (1:many)
+     - RegisteredTable -> SchemaEmbedding (1:many)
+     - Cross-database references: how RxDB metadata references DuckDB tables
+
+  6. **Schema Definitions** (JSON Schema or TypeScript interfaces)
+     - Complete field-level definitions for each entity
+     - Required vs optional fields
+     - Field constraints: types, ranges, patterns, defaults
+     - Indexes: which fields are indexed in each database
+
+  7. **Migration Strategy**
+     - Version numbering scheme
+     - RxDB schema migration hooks
+     - DuckDB schema evolution (ALTER TABLE patterns)
+     - LanceDB index rebuild triggers
+
+  8. **Data Integrity Rules**
+     - Cross-database consistency constraints
+     - Orphan cleanup: what happens when a data source is removed
+     - Foreign key equivalents across databases
+
+inputs:
+  - path: .orchestrator/artifacts/design/04-database-integration.md
+    required: true
+    description: Database integration design (which DB stores what)
+  - path: .orchestrator/artifacts/design/06-local-ingestion.md
+    required: true
+    description: Local ingestion (metadata catalog entities)
+  - path: .orchestrator/artifacts/design/07-remote-connectors.md
+    required: true
+    description: Remote connectors (connector config entities)
+  - path: .orchestrator/artifacts/design/09-ai-integration.md
+    required: true
+    description: AI integration (conversation and chat entities)
+  - path: .orchestrator/artifacts/design/05-vector-search-fts.md
+    required: true
+    description: Vector search design (embedding entities)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles
+
+outputs:
+  - path: .orchestrator/artifacts/data-model/data-model-spec.md
+    type: data-model
+    description: |
+      Complete data model specification with all entities, relationships,
+      storage locations, schema definitions, and migration strategy.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/data-model/data-model-spec.md
+  - type: contains
+    target: .orchestrator/artifacts/data-model/data-model-spec.md
+    expected: "```mermaid"
+  - type: contains
+    target: .orchestrator/artifacts/data-model/data-model-spec.md
+    expected: "DuckDB"
+  - type: contains
+    target: .orchestrator/artifacts/data-model/data-model-spec.md
+    expected: "LanceDB"
+  - type: contains
+    target: .orchestrator/artifacts/data-model/data-model-spec.md
+    expected: "RxDB"
+  - type: contains
+    target: .orchestrator/artifacts/data-model/data-model-spec.md
+    expected: "DataSource"
+  - type: contains
+    target: .orchestrator/artifacts/data-model/data-model-spec.md
+    expected: "Migration"
+
+context_budget:
+  estimated_tokens: 50000
+  category: acceptable
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

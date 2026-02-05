@@ -1,350 +1,530 @@
 step: 5-dependency-graph
-created: 2026-01-19T10:25:00Z
+created: 2026-02-04T00:00:00Z
 status: complete
 
-task_count: 16
-subgoal_count: 5
+task_count: 27
+subgoal_count: 11
 
-# Explicit artifact dependencies based on declared inputs/outputs
+# Explicit artifact dependencies (from declared inputs/outputs)
 dependencies:
-  # Wave 1 -> Wave 2: Context to Candidates
-  - from: fields-medal-context
-    to: candidate-hong-wang
+  # Research -> ADR dependencies
+  - from: research-duckdb-electron
+    to: adr-database-trio
     type: artifact
     confidence: high
-    reason: "candidate-hong-wang needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-database-trio needs duckdb-electron.md produced by research-duckdb-electron"
 
-  - from: fields-medal-context
-    to: candidate-jacob-tsimerman
+  - from: research-lancedb-electron
+    to: adr-database-trio
     type: artifact
     confidence: high
-    reason: "candidate-jacob-tsimerman needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-database-trio needs lancedb-electron.md produced by research-lancedb-electron"
 
-  - from: fields-medal-context
-    to: candidate-john-pardon
+  - from: research-rxdb-electron
+    to: adr-database-trio
     type: artifact
     confidence: high
-    reason: "candidate-john-pardon needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-database-trio needs rxdb-electron.md produced by research-rxdb-electron"
 
-  - from: fields-medal-context
-    to: candidate-yu-deng
+  - from: research-arrow-ipc-electron
+    to: adr-arrow-data-plane
     type: artifact
     confidence: high
-    reason: "candidate-yu-deng needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-arrow-data-plane needs arrow-ipc-electron.md produced by research-arrow-ipc-electron"
 
-  - from: fields-medal-context
-    to: candidate-julian-sahasrabudhe
+  - from: research-duckdb-electron
+    to: adr-arrow-data-plane
     type: artifact
     confidence: high
-    reason: "candidate-julian-sahasrabudhe needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-arrow-data-plane needs duckdb-electron.md for Arrow output capabilities"
 
-  - from: fields-medal-context
-    to: candidate-sam-raskin
+  - from: research-perspective-electron
+    to: adr-visualization-stack
     type: artifact
     confidence: high
-    reason: "candidate-sam-raskin needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-visualization-stack needs perspective-electron.md produced by research-perspective-electron"
 
-  - from: fields-medal-context
-    to: candidate-jack-thorne
+  - from: research-claude-sdk-mcp-acp
+    to: adr-ai-integration
     type: artifact
     confidence: high
-    reason: "candidate-jack-thorne needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-ai-integration needs claude-sdk-mcp-acp.md produced by research-claude-sdk-mcp-acp"
 
-  - from: fields-medal-context
-    to: candidate-will-sawin
+  - from: research-embedding-models
+    to: adr-ai-integration
     type: artifact
     confidence: high
-    reason: "candidate-will-sawin needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-ai-integration needs embedding-models.md produced by research-embedding-models"
 
-  - from: fields-medal-context
-    to: candidate-aleksandr-logunov
+  - from: research-electron-process-model
+    to: adr-process-architecture
     type: artifact
     confidence: high
-    reason: "candidate-aleksandr-logunov needs fields-medal-context.md produced by fields-medal-context"
+    reason: "adr-process-architecture needs electron-process-model.md produced by research-electron-process-model"
 
-  - from: fields-medal-context
-    to: candidate-alexander-efimov
+  # ADR -> System Design dependencies
+  - from: adr-database-trio
+    to: design-system-overview
     type: artifact
     confidence: high
-    reason: "candidate-alexander-efimov needs fields-medal-context.md produced by fields-medal-context"
+    reason: "design-system-overview needs adr-001-database-trio.md"
 
-  # Wave 2 -> Wave 3: Candidates + Context to Estimates
-  # Each estimate task needs context AND all 10 candidate profiles
-  # Listing context dependency (already satisfied by Wave 1) and candidate dependencies
-
-  - from: fields-medal-context
-    to: estimate-base-rate
+  - from: adr-arrow-data-plane
+    to: design-system-overview
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs fields-medal-context.md"
+    reason: "design-system-overview needs adr-002-arrow-data-plane.md"
 
-  - from: candidate-hong-wang
-    to: estimate-base-rate
+  - from: adr-visualization-stack
+    to: design-system-overview
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs hong-wang.md"
+    reason: "design-system-overview needs adr-003-visualization-stack.md"
 
-  - from: candidate-jacob-tsimerman
-    to: estimate-base-rate
+  - from: adr-ai-integration
+    to: design-system-overview
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs jacob-tsimerman.md"
+    reason: "design-system-overview needs adr-004-ai-integration.md"
 
-  - from: candidate-john-pardon
-    to: estimate-base-rate
+  - from: adr-process-architecture
+    to: design-system-overview
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs john-pardon.md"
+    reason: "design-system-overview needs adr-005-process-architecture.md"
 
-  - from: candidate-yu-deng
-    to: estimate-base-rate
+  - from: adr-process-architecture
+    to: design-electron-process-model
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs yu-deng.md"
+    reason: "design-electron-process-model needs adr-005-process-architecture.md"
 
-  - from: candidate-julian-sahasrabudhe
-    to: estimate-base-rate
+  - from: adr-database-trio
+    to: design-electron-process-model
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs julian-sahasrabudhe.md"
+    reason: "design-electron-process-model needs adr-001-database-trio.md"
 
-  - from: candidate-sam-raskin
-    to: estimate-base-rate
+  - from: adr-arrow-data-plane
+    to: design-arrow-data-plane
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs sam-raskin.md"
+    reason: "design-arrow-data-plane needs adr-002-arrow-data-plane.md"
 
-  - from: candidate-jack-thorne
-    to: estimate-base-rate
+  - from: adr-database-trio
+    to: design-database-integration
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs jack-thorne.md"
+    reason: "design-database-integration needs adr-001-database-trio.md"
 
-  - from: candidate-will-sawin
-    to: estimate-base-rate
+  - from: adr-database-trio
+    to: design-vector-search-fts
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs will-sawin.md"
+    reason: "design-vector-search-fts needs adr-001-database-trio.md"
 
-  - from: candidate-aleksandr-logunov
-    to: estimate-base-rate
+  - from: adr-ai-integration
+    to: design-vector-search-fts
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs aleksandr-logunov.md"
+    reason: "design-vector-search-fts needs adr-004-ai-integration.md for embedding model decision"
 
-  - from: candidate-alexander-efimov
-    to: estimate-base-rate
+  - from: adr-visualization-stack
+    to: design-visualization-engine
     type: artifact
     confidence: high
-    reason: "estimate-base-rate needs alexander-efimov.md"
+    reason: "design-visualization-engine needs adr-003-visualization-stack.md"
 
-  # Narrative estimate dependencies (same pattern)
-  - from: fields-medal-context
-    to: estimate-narrative
+  - from: adr-ai-integration
+    to: design-ai-integration
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs fields-medal-context.md"
+    reason: "design-ai-integration needs adr-004-ai-integration.md"
 
-  - from: candidate-hong-wang
-    to: estimate-narrative
+  # System Design inter-dependencies
+  - from: design-system-overview
+    to: design-electron-process-model
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs hong-wang.md"
+    reason: "design-electron-process-model needs 01-system-overview.md for component context"
 
-  - from: candidate-jacob-tsimerman
-    to: estimate-narrative
+  - from: design-electron-process-model
+    to: design-arrow-data-plane
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs jacob-tsimerman.md"
+    reason: "design-arrow-data-plane needs 02-electron-process-model.md for IPC boundaries"
 
-  - from: candidate-john-pardon
-    to: estimate-narrative
+  - from: design-electron-process-model
+    to: design-database-integration
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs john-pardon.md"
+    reason: "design-database-integration needs 02-electron-process-model.md for process hosting"
 
-  - from: candidate-yu-deng
-    to: estimate-narrative
+  - from: design-arrow-data-plane
+    to: design-database-integration
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs yu-deng.md"
+    reason: "design-database-integration needs 03-arrow-data-plane.md for query result format"
 
-  - from: candidate-julian-sahasrabudhe
-    to: estimate-narrative
+  - from: design-database-integration
+    to: design-vector-search-fts
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs julian-sahasrabudhe.md"
+    reason: "design-vector-search-fts needs 04-database-integration.md for LanceDB adapter"
 
-  - from: candidate-sam-raskin
-    to: estimate-narrative
+  - from: design-electron-process-model
+    to: design-local-ingestion
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs sam-raskin.md"
+    reason: "design-local-ingestion needs 02-electron-process-model.md for worker thread design"
 
-  - from: candidate-jack-thorne
-    to: estimate-narrative
+  - from: design-arrow-data-plane
+    to: design-local-ingestion
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs jack-thorne.md"
+    reason: "design-local-ingestion needs 03-arrow-data-plane.md for ingestion output format"
 
-  - from: candidate-will-sawin
-    to: estimate-narrative
+  - from: design-database-integration
+    to: design-local-ingestion
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs will-sawin.md"
+    reason: "design-local-ingestion needs 04-database-integration.md for DuckDB registration"
 
-  - from: candidate-aleksandr-logunov
-    to: estimate-narrative
+  - from: design-electron-process-model
+    to: design-remote-connectors
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs aleksandr-logunov.md"
+    reason: "design-remote-connectors needs 02-electron-process-model.md for main process networking"
 
-  - from: candidate-alexander-efimov
-    to: estimate-narrative
+  - from: design-database-integration
+    to: design-remote-connectors
     type: artifact
     confidence: high
-    reason: "estimate-narrative needs alexander-efimov.md"
+    reason: "design-remote-connectors needs 04-database-integration.md for DuckDB httpfs/cache"
 
-  # Contrarian estimate dependencies (same pattern)
-  - from: fields-medal-context
-    to: estimate-contrarian
+  - from: design-local-ingestion
+    to: design-remote-connectors
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs fields-medal-context.md"
+    reason: "design-remote-connectors needs 06-local-ingestion.md for shared metadata catalog"
 
-  - from: candidate-hong-wang
-    to: estimate-contrarian
+  - from: design-electron-process-model
+    to: design-visualization-engine
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs hong-wang.md"
+    reason: "design-visualization-engine needs 02-electron-process-model.md for renderer architecture"
 
-  - from: candidate-jacob-tsimerman
-    to: estimate-contrarian
+  - from: design-arrow-data-plane
+    to: design-visualization-engine
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs jacob-tsimerman.md"
+    reason: "design-visualization-engine needs 03-arrow-data-plane.md for data transfer"
 
-  - from: candidate-john-pardon
-    to: estimate-contrarian
+  - from: design-electron-process-model
+    to: design-ai-integration
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs john-pardon.md"
+    reason: "design-ai-integration needs 02-electron-process-model.md for AI hosting"
 
-  - from: candidate-yu-deng
-    to: estimate-contrarian
+  - from: design-database-integration
+    to: design-ai-integration
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs yu-deng.md"
+    reason: "design-ai-integration needs 04-database-integration.md for query API"
 
-  - from: candidate-julian-sahasrabudhe
-    to: estimate-contrarian
+  - from: design-vector-search-fts
+    to: design-ai-integration
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs julian-sahasrabudhe.md"
+    reason: "design-ai-integration needs 05-vector-search-fts.md for RAG retrieval"
 
-  - from: candidate-sam-raskin
-    to: estimate-contrarian
+  - from: design-system-overview
+    to: design-publishing-engine
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs sam-raskin.md"
+    reason: "design-publishing-engine needs 01-system-overview.md for roadmap context"
 
-  - from: candidate-jack-thorne
-    to: estimate-contrarian
+  - from: design-visualization-engine
+    to: design-publishing-engine
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs jack-thorne.md"
+    reason: "design-publishing-engine needs 08-visualization-engine.md for export capabilities"
 
-  - from: candidate-will-sawin
-    to: estimate-contrarian
+  - from: design-ai-integration
+    to: design-publishing-engine
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs will-sawin.md"
+    reason: "design-publishing-engine needs 09-ai-integration.md for chat UI export"
 
-  - from: candidate-aleksandr-logunov
-    to: estimate-contrarian
+  # Design -> Spec dependencies
+  - from: design-database-integration
+    to: spec-data-model
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs aleksandr-logunov.md"
+    reason: "spec-data-model needs 04-database-integration.md for storage locations"
 
-  - from: candidate-alexander-efimov
-    to: estimate-contrarian
+  - from: design-local-ingestion
+    to: spec-data-model
     type: artifact
     confidence: high
-    reason: "estimate-contrarian needs alexander-efimov.md"
+    reason: "spec-data-model needs 06-local-ingestion.md for metadata catalog entities"
 
-  # Wave 3 -> Wave 4: Estimates to Synthesis
-  - from: estimate-base-rate
-    to: synthesis
+  - from: design-remote-connectors
+    to: spec-data-model
     type: artifact
     confidence: high
-    reason: "synthesis needs base-rate-estimate.md"
+    reason: "spec-data-model needs 07-remote-connectors.md for connector config entities"
 
-  - from: estimate-narrative
-    to: synthesis
+  - from: design-ai-integration
+    to: spec-data-model
     type: artifact
     confidence: high
-    reason: "synthesis needs narrative-estimate.md"
+    reason: "spec-data-model needs 09-ai-integration.md for conversation entities"
 
-  - from: estimate-contrarian
-    to: synthesis
+  - from: design-vector-search-fts
+    to: spec-data-model
     type: artifact
     confidence: high
-    reason: "synthesis needs contrarian-estimate.md"
+    reason: "spec-data-model needs 05-vector-search-fts.md for embedding entities"
 
-  # Wave 4 -> Wave 5: Synthesis to Recommendation
-  - from: synthesis
-    to: recommendation
+  - from: design-electron-process-model
+    to: spec-ipc-api
     type: artifact
     confidence: high
-    reason: "recommendation needs synthesis.md"
+    reason: "spec-ipc-api needs 02-electron-process-model.md for IPC channels"
 
-# Tasks with no dependencies (Wave 1)
+  - from: design-arrow-data-plane
+    to: spec-ipc-api
+    type: artifact
+    confidence: high
+    reason: "spec-ipc-api needs 03-arrow-data-plane.md for IPC protocol"
+
+  - from: design-database-integration
+    to: spec-ipc-api
+    type: artifact
+    confidence: high
+    reason: "spec-ipc-api needs 04-database-integration.md for query API"
+
+  - from: design-visualization-engine
+    to: spec-ipc-api
+    type: artifact
+    confidence: high
+    reason: "spec-ipc-api needs 08-visualization-engine.md for data request patterns"
+
+  - from: spec-data-model
+    to: spec-ipc-api
+    type: artifact
+    confidence: high
+    reason: "spec-ipc-api needs data-model-spec.md for entity types in API responses"
+
+  # Spec -> Integration dependencies
+  - from: design-system-overview
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-electron-process-model
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-arrow-data-plane
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-database-integration
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-vector-search-fts
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-local-ingestion
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-remote-connectors
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-visualization-engine
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-ai-integration
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: design-publishing-engine
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs all design documents"
+
+  - from: spec-data-model
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs data model spec"
+
+  - from: spec-ipc-api
+    to: integration-architecture-overview
+    type: artifact
+    confidence: high
+    reason: "integration-architecture-overview needs IPC/API spec"
+
+  - from: integration-architecture-overview
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs 00-architecture-overview.md"
+
+  - from: design-system-overview
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-electron-process-model
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-arrow-data-plane
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-database-integration
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-vector-search-fts
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-local-ingestion
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-remote-connectors
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-visualization-engine
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-ai-integration
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: design-publishing-engine
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all design documents"
+
+  - from: spec-data-model
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs data model spec"
+
+  - from: spec-ipc-api
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs IPC/API spec"
+
+  - from: adr-database-trio
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all ADRs"
+
+  - from: adr-arrow-data-plane
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all ADRs"
+
+  - from: adr-visualization-stack
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all ADRs"
+
+  - from: adr-ai-integration
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all ADRs"
+
+  - from: adr-process-architecture
+    to: integration-cross-reference-validation
+    type: artifact
+    confidence: high
+    reason: "integration-cross-reference-validation needs all ADRs"
+
+# Tasks with no dependencies (can run in wave 1)
 roots:
-  - fields-medal-context
+  - research-electron-process-model
+  - research-duckdb-electron
+  - research-lancedb-electron
+  - research-rxdb-electron
+  - research-arrow-ipc-electron
+  - research-perspective-electron
+  - research-embedding-models
+  - research-claude-sdk-mcp-acp
 
 # Final deliverables (outputs not consumed by other tasks)
 leaves:
-  - recommendation
+  - integration-cross-reference-validation
 
-# Preliminary wave assignment (will be refined in Phase 3)
-preliminary_waves:
-  wave_1:
-    tasks: [fields-medal-context]
-    description: "Research Fields Medal context and historical patterns"
-
-  wave_2:
-    tasks:
-      - candidate-hong-wang
-      - candidate-jacob-tsimerman
-      - candidate-john-pardon
-      - candidate-yu-deng
-      - candidate-julian-sahasrabudhe
-      - candidate-sam-raskin
-      - candidate-jack-thorne
-      - candidate-will-sawin
-      - candidate-aleksandr-logunov
-      - candidate-alexander-efimov
-    description: "Research all 10 candidates in parallel"
-
-  wave_3:
-    tasks:
-      - estimate-base-rate
-      - estimate-narrative
-      - estimate-contrarian
-    description: "Generate probability estimates from 3 perspectives in parallel"
-
-  wave_4:
-    tasks: [synthesis]
-    description: "Synthesize perspective estimates into calibrated probabilities"
-
-  wave_5:
-    tasks: [recommendation]
-    description: "Calculate edge and produce final recommendation"
-
-# Graph statistics
-stats:
-  total_tasks: 16
-  total_dependencies: 56
-  max_parallelism: 10  # Wave 2
-  critical_path_length: 5  # waves
-  average_dependencies_per_task: 3.5
+# Note: Full wave computation happens in Phase 3 (Dependency Analysis)
+# This graph captures what's evident from inputs/outputs only.
+# Preliminary wave estimate:
+#   Wave 1: 8 research tasks (all independent)
+#   Wave 2: 5 ADR tasks (depend on research)
+#   Wave 3: design-system-overview (depends on all ADRs)
+#   Wave 4: design-electron-process-model (depends on overview + ADRs)
+#   Wave 5: design-arrow-data-plane, design-visualization-engine (depend on process model)
+#   Wave 6: design-database-integration (depends on process model + arrow)
+#   Wave 7: design-vector-search-fts, design-local-ingestion (depend on database)
+#   Wave 8: design-remote-connectors, design-ai-integration (depend on database + ingestion/vector)
+#   Wave 9: design-publishing-engine, spec-data-model (depend on viz + AI)
+#   Wave 10: spec-ipc-api (depends on data model + viz)
+#   Wave 11: integration-architecture-overview (depends on all)
+#   Wave 12: integration-cross-reference-validation (depends on overview)

@@ -1,0 +1,96 @@
+id: design-arrow-data-plane
+name: Apache Arrow Data Plane Design
+from_subgoal: system-design-core
+
+description: |
+  Write the Apache Arrow Data Plane section of the Data Codex architecture
+  document. This details the end-to-end Arrow data flow from data sources
+  through processing to visualization.
+
+  The document must include:
+
+  1. **End-to-End Arrow Data Flow Diagram** (Mermaid)
+     - Data source -> ingestion -> DuckDB storage -> query -> Arrow IPC -> renderer -> visualization
+     - Show Arrow format at every boundary
+     - Identify where serialization/deserialization occurs (should be minimal)
+
+  2. **Arrow IPC Protocol Design**
+     - Message format: Arrow IPC stream format
+     - Transfer mechanism: MessagePort with ArrayBuffer transfer list
+     - Channel setup: how MessagePorts are established between processes
+     - Message envelope: query ID, schema, record batches, completion signal
+
+  3. **Predicate Pushdown Protocol**
+     - How renderer sends filter/sort/aggregate requests to main process
+     - Query plan representation over IPC
+     - Optimization: push computation to DuckDB, transfer only results
+
+  4. **Streaming Transfer Design**
+     - Chunked transfer for large result sets
+     - Chunk size configuration and adaptation
+     - Backpressure mechanism (flow control between processes)
+     - Progress reporting for long-running queries
+
+  5. **Arrow Schema Management**
+     - Schema negotiation between producer and consumer
+     - Type mapping: DuckDB types -> Arrow types -> JS types
+     - Null handling and missing data representation
+     - Extension types for custom data (embeddings, timestamps)
+
+  6. **Small Payload Optimization**
+     - Threshold below which JSON is acceptable (e.g., metadata queries)
+     - Binary threshold for Arrow transfer
+     - Hybrid approach documentation
+
+  7. **Memory Ownership Model**
+     - ArrayBuffer transfer semantics (source loses access)
+     - Buffer lifecycle: allocation, transfer, consumption, release
+     - Memory leak prevention strategies
+
+  Reference ADR-002 for all Arrow IPC decisions.
+
+inputs:
+  - path: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+    required: true
+    description: Arrow data plane decision record
+  - path: .orchestrator/artifacts/design/02-electron-process-model.md
+    required: true
+    description: Process model (defines IPC boundaries)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (Arrow-first, stream-and-scan)
+
+outputs:
+  - path: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    type: system-design
+    description: |
+      Arrow data plane design with end-to-end flow, IPC protocol,
+      predicate pushdown, streaming, and memory ownership model.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/design/03-arrow-data-plane.md
+  - type: contains
+    target: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    expected: "```mermaid"
+  - type: contains
+    target: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    expected: "Arrow IPC"
+  - type: contains
+    target: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    expected: "predicate pushdown"
+  - type: contains
+    target: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    expected: "MessagePort"
+  - type: contains
+    target: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    expected: "backpressure"
+
+context_budget:
+  estimated_tokens: 30000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

@@ -1,0 +1,77 @@
+id: research-perspective-electron
+name: Research Perspective.js and Visualization Stack in Electron
+from_subgoal: research-foundations
+
+description: |
+  Research and evaluate the visualization technology stack for Data Codex:
+  Perspective.js as the primary data grid/visualization engine, complemented
+  by Observable Plot and ECharts. Focus on:
+
+  1. Perspective.js in Electron renderer
+     - WebAssembly-based architecture
+     - DuckDBHandler: connecting Perspective to DuckDB as data backend
+     - GPU acceleration via WebGPU/WebGL
+     - Custom element integration (<perspective-viewer>)
+     - Virtual scrolling for large datasets
+  2. Perspective.js + Arrow integration
+     - Native Arrow input support
+     - Arrow-based data updates (streaming new RecordBatches)
+     - Memory efficiency with Arrow columnar data
+  3. Observable Plot for statistical visualization
+     - Integration approach in Electron renderer
+     - Complementary role to Perspective (when to use which)
+     - SVG-based rendering vs Canvas
+  4. ECharts for interactive dashboards
+     - Chart types relevant to analytics (time series, scatter, maps)
+     - Large dataset handling (downsampling, progressive rendering)
+     - Integration with Arrow data
+  5. Dashboard composition architecture
+     - How multiple visualization components coexist
+     - Layout management and resizing
+     - Cross-filter interactions between visualizations
+
+  Evaluate trade-offs:
+  - Perspective.js vs AG Grid vs Tabulator for data grids
+  - Observable Plot vs D3.js vs Vega-Lite for statistical charts
+  - ECharts vs Plotly.js vs Highcharts for interactive charts
+  - Single vs multiple renderer windows for visualization
+
+  Output a research finding document with clear recommendation.
+
+inputs:
+  - path: .orchestrator/decomposition/analysis.yaml
+    required: true
+    description: Goal analysis with visualization scope
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (renderer owns visualization, stream-and-scan)
+
+outputs:
+  - path: .orchestrator/artifacts/research/perspective-electron.md
+    type: research-finding
+    description: |
+      Research finding on visualization stack covering Perspective.js
+      DuckDBHandler, Observable Plot, ECharts, Arrow integration,
+      and dashboard composition. Includes recommendation.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/research/perspective-electron.md
+  - type: contains
+    target: .orchestrator/artifacts/research/perspective-electron.md
+    expected: "## Recommendation"
+  - type: contains
+    target: .orchestrator/artifacts/research/perspective-electron.md
+    expected: "## Alternatives Considered"
+  - type: contains
+    target: .orchestrator/artifacts/research/perspective-electron.md
+    expected: "Perspective"
+
+context_budget:
+  estimated_tokens: 8000
+  category: peak
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

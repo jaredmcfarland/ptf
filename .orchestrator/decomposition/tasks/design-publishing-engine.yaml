@@ -1,0 +1,103 @@
+id: design-publishing-engine
+name: Publishing Engine Design
+from_subgoal: system-design-publishing
+
+description: |
+  Write the Publishing Engine section of the Data Codex architecture
+  document. This details how users export interactive web applications,
+  embedded viewers, and hosted chat UIs from their analytics work.
+
+  The document must include:
+
+  1. **Publishing Engine Overview** (component diagram)
+     - Export Pipeline Manager
+     - Template Engine
+     - Asset Bundler
+     - Deployment targets
+
+  2. **Export Pipeline Design** (flow diagram)
+     - Dashboard/analysis selection for export
+     - Data snapshot: which data to include, size limits
+     - Template selection: viewer type, interactivity level
+     - Asset bundling: JS, CSS, data, configuration
+     - Output generation: standalone HTML, deployable package
+
+  3. **Interactive Viewer Templates**
+     - Standalone HTML viewer (single file, embedded data)
+     - Multi-file package (index.html + assets + data)
+     - Perspective.js embedded viewer (data grid/charts)
+     - Chart-only viewer (Observable Plot / ECharts export)
+     - Data size considerations: embedded vs external data
+
+  4. **Data Packaging**
+     - Data serialization for export: Parquet files, Arrow IPC, JSON
+     - Data subsetting: user selects columns/rows for export
+     - Data aggregation: pre-compute summaries to reduce export size
+     - Privacy considerations: no credential or sensitive data in exports
+
+  5. **Hosted Chat UI Export**
+     - Embeddable chat component for published analytics
+     - Chat requires API key configuration by viewer
+     - Read-only data context in published chat
+     - MCP tool restrictions in published mode
+
+  6. **Deployment Target Design**
+     - Local file export (save to disk)
+     - Static hosting upload (S3, Netlify, Vercel integration)
+     - Shareable link generation
+     - Version management for published analytics
+
+  7. **Template Customization**
+     - Branding and theming options
+     - Header/footer customization
+     - Color scheme configuration
+     - Custom CSS injection
+
+  This is the final system in the roadmap (Phases 6-7) and depends on
+  visualization and AI integration designs being complete.
+
+inputs:
+  - path: .orchestrator/artifacts/design/01-system-overview.md
+    required: true
+    description: System overview (roadmap phases context)
+  - path: .orchestrator/artifacts/design/08-visualization-engine.md
+    required: true
+    description: Visualization engine (what gets exported)
+  - path: .orchestrator/artifacts/design/09-ai-integration.md
+    required: true
+    description: AI integration (chat UI export)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles
+
+outputs:
+  - path: .orchestrator/artifacts/design/10-publishing-engine.md
+    type: system-design
+    description: |
+      Publishing engine design with export pipeline, viewer templates,
+      data packaging, hosted chat, and deployment targets.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/design/10-publishing-engine.md
+  - type: contains
+    target: .orchestrator/artifacts/design/10-publishing-engine.md
+    expected: "```mermaid"
+  - type: contains
+    target: .orchestrator/artifacts/design/10-publishing-engine.md
+    expected: "export"
+  - type: contains
+    target: .orchestrator/artifacts/design/10-publishing-engine.md
+    expected: "template"
+  - type: contains
+    target: .orchestrator/artifacts/design/10-publishing-engine.md
+    expected: "viewer"
+
+context_budget:
+  estimated_tokens: 30000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

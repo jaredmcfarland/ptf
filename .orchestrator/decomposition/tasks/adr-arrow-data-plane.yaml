@@ -1,0 +1,76 @@
+id: adr-arrow-data-plane
+name: "ADR-002: Apache Arrow Data Plane Decision"
+from_subgoal: decision-records
+
+description: |
+  Synthesize the research findings on Apache Arrow IPC into a formal
+  Architecture Decision Record (ADR) that documents the data transfer
+  architecture for Data Codex.
+
+  The ADR must cover:
+
+  1. **Context**: Why Arrow as the universal data plane?
+     - Performance requirements for analytical data transfer
+     - Zero-copy aspirations and actual feasibility
+     - Interop between DuckDB, Perspective.js, and visualization libraries
+  2. **Decision**: The specific Arrow IPC approach chosen
+     - Transfer mechanism: MessagePort with ArrayBuffer transfer vs SharedArrayBuffer
+     - IPC format: Arrow IPC stream format for inter-process communication
+     - Predicate pushdown protocol design approach
+     - Streaming chunked transfer for large results
+     - Small payload threshold (when Arrow overhead exceeds JSON)
+  3. **Alternatives Considered**:
+     - JSON serialization (simplicity vs performance)
+     - Protocol Buffers (schema evolution vs Arrow compatibility)
+     - SharedArrayBuffer (true zero-copy vs security restrictions)
+     - Arrow Flight (RPC overhead vs local IPC simplicity)
+  4. **Consequences**:
+     - All components must understand Arrow format
+     - Additional dependency on apache-arrow npm package
+     - Serialization boundary design (where Arrow begins/ends)
+     - Memory ownership transfer semantics
+
+  Follow ADR format: Title, Status, Context, Decision, Alternatives, Consequences.
+
+inputs:
+  - path: .orchestrator/artifacts/research/arrow-ipc-electron.md
+    required: true
+    description: Arrow IPC research finding with recommendation
+  - path: .orchestrator/artifacts/research/duckdb-electron.md
+    required: true
+    description: DuckDB research (Arrow output capabilities)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (Arrow-first data flow)
+
+outputs:
+  - path: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+    type: decision-record
+    description: |
+      ADR documenting the Arrow data plane decision with transfer
+      mechanism, format choices, and streaming approach.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+    expected: "## Context"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+    expected: "## Decision"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+    expected: "## Alternatives"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+    expected: "## Consequences"
+
+context_budget:
+  estimated_tokens: 18000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

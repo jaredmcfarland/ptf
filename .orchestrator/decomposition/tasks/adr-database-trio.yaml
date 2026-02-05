@@ -1,0 +1,77 @@
+id: adr-database-trio
+name: "ADR-001: Embedded Database Trio Architecture Decision"
+from_subgoal: decision-records
+
+description: |
+  Synthesize the research findings on DuckDB, LanceDB, and RxDB into a formal
+  Architecture Decision Record (ADR) that documents the database architecture
+  for Data Codex.
+
+  The ADR must cover:
+
+  1. **Context**: Why three databases? What problem does each solve?
+     - DuckDB: analytical queries on columnar data
+     - LanceDB: vector search and full-text search
+     - RxDB: reactive UI state and metadata catalog
+  2. **Decision**: The specific configuration chosen
+     - DuckDB: native addon vs WASM, Worker Thread hosting decision
+     - LanceDB: SDK version, index type defaults, FTS configuration
+     - RxDB: storage adapter (SQLite), schema design approach
+     - Lance DuckDB extension: use or separate queries
+  3. **Alternatives Considered**: For each database, what was rejected and why
+     - DuckDB alternatives: SQLite, sql.js
+     - LanceDB alternatives: Chroma, Qdrant, SQLite-VSS
+     - RxDB alternatives: Dexie.js, electron-store, PouchDB
+  4. **Consequences**: What this decision implies for the rest of the architecture
+     - Process model constraints (which process hosts which DB)
+     - Memory budget allocation across databases
+     - Query routing complexity
+     - Migration and upgrade strategy
+
+  Follow ADR format: Title, Status, Context, Decision, Alternatives, Consequences.
+
+inputs:
+  - path: .orchestrator/artifacts/research/duckdb-electron.md
+    required: true
+    description: DuckDB research finding with recommendation
+  - path: .orchestrator/artifacts/research/lancedb-electron.md
+    required: true
+    description: LanceDB research finding with recommendation
+  - path: .orchestrator/artifacts/research/rxdb-electron.md
+    required: true
+    description: RxDB research finding with recommendation
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (embedded-only, single-user)
+
+outputs:
+  - path: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+    type: decision-record
+    description: |
+      ADR documenting the database trio architecture decision with
+      context, decision, alternatives, and consequences.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+    expected: "## Context"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+    expected: "## Decision"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+    expected: "## Alternatives"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+    expected: "## Consequences"
+
+context_budget:
+  estimated_tokens: 25000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

@@ -1,90 +1,214 @@
 step: 2-subgoal-identification
-created: 2026-01-19T10:15:00Z
+created: 2026-02-04T00:00:00Z
 status: complete
 
 goal_reference: .orchestrator/decomposition/analysis.yaml
 
-# Using by-perspective heuristic from prediction-market adapter
-# Combined with by-stage workflow for research-heavy domain
-
 subgoals:
-  - id: fields-medal-context
-    name: Fields Medal Context Research
+  - id: research-foundations
+    name: Technology Research and Evaluation
     description: |
-      Research the Fields Medal selection process, eligibility criteria, and
-      historical patterns. This foundational knowledge is required before
-      evaluating any individual candidates.
+      Evaluate key technology choices for Data Codex through focused research
+      tasks. Each task investigates a specific technology or integration point,
+      producing a research finding with recommendation. These findings feed
+      into architecture decision records and system design sections.
     outputs:
-      - .orchestrator/artifacts/fields-medal-context.md
+      - .orchestrator/artifacts/research/electron-process-model.md
+      - .orchestrator/artifacts/research/duckdb-electron.md
+      - .orchestrator/artifacts/research/lancedb-electron.md
+      - .orchestrator/artifacts/research/rxdb-electron.md
+      - .orchestrator/artifacts/research/arrow-ipc-electron.md
+      - .orchestrator/artifacts/research/perspective-electron.md
+      - .orchestrator/artifacts/research/embedding-models.md
+      - .orchestrator/artifacts/research/claude-sdk-mcp-acp.md
     depends_on_outputs_from: []
     coverage_mapping:
-      - "Understand Fields Medal selection criteria and historical patterns" (direct)
+      - "Technology decisions documented with alternatives considered and rationale" (primary)
+      - "Implementation Feasibility principle" (ensures real technology grounding)
 
-  - id: candidate-research
-    name: Candidate Profile Research
+  - id: decision-records
+    name: Architecture Decision Records
     description: |
-      Research each of the 10 candidates' mathematical contributions, career
-      trajectory, and eligibility status. Produces individual profiles that
-      feed into perspective estimates.
+      Synthesize research findings into formal Architecture Decision Records (ADRs).
+      Each ADR documents the context, decision, alternatives considered, and
+      consequences. These become the authoritative reference for all downstream
+      design tasks.
     outputs:
-      - .orchestrator/artifacts/candidates/hong-wang.md
-      - .orchestrator/artifacts/candidates/jacob-tsimerman.md
-      - .orchestrator/artifacts/candidates/john-pardon.md
-      - .orchestrator/artifacts/candidates/yu-deng.md
-      - .orchestrator/artifacts/candidates/julian-sahasrabudhe.md
-      - .orchestrator/artifacts/candidates/sam-raskin.md
-      - .orchestrator/artifacts/candidates/jack-thorne.md
-      - .orchestrator/artifacts/candidates/will-sawin.md
-      - .orchestrator/artifacts/candidates/aleksandr-logunov.md
-      - .orchestrator/artifacts/candidates/alexander-efimov.md
+      - .orchestrator/artifacts/decisions/adr-001-database-trio.md
+      - .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+      - .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+      - .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+      - .orchestrator/artifacts/decisions/adr-005-process-architecture.md
     depends_on_outputs_from:
-      - fields-medal-context
+      - research-foundations
     coverage_mapping:
-      - "Research each candidate's mathematical contributions and eligibility" (direct)
+      - "Technology decisions documented with alternatives considered and rationale" (formalized)
 
-  - id: perspective-estimates
-    name: Multi-Perspective Probability Estimates
+  - id: system-design-core
+    name: Core System Architecture Design
     description: |
-      Generate independent probability estimates from three required perspectives:
-      Base Rate, Narrative, and Contrarian. Each perspective analyzes all
-      candidates using different analytical lenses.
+      Design the foundational system architecture: Electron process model,
+      inter-process communication via Arrow, and the overall component topology.
+      This is the backbone that all other system designs reference.
     outputs:
-      - .orchestrator/artifacts/estimates/base-rate-estimate.md
-      - .orchestrator/artifacts/estimates/narrative-estimate.md
-      - .orchestrator/artifacts/estimates/contrarian-estimate.md
+      - .orchestrator/artifacts/design/01-system-overview.md
+      - .orchestrator/artifacts/design/02-electron-process-model.md
+      - .orchestrator/artifacts/design/03-arrow-data-plane.md
     depends_on_outputs_from:
-      - fields-medal-context
-      - candidate-research
+      - decision-records
     coverage_mapping:
-      - "Produce calibrated probability estimates from multiple perspectives" (direct)
+      - "System design document covers all 6 key systems with component diagrams" (foundation)
+      - "Arrow data flow documented end-to-end from ingestion through visualization" (core path)
+      - "Each roadmap phase has a corresponding architecture section" (Phase 1-2)
 
-  - id: synthesis
-    name: Probability Synthesis
+  - id: system-design-databases
+    name: Database System Design
     description: |
-      Integrate the three perspective estimates into a calibrated consensus
-      probability for each candidate. Resolve disagreements between perspectives
-      with explicit reasoning.
+      Design the embedded database integration layer: DuckDB for analytics,
+      LanceDB for vector search, RxDB for reactive UI state. Covers
+      initialization, lifecycle, query routing, and cross-database coordination.
     outputs:
-      - .orchestrator/artifacts/synthesis.md
+      - .orchestrator/artifacts/design/04-database-integration.md
+      - .orchestrator/artifacts/design/05-vector-search-fts.md
     depends_on_outputs_from:
-      - perspective-estimates
+      - decision-records
+      - system-design-core
     coverage_mapping:
-      - "Produce calibrated probability estimates from multiple perspectives" (synthesis)
+      - "System design document covers all 6 key systems with component diagrams" (database system)
 
-  - id: recommendation
-    name: Edge Calculation and Recommendation
+  - id: system-design-ingestion
+    name: Data Ingestion and Connector Design
     description: |
-      Calculate edge vs market prices for all candidates. Identify any candidates
-      with 15%+ edge. Produce final recommendation (position or pass).
+      Design the data ingestion pipeline for local sources (folder scanning,
+      auto-registration, metadata catalog) and the remote connector framework
+      (S3, BigQuery, ClickHouse, Mixpanel, PostHog, Google Sheets, Airtable).
     outputs:
-      - .orchestrator/artifacts/recommendation.md
+      - .orchestrator/artifacts/design/06-local-ingestion.md
+      - .orchestrator/artifacts/design/07-remote-connectors.md
     depends_on_outputs_from:
-      - synthesis
+      - system-design-core
+      - system-design-databases
     coverage_mapping:
-      - "Identify any candidates with 15%+ estimated edge vs market" (direct)
-      - "Deliver actionable recommendation (position or pass)" (direct)
+      - "System design document covers all 6 key systems with component diagrams" (ingestion system)
+      - "Each roadmap phase has a corresponding architecture section" (Phase 2-3)
+
+  - id: system-design-visualization
+    name: Visualization Engine Design
+    description: |
+      Design the GPU-accelerated visualization engine: Perspective.js with
+      DuckDBHandler, Observable Plot for statistical charts, ECharts for
+      interactive dashboards. Covers renderer-side architecture and data flow.
+    outputs:
+      - .orchestrator/artifacts/design/08-visualization-engine.md
+    depends_on_outputs_from:
+      - decision-records
+      - system-design-core
+    coverage_mapping:
+      - "System design document covers all 6 key systems with component diagrams" (visualization system)
+      - "Each roadmap phase has a corresponding architecture section" (Phase 4)
+
+  - id: system-design-ai
+    name: AI Integration Design
+    description: |
+      Design the AI chat integration: Claude Agent SDK, MCP server for
+      tool-using agents, ACP compliance, RAG pipeline with LanceDB,
+      and the conversational interface architecture.
+    outputs:
+      - .orchestrator/artifacts/design/09-ai-integration.md
+    depends_on_outputs_from:
+      - decision-records
+      - system-design-core
+      - system-design-databases
+    coverage_mapping:
+      - "System design document covers all 6 key systems with component diagrams" (AI system)
+      - "Each roadmap phase has a corresponding architecture section" (Phase 5)
+
+  - id: system-design-publishing
+    name: Publishing Engine Design
+    description: |
+      Design the publishing engine: export pipeline for interactive web
+      applications, embedded viewers, hosted chat UI, and deployment targets.
+    outputs:
+      - .orchestrator/artifacts/design/10-publishing-engine.md
+    depends_on_outputs_from:
+      - system-design-core
+      - system-design-visualization
+      - system-design-ai
+    coverage_mapping:
+      - "Each roadmap phase has a corresponding architecture section" (Phase 6-7)
+
+  - id: data-model
+    name: Data Model Specification
+    description: |
+      Define all persistent data entities, their relationships, storage
+      locations (which database stores what), and constraints. Covers the
+      metadata catalog, user preferences, chat history, and all domain objects.
+    outputs:
+      - .orchestrator/artifacts/data-model/data-model-spec.md
+    depends_on_outputs_from:
+      - system-design-databases
+      - system-design-ingestion
+      - system-design-ai
+    coverage_mapping:
+      - "Data model specification defines all entities, relationships, and storage locations" (primary)
+
+  - id: ipc-api-spec
+    name: IPC and API Specification
+    description: |
+      Define all inter-process communication messages, protocols, and APIs
+      between main process, renderer process, and worker threads. Covers
+      Arrow IPC message types, preload bridge API, and worker thread protocols.
+    outputs:
+      - .orchestrator/artifacts/api-spec/ipc-api-spec.md
+    depends_on_outputs_from:
+      - system-design-core
+      - system-design-databases
+      - system-design-visualization
+      - data-model
+    coverage_mapping:
+      - "IPC/API specification defines all message types between main/renderer/worker processes" (primary)
+      - "Arrow data flow documented end-to-end from ingestion through visualization" (specification level)
+
+  - id: integration-validation
+    name: Cross-Document Integration and Validation
+    description: |
+      Validate cross-document consistency, build the roadmap phase mapping,
+      and produce the master architecture overview that ties all documents
+      together. Verify completeness against success criteria.
+    outputs:
+      - .orchestrator/artifacts/design/00-architecture-overview.md
+      - .orchestrator/artifacts/validation/cross-reference-report.md
+    depends_on_outputs_from:
+      - system-design-core
+      - system-design-databases
+      - system-design-ingestion
+      - system-design-visualization
+      - system-design-ai
+      - system-design-publishing
+      - data-model
+      - ipc-api-spec
+    coverage_mapping:
+      - "All design documents cross-reference each other consistently" (primary)
+      - "Verification checks confirm document completeness and cross-reference integrity" (primary)
+      - "Each roadmap phase has a corresponding architecture section" (phase mapping table)
 
 validation:
-  coverage: "All 5 success criteria mapped to subgoals. Fields Medal context, candidate research, multi-perspective estimates, edge calculation, and recommendation all covered."
-  overlap: "No overlap - each subgoal produces distinct artifacts with clear boundaries."
-  coupling: "Linear dependency chain: context -> candidates -> estimates -> synthesis -> recommendation. Minimal cross-cutting concerns."
+  coverage: |
+    All 8 success criteria are mapped:
+    SC1 (6 key systems) -> system-design-core, system-design-databases, system-design-ingestion,
+                           system-design-visualization, system-design-ai, system-design-publishing
+    SC2 (data model) -> data-model
+    SC3 (IPC/API spec) -> ipc-api-spec
+    SC4 (tech decisions) -> research-foundations, decision-records
+    SC5 (roadmap phases) -> distributed across system-design-*, integration-validation
+    SC6 (Arrow end-to-end) -> system-design-core (design), ipc-api-spec (specification)
+    SC7 (cross-reference) -> integration-validation
+    SC8 (verification) -> integration-validation
+  overlap: |
+    No overlap detected. Each subgoal produces distinct output files. Research produces
+    findings, decisions synthesize findings, each system design covers a unique system,
+    data-model and ipc-spec are distinct document types, and integration ties them together.
+  coupling: |
+    Clear dependency chain: research -> decisions -> core design -> system designs ->
+    data model + API spec -> integration. No cycles. Research tasks are fully independent
+    of each other (Wave 1 candidates). System design tasks have limited cross-dependencies.

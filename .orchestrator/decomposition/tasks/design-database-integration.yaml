@@ -1,0 +1,103 @@
+id: design-database-integration
+name: Embedded Database Integration Layer Design
+from_subgoal: system-design-databases
+
+description: |
+  Write the Database Integration Layer section of the Data Codex architecture
+  document. This details how the three embedded databases (DuckDB, LanceDB,
+  RxDB) are initialized, managed, and coordinated within the Electron
+  main process.
+
+  The document must include:
+
+  1. **Database Manager Architecture** (component diagram)
+     - DatabaseManager class as central coordinator
+     - DuckDBAdapter, LanceDBAdapter, RxDBAdapter as managed components
+     - Query Router: directing queries to the appropriate database
+     - Connection lifecycle management
+
+  2. **DuckDB Integration Design**
+     - Initialization: database file location, configuration
+     - Worker Thread hosting: spawning DuckDB in a Worker Thread
+     - Extension loading (parquet, httpfs, json, lance)
+     - Query execution pipeline: SQL -> prepare -> execute -> Arrow result
+     - Catalog management: registered tables, views
+     - Memory configuration: buffer pool size, temp directory
+
+  3. **LanceDB Integration Design**
+     - Initialization: database directory, configuration
+     - Table management: create, open, drop lance tables
+     - Index management: build, rebuild vector indices
+     - Search API: vector search, FTS, hybrid search
+     - Embedding storage: how embeddings flow into LanceDB tables
+     - Lance DuckDB extension integration (if decided in ADR)
+
+  4. **RxDB Integration Design**
+     - Initialization: SQLite adapter setup, database creation
+     - Collection schema definitions
+     - Reactive query setup (RxQuery observables)
+     - Data flow: RxDB changes -> renderer notifications
+     - Migration strategy for schema updates
+
+  5. **Query Routing Logic**
+     - Decision tree: which database handles which query type
+     - Analytical queries -> DuckDB
+     - Vector/semantic search -> LanceDB
+     - UI state/metadata queries -> RxDB
+     - Cross-database queries (e.g., DuckDB + LanceDB via Lance extension)
+
+  6. **Database Lifecycle** (sequence diagram)
+     - Startup: initialization order, health checks
+     - Runtime: connection pooling, query queuing
+     - Shutdown: graceful close, data integrity
+
+  Reference ADR-001 for all database decisions.
+
+inputs:
+  - path: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+    required: true
+    description: Database trio architecture decision
+  - path: .orchestrator/artifacts/design/02-electron-process-model.md
+    required: true
+    description: Process model (database hosting in main process/workers)
+  - path: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    required: true
+    description: Arrow data plane (query result format)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (embedded-only, stream-and-scan)
+
+outputs:
+  - path: .orchestrator/artifacts/design/04-database-integration.md
+    type: system-design
+    description: |
+      Database integration design with manager architecture, per-database
+      integration details, query routing, and lifecycle management.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/design/04-database-integration.md
+  - type: contains
+    target: .orchestrator/artifacts/design/04-database-integration.md
+    expected: "```mermaid"
+  - type: contains
+    target: .orchestrator/artifacts/design/04-database-integration.md
+    expected: "DuckDB"
+  - type: contains
+    target: .orchestrator/artifacts/design/04-database-integration.md
+    expected: "LanceDB"
+  - type: contains
+    target: .orchestrator/artifacts/design/04-database-integration.md
+    expected: "RxDB"
+  - type: contains
+    target: .orchestrator/artifacts/design/04-database-integration.md
+    expected: "Query Rout"
+
+context_budget:
+  estimated_tokens: 35000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

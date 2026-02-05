@@ -1,0 +1,78 @@
+id: adr-ai-integration
+name: "ADR-004: AI Integration Architecture Decision"
+from_subgoal: decision-records
+
+description: |
+  Synthesize the research findings on Claude Agent SDK, MCP, ACP, and
+  embedding models into a formal Architecture Decision Record (ADR) that
+  documents the AI integration architecture for Data Codex.
+
+  The ADR must cover:
+
+  1. **Context**: Why AI integration in a desktop analytics app?
+     - Natural language query generation (text-to-SQL)
+     - Data exploration assistance (suggest analyses)
+     - Automated insight generation
+     - Contextual help and documentation
+  2. **Decision**: The specific AI stack chosen
+     - Claude Agent SDK for conversation management
+     - MCP server for exposing data tools to Claude
+     - Embedding model choice (local vs API vs hybrid)
+     - RAG pipeline design approach
+     - ACP compliance level chosen
+  3. **Alternatives Considered**:
+     - Claude SDK vs LangChain vs LlamaIndex vs direct API
+     - MCP vs custom tool framework
+     - Local embedding (Transformers.js) vs API-only
+     - Full ACP vs partial vs skip
+  4. **Consequences**:
+     - API key management for Claude access
+     - Offline capability limitations (AI features require network for LLM)
+     - Embedding model hosting in Worker Thread
+     - MCP server lifecycle management
+     - Context window budget management
+
+  Follow ADR format: Title, Status, Context, Decision, Alternatives, Consequences.
+
+inputs:
+  - path: .orchestrator/artifacts/research/claude-sdk-mcp-acp.md
+    required: true
+    description: Claude SDK/MCP/ACP research finding
+  - path: .orchestrator/artifacts/research/embedding-models.md
+    required: true
+    description: Embedding model research finding
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (single-user, local-first)
+
+outputs:
+  - path: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+    type: decision-record
+    description: |
+      ADR documenting the AI integration decision with SDK choice,
+      MCP design, embedding approach, and ACP compliance level.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+    expected: "## Context"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+    expected: "## Decision"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+    expected: "## Alternatives"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+    expected: "## Consequences"
+
+context_budget:
+  estimated_tokens: 20000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

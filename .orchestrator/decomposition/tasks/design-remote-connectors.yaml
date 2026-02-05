@@ -1,0 +1,107 @@
+id: design-remote-connectors
+name: Remote Data Source Connector Framework Design
+from_subgoal: system-design-ingestion
+
+description: |
+  Write the Remote Data Source Connector Framework section of the Data Codex
+  architecture document. This details how cloud and SaaS data sources are
+  connected, queried, and cached locally.
+
+  The document must include:
+
+  1. **Connector Framework Architecture** (component diagram)
+     - Base Connector interface/abstract class
+     - Connector registry and discovery
+     - Authentication management (API keys, OAuth tokens)
+     - Connection lifecycle (connect, test, query, disconnect)
+
+  2. **Connector Interface Design**
+     - Standard methods: connect(), testConnection(), query(), getSchema(), disconnect()
+     - Streaming query results (Arrow output)
+     - Error handling contract
+     - Rate limiting and retry logic
+     - Configuration schema per connector type
+
+  3. **Cloud Storage Connectors**
+     - S3 connector: bucket browsing, file listing, Parquet/CSV reading via DuckDB httpfs
+     - GCS connector: similar pattern to S3
+     - Local network shares: UNC path support
+
+  4. **Database Connectors**
+     - BigQuery: service account auth, SQL query, result streaming
+     - ClickHouse: HTTP interface, SQL query, Arrow result format
+     - PostgreSQL/MySQL: read-only connection, query execution (if scope includes)
+
+  5. **SaaS Analytics Connectors**
+     - Mixpanel: Export API, event data streaming, JQL queries
+     - PostHog: Events API, persons API, HogQL queries
+     - Google Sheets: Sheets API v4, range reading, sheet listing
+     - Airtable: REST API, table/view listing, record pagination
+
+  6. **Local Caching Strategy**
+     - Cache-first query pattern for remote data
+     - Cache invalidation: TTL-based, manual refresh
+     - Cache storage: DuckDB tables for cached results
+     - Offline mode: serve from cache when network unavailable
+     - Cache size management and eviction
+
+  7. **Credential Management**
+     - Secure storage (macOS Keychain via keytar or electron safeStorage)
+     - Credential CRUD operations
+     - OAuth flow handling for Google Sheets, etc.
+     - No plaintext credential storage
+
+  8. **Connector Plugin Architecture** (extensibility)
+     - How new connectors are added
+     - Connector configuration schema validation
+     - Testing and validation requirements for connectors
+
+inputs:
+  - path: .orchestrator/artifacts/design/02-electron-process-model.md
+    required: true
+    description: Process model (main process networking)
+  - path: .orchestrator/artifacts/design/04-database-integration.md
+    required: true
+    description: Database integration (DuckDB httpfs, cache storage)
+  - path: .orchestrator/artifacts/design/06-local-ingestion.md
+    required: true
+    description: Local ingestion (shares metadata catalog design)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (single-user, local-first)
+
+outputs:
+  - path: .orchestrator/artifacts/design/07-remote-connectors.md
+    type: system-design
+    description: |
+      Remote connector framework design with connector interface,
+      per-connector designs, caching, credential management, and
+      extensibility architecture.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/design/07-remote-connectors.md
+  - type: contains
+    target: .orchestrator/artifacts/design/07-remote-connectors.md
+    expected: "```mermaid"
+  - type: contains
+    target: .orchestrator/artifacts/design/07-remote-connectors.md
+    expected: "S3"
+  - type: contains
+    target: .orchestrator/artifacts/design/07-remote-connectors.md
+    expected: "BigQuery"
+  - type: contains
+    target: .orchestrator/artifacts/design/07-remote-connectors.md
+    expected: "Mixpanel"
+  - type: contains
+    target: .orchestrator/artifacts/design/07-remote-connectors.md
+    expected: "credential"
+
+context_budget:
+  estimated_tokens: 35000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

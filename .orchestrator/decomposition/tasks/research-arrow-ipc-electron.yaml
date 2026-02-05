@@ -1,0 +1,77 @@
+id: research-arrow-ipc-electron
+name: Research Apache Arrow IPC in Electron
+from_subgoal: research-foundations
+
+description: |
+  Research and evaluate Apache Arrow IPC mechanisms for zero-copy data
+  transfer within an Electron application. Focus on:
+
+  1. Arrow JS library (apache-arrow npm package)
+     - RecordBatch and Table APIs
+     - IPC stream format vs file format
+     - Memory management (ArrayBuffer ownership)
+  2. Zero-copy transfer mechanisms in Electron
+     - SharedArrayBuffer between processes (security restrictions)
+     - MessagePort with Transferable objects
+     - ArrayBuffer transfer semantics (postMessage with transfer list)
+     - Actual zero-copy feasibility vs "transfer" (move semantics)
+  3. DuckDB Arrow output -> Arrow JS interop
+     - DuckDB's Arrow result format
+     - Direct consumption without serialization
+  4. Predicate pushdown over IPC
+     - Sending query predicates to main process
+     - Filtering at source (DuckDB) vs filtering after transfer
+  5. Streaming Arrow data over IPC
+     - Chunked transfer for large result sets
+     - Backpressure handling
+  6. Arrow Flight vs custom IPC
+     - Arrow Flight RPC applicability in local desktop context
+     - Overhead analysis
+  7. Memory layout considerations
+     - Arrow columnar format alignment
+     - Buffer sharing across V8 isolates
+
+  Evaluate trade-offs:
+  - True zero-copy (SharedArrayBuffer) vs transfer semantics (ArrayBuffer transfer)
+  - IPC overhead for small vs large datasets
+  - Complexity of Arrow IPC vs simpler serialization for small payloads
+
+  Output a research finding document with clear recommendation.
+
+inputs:
+  - path: .orchestrator/decomposition/analysis.yaml
+    required: true
+    description: Goal analysis with Arrow-first constraint
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (Arrow-first data flow, stream-and-scan)
+
+outputs:
+  - path: .orchestrator/artifacts/research/arrow-ipc-electron.md
+    type: research-finding
+    description: |
+      Research finding on Arrow IPC in Electron covering zero-copy
+      mechanisms, MessagePort transfers, DuckDB interop, predicate
+      pushdown, and streaming. Includes recommendation.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/research/arrow-ipc-electron.md
+  - type: contains
+    target: .orchestrator/artifacts/research/arrow-ipc-electron.md
+    expected: "## Recommendation"
+  - type: contains
+    target: .orchestrator/artifacts/research/arrow-ipc-electron.md
+    expected: "## Alternatives Considered"
+  - type: contains
+    target: .orchestrator/artifacts/research/arrow-ipc-electron.md
+    expected: "zero-copy"
+
+context_budget:
+  estimated_tokens: 8000
+  category: peak
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

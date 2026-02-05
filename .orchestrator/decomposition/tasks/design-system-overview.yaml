@@ -1,0 +1,99 @@
+id: design-system-overview
+name: System Overview and Component Topology
+from_subgoal: system-design-core
+
+description: |
+  Write the System Overview section of the Data Codex architecture document.
+  This is the high-level entry point that establishes the overall component
+  topology, system boundaries, and architectural principles.
+
+  The document must include:
+
+  1. **System Purpose and Scope**
+     - What Data Codex is (serverless data warehouse in a desktop app)
+     - Target user and use cases
+     - Key design principles (Arrow-first, stream-and-scan, embedded-only)
+
+  2. **High-Level Component Diagram** (Mermaid)
+     - All major subsystems and their relationships
+     - Process boundaries (main, renderer, workers)
+     - External integrations (cloud data sources, AI services)
+
+  3. **Technology Stack Summary Table**
+     - Category | Technology | Role | Process
+     - Based on decisions from ADRs
+
+  4. **Roadmap Phase Overview Table**
+     - Phase | Name | Key Systems | Dependencies
+     - Phase 1: Foundation (Electron shell, DuckDB, Arrow IPC)
+     - Phase 2: Local Data (ingestion, metadata catalog, basic viz)
+     - Phase 3: Remote Connectors (S3, BigQuery, etc.)
+     - Phase 4: Advanced Visualization (Perspective, dashboards)
+     - Phase 5: AI Integration (Claude, MCP, RAG)
+     - Phase 6: Publishing (export, embedded viewers)
+     - Phase 7: Polish (performance, UX refinement)
+
+  5. **Cross-Reference Index**
+     - Links to all other architecture documents
+     - How documents relate to each other
+
+  Reference the ADRs for all technology choices. This document sets the
+  context for all subsequent design sections.
+
+inputs:
+  - path: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+    required: true
+    description: Database architecture decision
+  - path: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+    required: true
+    description: Arrow data plane decision
+  - path: .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+    required: true
+    description: Visualization stack decision
+  - path: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+    required: true
+    description: AI integration decision
+  - path: .orchestrator/artifacts/decisions/adr-005-process-architecture.md
+    required: true
+    description: Process architecture decision
+  - path: .orchestrator/decomposition/analysis.yaml
+    required: true
+    description: Goal analysis with full scope and constraints
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles
+
+outputs:
+  - path: .orchestrator/artifacts/design/01-system-overview.md
+    type: system-design
+    description: |
+      System overview document with component topology, technology
+      stack table, roadmap phases, and cross-reference index.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/design/01-system-overview.md
+  - type: contains
+    target: .orchestrator/artifacts/design/01-system-overview.md
+    expected: "```mermaid"
+  - type: contains
+    target: .orchestrator/artifacts/design/01-system-overview.md
+    expected: "Phase 1"
+  - type: contains
+    target: .orchestrator/artifacts/design/01-system-overview.md
+    expected: "Phase 7"
+  - type: contains
+    target: .orchestrator/artifacts/design/01-system-overview.md
+    expected: "DuckDB"
+  - type: contains
+    target: .orchestrator/artifacts/design/01-system-overview.md
+    expected: "Arrow"
+
+context_budget:
+  estimated_tokens: 40000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

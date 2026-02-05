@@ -1,0 +1,75 @@
+id: research-rxdb-electron
+name: Research RxDB with SQLite Adapter in Electron
+from_subgoal: research-foundations
+
+description: |
+  Research and evaluate RxDB with its SQLite storage adapter for use within
+  an Electron application as the reactive state layer. Focus on:
+
+  1. RxDB SQLite adapter for Electron
+     - better-sqlite3 backend vs sql.js (WASM)
+     - RxDB Premium vs community storage adapters
+     - Electron-specific setup requirements
+  2. Reactive query capabilities
+     - RxQuery with live results (observables)
+     - Change detection and subscription model
+     - Performance with frequent updates
+  3. Schema definition and migration
+     - JSON Schema-based schemas
+     - Migration strategies for app updates
+  4. Use cases in Data Codex
+     - UI state persistence (dashboard layouts, user preferences)
+     - Metadata catalog (data source registry, table metadata)
+     - Chat history and conversation state
+     - NOT for analytical data (that is DuckDB's role)
+  5. Bundle size and performance impact
+     - RxDB core + SQLite adapter size
+     - Query performance for typical UI state patterns
+  6. Offline-first capabilities
+     - Built-in conflict resolution (not needed for single-user)
+     - Data persistence guarantees
+
+  Evaluate trade-offs:
+  - RxDB vs alternatives (Dexie.js, sql.js direct, electron-store) for reactive state
+  - SQLite adapter vs IndexedDB adapter in Electron
+  - Premium vs community edition features needed
+
+  Output a research finding document with clear recommendation.
+
+inputs:
+  - path: .orchestrator/decomposition/analysis.yaml
+    required: true
+    description: Goal analysis with scope (RxDB with SQLite adapter)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable project principles (embedded-only, single-user)
+
+outputs:
+  - path: .orchestrator/artifacts/research/rxdb-electron.md
+    type: research-finding
+    description: |
+      Research finding on RxDB in Electron covering SQLite adapter,
+      reactive queries, schema management, use cases, and bundle size.
+      Includes recommendation.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/research/rxdb-electron.md
+  - type: contains
+    target: .orchestrator/artifacts/research/rxdb-electron.md
+    expected: "## Recommendation"
+  - type: contains
+    target: .orchestrator/artifacts/research/rxdb-electron.md
+    expected: "## Alternatives Considered"
+  - type: contains
+    target: .orchestrator/artifacts/research/rxdb-electron.md
+    expected: "SQLite"
+
+context_budget:
+  estimated_tokens: 8000
+  category: peak
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

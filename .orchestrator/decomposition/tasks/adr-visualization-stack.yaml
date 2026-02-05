@@ -1,0 +1,74 @@
+id: adr-visualization-stack
+name: "ADR-003: Visualization Technology Stack Decision"
+from_subgoal: decision-records
+
+description: |
+  Synthesize the research findings on visualization technologies into a formal
+  Architecture Decision Record (ADR) that documents the visualization stack
+  for Data Codex.
+
+  The ADR must cover:
+
+  1. **Context**: Why a multi-library visualization approach?
+     - Data grid needs (high-performance tabular display)
+     - Statistical visualization needs (distributions, correlations)
+     - Interactive dashboard needs (time series, KPIs, maps)
+     - GPU acceleration requirements
+  2. **Decision**: The specific visualization stack chosen
+     - Perspective.js as primary data grid and pivot table engine
+     - DuckDBHandler configuration for Perspective
+     - Observable Plot for statistical/exploratory charts
+     - ECharts for interactive dashboard widgets
+     - Arrow as the data interchange format for all visualization
+  3. **Alternatives Considered**:
+     - Data grids: AG Grid, Tabulator, Handsontable
+     - Statistical: D3.js direct, Vega-Lite, Plotly
+     - Dashboards: Plotly.js, Highcharts, Chart.js
+     - Unified: single library approach (Plotly for everything)
+  4. **Consequences**:
+     - Multiple library bundle size impact
+     - Cross-filter coordination complexity
+     - Arrow format must be consumable by all three libraries
+     - Different rendering approaches (WebGPU, SVG, Canvas)
+
+  Follow ADR format: Title, Status, Context, Decision, Alternatives, Consequences.
+
+inputs:
+  - path: .orchestrator/artifacts/research/perspective-electron.md
+    required: true
+    description: Visualization stack research finding
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (renderer owns visualization)
+
+outputs:
+  - path: .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+    type: decision-record
+    description: |
+      ADR documenting the visualization stack decision with library
+      choices, integration approach, and rendering strategy.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+    expected: "## Context"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+    expected: "## Decision"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+    expected: "## Alternatives"
+  - type: contains
+    target: .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+    expected: "## Consequences"
+
+context_budget:
+  estimated_tokens: 12000
+  category: peak
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

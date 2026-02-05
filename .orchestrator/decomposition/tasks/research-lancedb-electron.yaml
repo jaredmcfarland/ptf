@@ -1,0 +1,75 @@
+id: research-lancedb-electron
+name: Research LanceDB Integration in Electron
+from_subgoal: research-foundations
+
+description: |
+  Research and evaluate LanceDB's Node.js SDK for use within an Electron
+  application for vector search and full-text search. Focus on:
+
+  1. LanceDB Node.js SDK (vectordb npm package)
+     - API surface and maturity
+     - Electron compatibility (native addon requirements)
+     - Storage format (Lance columnar format)
+  2. Vector index types and configuration
+     - IVF_PQ, IVF_FLAT, HNSW
+     - Index build time vs query performance trade-offs
+  3. Full-text search capabilities
+     - Tantivy-based FTS in LanceDB
+     - Hybrid search (vector + FTS) support
+  4. Lance extension for DuckDB
+     - Querying Lance tables directly from DuckDB SQL
+     - Performance implications
+  5. Embedding pipeline integration
+     - How embeddings flow from model to LanceDB storage
+     - Batch vs streaming embedding insertion
+  6. Memory and storage footprint
+     - Index sizes for typical document collections
+     - Memory usage during search operations
+  7. Concurrent access patterns
+     - Read/write isolation
+     - Multiple readers with single writer
+
+  Evaluate trade-offs:
+  - LanceDB vs alternatives (Chroma, Qdrant, SQLite-VSS) for embedded use
+  - Lance DuckDB extension vs separate LanceDB queries
+  - Local index management complexity
+
+  Output a research finding document with clear recommendation.
+
+inputs:
+  - path: .orchestrator/decomposition/analysis.yaml
+    required: true
+    description: Goal analysis with scope (vector search, embedding pipeline, hybrid search)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable project principles (embedded-only databases)
+
+outputs:
+  - path: .orchestrator/artifacts/research/lancedb-electron.md
+    type: research-finding
+    description: |
+      Research finding on LanceDB in Electron covering SDK maturity,
+      vector indices, FTS, DuckDB extension, embedding pipeline,
+      and storage. Includes recommendation.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/research/lancedb-electron.md
+  - type: contains
+    target: .orchestrator/artifacts/research/lancedb-electron.md
+    expected: "## Recommendation"
+  - type: contains
+    target: .orchestrator/artifacts/research/lancedb-electron.md
+    expected: "## Alternatives Considered"
+  - type: contains
+    target: .orchestrator/artifacts/research/lancedb-electron.md
+    expected: "vector"
+
+context_budget:
+  estimated_tokens: 8000
+  category: peak
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

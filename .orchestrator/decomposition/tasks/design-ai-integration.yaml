@@ -1,0 +1,119 @@
+id: design-ai-integration
+name: AI Integration Architecture Design
+from_subgoal: system-design-ai
+
+description: |
+  Write the AI Integration Architecture section of the Data Codex architecture
+  document. This details the Claude Agent SDK integration, MCP server design,
+  RAG pipeline, and conversational interface architecture.
+
+  The document must include:
+
+  1. **AI Integration Overview** (component diagram)
+     - Claude Agent SDK integration module
+     - MCP Server with tool definitions
+     - RAG Pipeline (embedding -> search -> context -> LLM)
+     - Conversation Manager
+     - AI Chat UI component (renderer-side)
+
+  2. **Claude Agent SDK Integration**
+     - SDK initialization and configuration
+     - API key management (secure storage)
+     - Conversation management: multi-turn context, system prompts
+     - Streaming response handling
+     - Token usage tracking and cost display
+     - Error handling: rate limits, network failures, context overflow
+     - Process hosting: main process vs dedicated worker
+
+  3. **MCP Server Design**
+     - MCP server lifecycle in Electron (in-process vs subprocess)
+     - Tool definitions for analytics:
+       - execute_sql: run DuckDB queries
+       - get_schema: retrieve table schemas
+       - search_data: vector/FTS search
+       - list_sources: enumerate data sources
+       - get_statistics: table/column statistics
+       - create_visualization: generate chart configurations
+     - Resource exposure: data source metadata, query history
+     - Prompt templates: data exploration, SQL generation, analysis
+
+  4. **RAG Pipeline Design** (flow diagram)
+     - Query processing: user question -> embedding
+     - Retrieval: vector search in LanceDB + optional FTS
+     - Context assembly: retrieved chunks + schema info + query history
+     - Context window budget management
+     - LLM invocation with assembled context
+     - Response post-processing: SQL extraction, visualization suggestion
+
+  5. **Conversational Interface Architecture**
+     - Chat message model: user, assistant, system, tool-use, tool-result
+     - Conversation history storage (RxDB collection)
+     - Conversation lifecycle: create, continue, branch, archive
+     - UI state: message rendering, streaming display, code highlighting
+     - Tool execution display: showing SQL queries, results, visualizations
+
+  6. **ACP Compliance Design**
+     - Agent card definition for Data Codex AI
+     - Task lifecycle mapping to ACP specification
+     - Compliance level chosen (per ADR-004) and what it means
+     - Future extensibility for ACP features
+
+  7. **Offline Behavior**
+     - AI features degrade gracefully without network
+     - Local embedding model as fallback (if decided)
+     - Cached responses or local model integration (future)
+     - Clear UX for online vs offline AI status
+
+  Reference ADR-004 for all AI integration decisions.
+
+inputs:
+  - path: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+    required: true
+    description: AI integration architecture decision
+  - path: .orchestrator/artifacts/design/02-electron-process-model.md
+    required: true
+    description: Process model (AI hosting, worker threads)
+  - path: .orchestrator/artifacts/design/04-database-integration.md
+    required: true
+    description: Database integration (DuckDB query API, LanceDB search)
+  - path: .orchestrator/artifacts/design/05-vector-search-fts.md
+    required: true
+    description: Vector search design (RAG retrieval backend)
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles (single-user, local-first)
+
+outputs:
+  - path: .orchestrator/artifacts/design/09-ai-integration.md
+    type: system-design
+    description: |
+      AI integration design with Claude SDK, MCP server, RAG pipeline,
+      conversational interface, ACP compliance, and offline behavior.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/design/09-ai-integration.md
+  - type: contains
+    target: .orchestrator/artifacts/design/09-ai-integration.md
+    expected: "```mermaid"
+  - type: contains
+    target: .orchestrator/artifacts/design/09-ai-integration.md
+    expected: "Claude"
+  - type: contains
+    target: .orchestrator/artifacts/design/09-ai-integration.md
+    expected: "MCP"
+  - type: contains
+    target: .orchestrator/artifacts/design/09-ai-integration.md
+    expected: "RAG"
+  - type: contains
+    target: .orchestrator/artifacts/design/09-ai-integration.md
+    expected: "ACP"
+
+context_budget:
+  estimated_tokens: 40000
+  category: good
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate

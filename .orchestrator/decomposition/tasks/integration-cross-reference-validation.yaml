@@ -1,0 +1,146 @@
+id: integration-cross-reference-validation
+name: Cross-Document Consistency Validation
+from_subgoal: integration-validation
+
+description: |
+  Perform a comprehensive cross-document consistency validation across all
+  Data Codex architecture documents. Produce a validation report that
+  confirms document completeness and cross-reference integrity.
+
+  The validation must check:
+
+  1. **Component Coverage Check**
+     - Every component mentioned in system overview exists in a detail document
+     - Every detail document component is referenced in system overview
+     - No orphan components (mentioned nowhere else)
+
+  2. **Data Model Consistency**
+     - Every entity in data model spec is referenced by at least one design document
+     - Every design document that mentions entities references valid data model entries
+     - Storage location consistency (document says DuckDB, data model agrees)
+
+  3. **IPC/API Consistency**
+     - Every IPC message in API spec corresponds to a design document interaction
+     - Every design document that describes IPC references valid API spec messages
+     - Preload bridge methods match design document descriptions
+
+  4. **Technology Stack Consistency**
+     - Technology choices are consistent across all documents
+     - No contradictory technology references
+     - All technology choices trace back to an ADR
+
+  5. **Roadmap Phase Consistency**
+     - Every phase referenced in overview has detail in at least one design doc
+     - No design document section is orphaned from a phase
+     - Phase dependencies are consistent (no circular phase deps)
+
+  6. **Arrow Data Flow Consistency**
+     - Arrow is the data transfer format at every documented boundary
+     - No design document introduces non-Arrow data transfer in hot paths
+     - Stream-and-scan principle is maintained throughout
+
+  7. **Cross-Reference Link Integrity**
+     - All "See [document]" references point to existing documents
+     - All ADR references (ADR-001 through ADR-005) are valid
+     - Section references within documents are valid
+
+  8. **Success Criteria Mapping**
+     - Each of the 8 success criteria from analysis.yaml is addressed
+     - Map each criterion to the specific document(s) and section(s) that satisfy it
+
+  Output a structured validation report with pass/fail per check,
+  specific findings, and any recommended fixes.
+
+inputs:
+  - path: .orchestrator/artifacts/design/00-architecture-overview.md
+    required: true
+    description: Master architecture overview
+  - path: .orchestrator/artifacts/design/01-system-overview.md
+    required: true
+    description: System overview
+  - path: .orchestrator/artifacts/design/02-electron-process-model.md
+    required: true
+    description: Process model
+  - path: .orchestrator/artifacts/design/03-arrow-data-plane.md
+    required: true
+    description: Arrow data plane
+  - path: .orchestrator/artifacts/design/04-database-integration.md
+    required: true
+    description: Database integration
+  - path: .orchestrator/artifacts/design/05-vector-search-fts.md
+    required: true
+    description: Vector search
+  - path: .orchestrator/artifacts/design/06-local-ingestion.md
+    required: true
+    description: Local ingestion
+  - path: .orchestrator/artifacts/design/07-remote-connectors.md
+    required: true
+    description: Remote connectors
+  - path: .orchestrator/artifacts/design/08-visualization-engine.md
+    required: true
+    description: Visualization engine
+  - path: .orchestrator/artifacts/design/09-ai-integration.md
+    required: true
+    description: AI integration
+  - path: .orchestrator/artifacts/design/10-publishing-engine.md
+    required: true
+    description: Publishing engine
+  - path: .orchestrator/artifacts/data-model/data-model-spec.md
+    required: true
+    description: Data model specification
+  - path: .orchestrator/artifacts/api-spec/ipc-api-spec.md
+    required: true
+    description: IPC/API specification
+  - path: .orchestrator/artifacts/decisions/adr-001-database-trio.md
+    required: true
+    description: Database ADR
+  - path: .orchestrator/artifacts/decisions/adr-002-arrow-data-plane.md
+    required: true
+    description: Arrow ADR
+  - path: .orchestrator/artifacts/decisions/adr-003-visualization-stack.md
+    required: true
+    description: Visualization ADR
+  - path: .orchestrator/artifacts/decisions/adr-004-ai-integration.md
+    required: true
+    description: AI ADR
+  - path: .orchestrator/artifacts/decisions/adr-005-process-architecture.md
+    required: true
+    description: Process ADR
+  - path: .orchestrator/decomposition/analysis.yaml
+    required: true
+    description: Goal analysis with success criteria
+  - path: .orchestrator/decomposition/constitution.yaml
+    required: true
+    description: Immutable principles
+
+outputs:
+  - path: .orchestrator/artifacts/validation/cross-reference-report.md
+    type: research-finding
+    description: |
+      Cross-document consistency validation report with pass/fail
+      per check, specific findings, and recommended fixes.
+
+verify:
+  - type: exists
+    target: .orchestrator/artifacts/validation/cross-reference-report.md
+  - type: contains
+    target: .orchestrator/artifacts/validation/cross-reference-report.md
+    expected: "## Component Coverage"
+  - type: contains
+    target: .orchestrator/artifacts/validation/cross-reference-report.md
+    expected: "## Data Model Consistency"
+  - type: contains
+    target: .orchestrator/artifacts/validation/cross-reference-report.md
+    expected: "## Success Criteria Mapping"
+  - type: contains
+    target: .orchestrator/artifacts/validation/cross-reference-report.md
+    expected: "PASS"
+
+context_budget:
+  estimated_tokens: 55000
+  category: acceptable
+
+on_failure:
+  strategy: retry
+  max_attempts: 2
+  final_fallback: escalate
