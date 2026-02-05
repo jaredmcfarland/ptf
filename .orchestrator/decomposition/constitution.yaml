@@ -1,65 +1,76 @@
 # Project Constitution
 # These principles are IMMUTABLE for this project
 
-generated: 2026-01-19T09:59:23Z
-domain: prediction-market
+generated: 2026-02-04T00:00:00Z
+domain: system-design
 
 principles: |
-  # Fields Medal 2026 Research Constitution
+  # Data Codex Constitution
 
-  These principles are IMMUTABLE for this prediction market research project.
-  Violating them compromises research integrity and calibration accuracy.
+  These principles are IMMUTABLE for this project.
+  Violating them means the task is incorrectly defined.
 
   ## Core Principles
 
   1. **Artifact Integrity**: Every task produces exactly the artifacts declared
-     in its outputs. No undeclared findings or probability estimates.
+     in its outputs. No undeclared file modifications.
 
-  2. **Dependency Honesty**: All source dependencies are declared in inputs.
-     Hidden dependencies make findings unverifiable.
+  2. **Dependency Honesty**: All file dependencies are declared in inputs.
+     Hidden dependencies break parallel execution.
 
   3. **Fresh Context**: Every task must be completable by an agent starting
      with empty context, loading only declared inputs.
 
-  4. **Verification**: Every finding has a concrete verification step.
-     "Seems reasonable" is not verification.
+  4. **Verification**: Every artifact has a concrete verification step.
+     "Looks good" is not verification.
 
-  ## Domain Principles (Prediction Markets)
+  ## Domain Principles (System Design)
 
-  5. **Source Integrity**: Every claim traces to evidence. No unsourced
-     assertions. Primary sources outweigh secondary. Recent outweighs stale.
+  5. **Decision Traceability**: Every design choice documents alternatives
+     considered and rationale for selection. No unexplained decisions.
 
-  6. **Claim-Evidence Binding**: Every claim in a finding must reference
-     the specific evidence supporting it. No floating assertions.
+  6. **Implementation Feasibility**: Designs must be grounded in real
+     technologies with verified capabilities. No hypothetical or
+     unvalidated technology assumptions.
 
-  7. **Calibration Honesty**: Probability estimates reflect genuine uncertainty,
-     not confidence theater. Overconfidence is as dangerous as underconfidence.
+  7. **Cross-Document Consistency**: System design, data model, and API
+     specification must reference each other coherently. A component in
+     the system design must map to entities in the data model and
+     endpoints in the API spec.
 
-  8. **Methodology Consistency**: Apply the same evaluation criteria
-     across all sources within a task. No selective skepticism.
+  8. **Decomposability**: All designs must be structured so they can be
+     broken into implementation phases and individual tasks. Monolithic
+     designs that resist decomposition are considered defective.
 
   ## Project-Specific Constraints
 
-  9. **Conservative Edge Threshold**: No position recommended unless estimated
-     edge exceeds 15% vs market price. Close calls are passes.
+  9. **Arrow-First Data Flow**: All inter-component data transfer MUST use
+     Apache Arrow. JSON serialization in hot paths is a design violation.
+     Every data flow diagram must show Arrow as the transfer format.
 
-  10. **Epistemic Humility**: Starting from minimal knowledge base.
-      Avoid anchoring on market prices. Research candidates independently
-      before consulting market consensus.
+  10. **Embedded-Only Databases**: No external database servers. DuckDB,
+      LanceDB, and RxDB all run in-process within Electron. Designs
+      requiring a separate database process are rejected.
 
-  11. **Fields Medal Specificity**: Research must account for:
-      - Age eligibility (under 40 at Jan 1 of award year)
-      - ICM timing (awarded every 4 years at International Congress)
-      - Selection committee opacity (limited public information)
-      - Historical selection patterns and biases
+  11. **Stream and Scan**: Never design a component that loads full datasets
+      into JavaScript memory. All data access patterns must use streaming,
+      scanning, or predicate pushdown. Bulk loading is a design defect.
 
-  12. **Multi-Perspective Requirement**: Final synthesis must incorporate
-      at minimum: base rate, narrative, and contrarian perspectives.
+  12. **Process Isolation**: Main Process owns database engines. Renderer
+      Process owns visualization. Worker Threads isolate heavy computation.
+      Designs that blur these boundaries are rejected.
+
+  13. **macOS-First**: All technology choices must work on macOS with Electron.
+      Cross-platform compatibility is deferred. Native macOS APIs are
+      acceptable where they provide significant advantage.
+
+  14. **Single-User, Local-First**: No multi-user, sync, or authentication
+      designs. The app works offline for local data. Remote connectors
+      gracefully degrade when network is unavailable.
 
   ---
-  *Generated: 2026-01-19T09:59:23Z*
-  *Domain: prediction-market*
-  *Market: Kalshi kxfields-26*
+  *Generated: 2026-02-04T00:00:00Z*
+  *Domain: system-design*
 
 enforcement:
   - Every task must be validated against these principles

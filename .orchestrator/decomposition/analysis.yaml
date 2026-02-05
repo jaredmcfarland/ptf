@@ -1,77 +1,62 @@
 step: 1-goal-analysis
-created: 2026-01-19T09:59:23Z
+created: 2026-02-04T00:00:00Z
 status: complete
 
 objective: |
-  Research the Kalshi Fields Medal 2026 prediction market to determine if any
-  candidate represents a 15%+ edge opportunity. Requires comprehensive research
-  from minimal starting knowledge of the mathematics community and candidates.
-
-market_snapshot:
-  date: 2026-01-19
-  candidates:
-    - name: Hong Wang
-      price: 0.81
-      implied_probability: 81%
-    - name: Jacob Tsimerman
-      price: 0.67
-      implied_probability: 67%
-    - name: John Pardon
-      price: 0.46
-      implied_probability: 46%
-    - name: Yu Deng
-      price: 0.36
-      implied_probability: 36%
-    - name: Julian Sahasrabudhe
-      price: 0.30
-      implied_probability: 30%
-    - name: Sam Raskin
-      price: 0.24
-      implied_probability: 24%
-    - name: Jack Thorne
-      price: 0.19
-      implied_probability: 19%
-    - name: Will Sawin
-      price: 0.16
-      implied_probability: 16%
-    - name: Aleksandr Logunov
-      price: 0.08
-      implied_probability: 8%
-    - name: Alexander Efimov
-      price: 0.07
-      implied_probability: 7%
+  Design the complete system architecture for Data Codex, a desktop analytics
+  application built on Electron that functions as a serverless data warehouse.
+  The design must cover the embedded database trio (DuckDB, LanceDB, RxDB),
+  Apache Arrow data plane for zero-copy IPC, local/remote data source connectors,
+  GPU-accelerated visualization (Perspective.js, Observable Plot, ECharts),
+  AI chat integration (Claude Agent SDK, MCP, ACP), and a publishing engine
+  for exporting interactive web applications. Produce implementation-ready
+  architecture documents covering all 7 roadmap phases.
 
 scope:
   included:
-    - Fields Medal eligibility criteria and selection process
-    - Historical base rates and selection patterns
-    - Research profiles and impact of each candidate
-    - Multi-perspective probability estimation per candidate
-    - Edge calculation vs market prices
-    - Position recommendation with sizing
+    - Electron application architecture (main process, renderer, preload, worker threads)
+    - Embedded database integration design (DuckDB, LanceDB, RxDB with SQLite adapter)
+    - Apache Arrow IPC layer design (MessagePort, zero-copy transfers, predicate pushdown)
+    - Local data ingestion pipeline (folder scanning, auto-registration, metadata catalog)
+    - Visualization engine architecture (Perspective.js DuckDBHandler, Observable Plot, ECharts)
+    - Vector search and full-text search design (LanceDB indices, embedding pipeline, hybrid search)
+    - Remote data source connector framework (S3, BigQuery, ClickHouse, Mixpanel, PostHog, Google Sheets, Airtable)
+    - AI integration architecture (Claude Agent SDK, MCP server, ACP compliance, RAG pipeline)
+    - Publishing engine design (export pipeline, embedded viewers, hosted chat UI)
+    - Data model specifications for all persistent state
+    - API/IPC specifications for all inter-component communication
   excluded:
-    - Markets on other prediction platforms (Polymarket, Metaculus)
-    - Other mathematics awards (Abel Prize, etc.)
-    - Execution/trading mechanics
-    - Portfolio-level position management
+    - Actual code implementation (this project produces design documents only)
+    - Cross-platform support beyond macOS (deferred)
+    - Multi-user or collaborative features
+    - Production deployment infrastructure (CI/CD, app signing, distribution)
+    - Detailed UI/UX design (wireframes, visual design system)
+    - Performance benchmarking and load testing plans
 
 constraints:
-  - 15%+ edge required before recommending any position
-  - Must research from minimal knowledge base - no assumptions
-  - Multiple perspectives required before synthesis
-  - All probability estimates must cite evidence
+  - macOS-first Electron application; cross-platform deferred
+  - Single-user desktop; no multi-user sync or authentication
+  - All inter-component data transfer via Apache Arrow; no JSON serialization in hot paths
+  - Embedded-only databases; no external database servers
+  - "Stream and Scan" principle; never load full datasets into JS memory
+  - Electron bundle size matters; minimize dependencies
+  - Main Process owns databases; Renderer Process owns visualizations
+  - Worker Threads isolate heavy computation from UI thread
 
 success_criteria:
-  - Understand Fields Medal selection criteria and historical patterns
-  - Research each candidate's mathematical contributions and eligibility
-  - Produce calibrated probability estimates from multiple perspectives
-  - Identify any candidates with 15%+ estimated edge vs market
-  - Deliver actionable recommendation (position or pass)
+  - System design document covers all 6 key systems with component diagrams
+  - Data model specification defines all entities, relationships, and storage locations
+  - IPC/API specification defines all message types between main/renderer/worker processes
+  - Technology decisions documented with alternatives considered and rationale
+  - Each roadmap phase has a corresponding architecture section enabling independent implementation
+  - Arrow data flow documented end-to-end from ingestion through visualization
+  - All design documents cross-reference each other consistently
+  - Verification checks confirm document completeness and cross-reference integrity
 
-domain: prediction-market
+domain: system-design
 
 clarification_summary:
-  market_focus: https://kalshi.com/markets/kxfields/fields-medal-recipients/kxfields-26
-  edge_threshold: "15%+ edge (conservative)"
-  time_horizon: "Resolves in months - deep research"
-  existing_knowledge: "Mostly new territory"
+  project_type: "Desktop analytics app (Electron + embedded DBs)"
+  scale: "Single-user desktop - one user, local-first, offline-capable, datasets up to millions of rows via streaming/scanning"
+  constraints: "All constraints apply: macOS-first Electron, zero-copy Arrow everywhere, embedded-only databases"
+  integrations: "Full integration scope: cloud data sources (S3, BigQuery, ClickHouse), SaaS analytics (Mixpanel, PostHog, Google Sheets, Airtable), AI services (Claude Agent SDK, MCP, ACP)"
