@@ -8,6 +8,10 @@ allowed-tools:
   - Glob
   - Grep
   - Task
+  - TeamCreate
+  - TeamDelete
+  - SendMessage
+  - TodoWrite
 ---
 
 <objective>
@@ -36,6 +40,8 @@ Execute the entire plan, progressing through all waves automatically until compl
 @.claude/skills/ptf/SKILL.md
 @.claude/agents/ptf-orchestrator.md
 @.claude/agents/ptf-executor.md
+@.claude/agents/ptf-team-lead.md
+@.claude/agents/ptf-team-executor.md
 </execution_context>
 
 <context>
@@ -101,7 +107,30 @@ Display:
 "Starting from wave {current_wave}."
 ```
 
-## Phase 2: Execute All Waves
+## Phase 1.5: Determine Execution Mode
+
+Read execution mode from config:
+
+```bash
+MODE=$(grep "mode:" .orchestrator/config.yaml 2>/dev/null | head -1 | awk '{print $2}')
+MODE=${MODE:-classic}
+```
+
+**If MODE == "teams":**
+
+Check that Agent Teams is enabled:
+```bash
+if [ -z "$CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS" ]; then
+  echo "WARNING: Agent Teams not enabled. Set CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
+  echo "Falling back to classic wave-based execution."
+  MODE="classic"
+fi
+```
+
+If teams mode is confirmed, skip to Phase 2T below.
+Otherwise, continue to Phase 2 (classic).
+
+## Phase 2: Execute All Waves (Classic Mode)
 
 Spawn orchestrator in full-plan mode.
 
@@ -142,6 +171,13 @@ Execution flow:
    f. Decide: continue, pause, or blocked
 2. Return final status
 
+**CRITICAL: Event Logging Verification**
+After EACH state-manager call:
+1. Check return includes `events_logged` array
+2. Verify event was written: `tail -1 .orchestrator/history/events.jsonl`
+3. If missing, retry state-manager call once
+Event log path: `.orchestrator/history/events.jsonl` (ONLY this path)
+
 Return PLAN COMPLETE, EXECUTION PAUSED, or EXECUTION BLOCKED.
 ", subagent_type="ptf-orchestrator")
 ```
@@ -149,6 +185,68 @@ Return PLAN COMPLETE, EXECUTION PAUSED, or EXECUTION BLOCKED.
 **2.3 Wait for orchestrator:**
 
 The orchestrator handles the wave-by-wave loop internally.
+Wait for final return indicating completion or stopping point.
+
+Skip to Phase 3.
+
+## Phase 2T: Execute All Tasks (Teams Mode)
+
+Spawn team lead for dynamic scheduling via Agent Teams.
+
+**2T.1 Read teams configuration:**
+
+```bash
+WORKER_COUNT=$(grep "worker_count:" .orchestrator/config.yaml 2>/dev/null | awk '{print $2}')
+WORKER_COUNT=${WORKER_COUNT:-3}  # Default to 3 workers
+```
+
+**2T.2 Dispatch team lead:**
+
+```
+Task(prompt="
+<mode>teams</mode>
+<plan_id>{plan_id}</plan_id>
+
+Execute all tasks using Agent Teams with dynamic scheduling.
+
+Configuration:
+- worker_count: {WORKER_COUNT}
+- max_parallel_tasks: {from config.yaml or default 5}
+- checkpoint_frequency: {from config.yaml or default task}
+
+Required files:
+- Graph: .orchestrator/decomposition/graph.yaml
+- Tasks: .orchestrator/decomposition/tasks/*.yaml
+- State: .orchestrator/state/execution.yaml
+- Config: .orchestrator/config.yaml
+
+Current state:
+- Status: {status}
+- Current wave: {current_wave}
+- Waves total: {waves_total}
+- Tasks remaining: {total_tasks}
+
+Execution flow:
+1. Create Agent Teams team (ptf-{plan_id})
+2. Convert dependency graph to shared task list with dependencies
+3. Spawn {WORKER_COUNT} executor teammates
+4. Monitor teammate messages for task completion/failure
+5. Handle failures per task on_failure policy
+6. Log all events to .orchestrator/history/events.jsonl
+7. Checkpoint state after each task completion
+8. When all tasks complete: shutdown teammates, cleanup team
+
+**CRITICAL: You are the SINGLE WRITER for all state files and events.jsonl.**
+Teammates report via SendMessage. You process messages and write state.
+
+Return PLAN COMPLETE, EXECUTION PAUSED, or EXECUTION BLOCKED.
+", subagent_type="ptf-team-lead")
+```
+
+**2T.3 Wait for team lead:**
+
+The team lead handles the full execution lifecycle internally:
+team creation → task list population → worker dispatch → monitoring → shutdown → cleanup.
 Wait for final return indicating completion or stopping point.
 
 ## Phase 3: Handle Completion
@@ -275,15 +373,17 @@ After resolving, run `/ptf:resume` to continue.
 
 <comparison_with_execute>
 
-## /ptf:execute vs /ptf:execute-all
+## /ptf:execute vs /ptf:execute-all vs /ptf:execute-all (teams)
 
-| Aspect | /ptf:execute | /ptf:execute-all |
-|--------|--------------|------------------|
-| Scope | Single wave | All remaining waves |
-| Progression | Manual (run again) | Automatic |
-| Mode | single-wave | full-plan |
-| User control | After each wave | At completion/failure |
-| Best for | Step-by-step verification | Hands-off execution |
+| Aspect | /ptf:execute | /ptf:execute-all (classic) | /ptf:execute-all (teams) |
+|--------|--------------|---------------------------|--------------------------|
+| Scope | Single wave | All remaining waves | All remaining tasks |
+| Scheduling | Wave boundaries | Wave boundaries | Dynamic (dependency-driven) |
+| Parallelism | Within wave only | Within wave only | Across waves |
+| Progression | Manual | Automatic | Automatic |
+| Coordinator | ptf-orchestrator | ptf-orchestrator | ptf-team-lead |
+| User control | After each wave | At completion/failure | At completion/failure |
+| Best for | Step-by-step | Hands-off, smaller plans | Large plans, uneven tasks |
 
 **When to use /ptf:execute:**
 - Want to review results between waves
@@ -291,14 +391,28 @@ After resolving, run `/ptf:resume` to continue.
 - First-time execution (verify each step)
 - Complex plans with potential issues
 
-**When to use /ptf:execute-all:**
+**When to use /ptf:execute-all (classic mode):**
 - Confident in plan correctness
 - Want unattended execution
 - Resuming after interruption
-- Fast iteration on known-good patterns
+- Smaller plans where wave overhead is minimal
 
-Both commands use the same orchestrator, just with different mode parameters.
-The orchestrator handles the actual execution logic.
+**When to use /ptf:execute-all (teams mode):**
+- Large plans (10+ tasks) with uneven task durations
+- Want maximum parallelism and throughput
+- Tasks have fine-grained dependencies (not just wave-level)
+- Willing to use experimental Agent Teams feature
+
+**Configuration for teams mode:**
+```yaml
+# .orchestrator/config.yaml
+execution:
+  mode: teams
+  teams:
+    worker_count: 3
+```
+
+Also requires: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
 
 </comparison_with_execute>
 

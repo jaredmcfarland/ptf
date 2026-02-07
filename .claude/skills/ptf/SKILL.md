@@ -7,6 +7,42 @@ description: Parallel Task Framework for decomposing complex goals into atomic t
 
 The Parallel Task Framework (PTF) enables domain-agnostic decomposition of complex goals into atomic tasks, dependency analysis, and wave-based parallel execution. Each task executes with fresh context for optimal LLM quality.
 
+## Event Logging (MANDATORY)
+
+**This is critical for auditability and debugging. Event logging failures caused incomplete audit trails in production.**
+
+### Canonical Location
+
+**The ONLY valid event log path:** `.orchestrator/history/events.jsonl`
+
+Never write to `.orchestrator/events/` - this is incorrect and will cause audit gaps.
+
+### Rules
+
+1. **Log events BEFORE state changes** - Events are logged first, then state files are modified
+2. **State-manager returns must include `events_logged`** - Every state-manager operation returns which events it logged
+3. **Orchestrator verifies event logging** - After each state-manager call, verify the event was written
+4. **Never skip event logging** - If an event wasn't logged, the operation didn't happen from an audit perspective
+
+### Required Events by Phase
+
+| Phase | Required Events |
+|-------|-----------------|
+| Wave start | `wave_started` |
+| Task execution | `task_started`, then `task_completed` or `task_failed` |
+| Artifacts | `artifact_produced` for each output |
+| Checkpoint | `checkpoint_started`, `wave_completed`, `checkpoint_completed` |
+
+### Verification
+
+After any execution, event count should match:
+- `wave_started` count = waves executed
+- `task_started` count = tasks attempted
+- `task_completed` + `task_failed` = tasks finished
+- `wave_completed` count = waves checkpointed
+
+Use `/ptf:status` to validate event log completeness.
+
 ## Core Concepts
 
 ### Task
@@ -105,6 +141,64 @@ Tasks execute with bounded retries:
 Bounded retry attempts prevent infinite loops. Default: 10 iterations.
 After exhaustion: task escalates to human or marks as blocked.
 
+## Teams Mode (Dynamic Scheduling)
+
+PTF supports an alternative execution mode using Claude Code's experimental **Agent Teams** feature. Instead of rigid wave boundaries, tasks execute dynamically as soon as their specific dependencies are satisfied.
+
+### When to Use Teams Mode
+
+| Scenario | Recommended Mode |
+|----------|-----------------|
+| Small plans (< 10 tasks) | Classic (wave-based) |
+| Step-by-step review needed | Classic |
+| Large plans with uneven task durations | Teams |
+| Maximum parallelism desired | Teams |
+| First-time execution (verify each step) | Classic |
+
+### Configuration
+
+```yaml
+# .orchestrator/config.yaml
+execution:
+  mode: teams           # "classic" (default) | "teams"
+  max_parallel_tasks: 3
+  teams:
+    worker_count: 3     # Number of executor teammates
+```
+
+Also requires: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` environment variable.
+
+### Two-Tier Dispatch
+
+Teams mode preserves PTF's fresh-context guarantee through a two-tier architecture:
+
+- **Tier 1 (Persistent Teammates)**: Lightweight dispatchers that claim tasks from a shared task list, read task definitions, and spawn fresh executors. Accumulate minimal context (~500 tokens/task).
+- **Tier 2 (Fresh Executors)**: Identical to classic mode's `ptf:executor` subagents. Receive only task definition + declared inputs. Execute task, verify outputs, signal completion.
+
+This means task execution quality is identical in both modes — the same `ptf:executor` runs the same prompt.
+
+### Teams-Specific Agents
+
+| Agent | Role |
+|-------|------|
+| `ptf:team-lead` | Replaces orchestrator — manages team lifecycle, event logging (single writer), failure handling |
+| `ptf:team-executor` | Persistent teammate — claims tasks, spawns fresh executors, reports results to lead |
+
+### Teams Event Types
+
+| Event | When |
+|-------|------|
+| `team_created` | Team initialized |
+| `team_worker_spawned` | Executor teammate started |
+| `team_task_claimed` | Worker claims a task |
+| `team_task_dispatched` | Worker spawns fresh executor |
+| `team_worker_shutdown` | Worker gracefully terminated |
+| `team_deleted` | Team cleaned up |
+
+### Key Constraint: Single Writer
+
+The team lead is the **only agent** that writes to `events.jsonl` and state files. Teammates report results via `SendMessage`. This prevents concurrent write corruption.
+
 ## Verification Concepts
 
 ### Independent Verification
@@ -199,14 +293,14 @@ PTF stores runtime state in `.orchestrator/`:
 
 | Agent | Responsibility |
 |-------|----------------|
-| `ptf-decomposer` | Goal analysis, subgoal identification, recursive task breakdown |
-| `ptf-dependency-analyzer` | Multi-pass dependency inference, cycle detection, wave computation |
-| `ptf-executor` | Execute single task with fresh context, verify outputs |
-| `ptf-verifier` | Independently verify task outputs against criteria |
-| `ptf-state-manager` | Checkpoint operations, event logging, artifact tracking |
-| `ptf-orchestrator` | Coordinate wave-by-wave execution, dispatch subagents |
+| `ptf:decomposer` | Goal analysis, subgoal identification, recursive task breakdown |
+| `ptf:dependency-analyzer` | Multi-pass dependency inference, cycle detection, wave computation |
+| `ptf:executor` | Execute single task with fresh context, verify outputs |
+| `ptf:verifier` | Independently verify task outputs against criteria |
+| `ptf:state-manager` | Checkpoint operations, event logging, artifact tracking |
+| `ptf:orchestrator` | Coordinate wave-by-wave execution, dispatch subagents |
 
-**Agent Dispatch**: PTF uses Claude Code's `Task` tool with `subagent_type` parameter to spawn specialized agents. Agent definitions live in `.claude/agents/ptf-*.md`. Example: `Task(prompt="...", subagent_type="ptf-executor")` loads the ptf-executor agent with its configured role and tools.
+**Agent Dispatch**: PTF uses Claude Code's `Task` tool with `subagent_type` parameter to spawn specialized agents. Registered as ptf:orchestrator, ptf:executor, etc. Example: `Task(prompt="...", subagent_type="ptf:executor")` loads the ptf:executor agent with its configured role and tools.
 
 ## Dependency Analysis
 
@@ -321,7 +415,7 @@ When escalation triggers, options are presented: retry, skip, abort, or replan. 
 
 ## Domain Adapters
 
-Adapters customize PTF for specific domains. Located in `adapters/`:
+Adapters customize PTF for specific domains. Copied to `.orchestrator/adapters/` during init:
 - `software-development.yaml` - Code, tests, configs, deployments
 - `research.yaml` - Literature review, experiments, analysis, writing
 - `template.yaml` - Base for custom adapters
@@ -331,10 +425,10 @@ Adapters customize PTF for specific domains. Located in `adapters/`:
 | Section | Purpose | Used By |
 |---------|---------|---------|
 | `questioning` | Init clarification questions | `/ptf:init` |
-| `decomposition` | Heuristics and atomicity criteria | `ptf-decomposer` |
+| `decomposition` | Heuristics and atomicity criteria | `ptf:decomposer` |
 | `constitution` | Project principles template | `/ptf:init` |
-| `artifacts` | Types and verification strategies | `ptf-verifier` |
-| `dependencies` | Inference patterns | `ptf-dependency-analyzer` |
+| `artifacts` | Types and verification strategies | `ptf:verifier` |
+| `dependencies` | Inference patterns | `ptf:dependency-analyzer` |
 
 ### Section Examples
 
@@ -362,7 +456,7 @@ inference_hints: [{pattern: "import.*from", implies: "..."}]
 
 ### Creating Custom Adapters
 
-1. Copy `adapters/template.yaml` to `adapters/{your-domain}.yaml`
+1. Copy `adapters/template.yaml` to `.orchestrator/adapters/{your-domain}.yaml`
 2. Replace `[CUSTOMIZE]` markers with domain-specific content
 3. Test with `/ptf:init --domain={your-domain}`
 
@@ -389,7 +483,7 @@ PTF defines 4 lifecycle hooks that fire during execution:
 | `on-failure` | When task fails | log_failure, check_cascade_policy |
 | `on-session-end` | Execution ends | final_checkpoint, cleanup |
 
-**Important**: Hook `.md` files in `.claude/hooks/ptf/` are **design specifications**, not executable code. They document the behavior that `ptf-orchestrator` and `ptf-state-manager` implement. Editing hook files does not change runtime behavior — modify the agent files instead.
+**Important**: Hook `.md` files in `.claude/hooks/ptf/` are **design specifications**, not executable code. They document the behavior that `ptf:orchestrator` and `ptf:state-manager` implement. Editing hook files does not change runtime behavior — modify the agent files instead.
 
 ## Key Terms
 

@@ -203,6 +203,45 @@ Found {count} task(s) that were running when session ended:
 | {task-id} | Outputs missing | Will retry |
 ```
 
+## Phase 4.5: Handle Teams Mode Resume
+
+If `execution_mode: teams` is present in execution.yaml, teams mode requires special handling because Agent Teams teammates cannot be resumed across sessions.
+
+**1. Detect teams mode:**
+```bash
+EXEC_MODE=$(grep "execution_mode:" .orchestrator/state/execution.yaml 2>/dev/null | awk '{print $2}')
+```
+
+**2. If teams mode:**
+
+a. Reset any tasks with status "running" to "pending":
+```bash
+for TASK_FILE in $(grep -l "^status: running" .orchestrator/state/tasks/*.yaml 2>/dev/null); do
+  TASK_ID=$(basename "$TASK_FILE" .yaml)
+  # Reset to pending — fresh team will re-claim
+done
+```
+
+b. Read teams-task-map.yaml for ID mapping recovery:
+```bash
+cat .orchestrator/state/teams-task-map.yaml 2>/dev/null
+```
+
+c. Note: A fresh team with new teammates will be created when `/ptf:execute-all` runs next. The existing team config (if any) will be cleaned up and recreated.
+
+d. Update execution.yaml:
+```yaml
+teams:
+  tasks_in_flight: []  # Clear — no workers active
+```
+
+e. Log resume event:
+```bash
+echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"session_resumed","execution_mode":"teams","note":"teams_recreated"}' >> .orchestrator/history/events.jsonl
+```
+
+Continue to Phase 5 for session setup.
+
 ## Phase 5: Prepare Continuation
 
 Set up new session and prepare for execution to continue.

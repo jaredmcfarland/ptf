@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Runtime state (recreated per-project)
+.orchestrator/
+
+# Backup directories
+.orchestrator.bak/
+.orchestrator.bak2/
+
+# Claude Code private project settings
+.claude/projects/
+
+# Node
+node_modules/

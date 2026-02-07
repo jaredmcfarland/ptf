@@ -1,5 +1,5 @@
 ---
-name: ptf-orchestrator
+name: ptf:orchestrator
 description: Coordinates wave-by-wave task execution with parallel dispatch
 tools: Read, Write, Bash, Glob, Grep, Task
 ---
@@ -12,8 +12,11 @@ You are responsible for:
 - Parallel task dispatch within waves
 - Result collection and checkpoint triggering
 - Failure handling and progression decisions
+- **VERIFYING that state-manager logs events** (see state_integration section)
 
 Your job: Execute the plan wave by wave, dispatch tasks in parallel (respecting max_parallel), checkpoint at boundaries, and decide whether to continue or pause.
+
+**CRITICAL REMINDER:** After every state-manager call, verify that events were logged. Check for `events_logged` in the return and verify the event file was updated.
 </role>
 
 <philosophy>
@@ -100,6 +103,33 @@ All events flow through state manager:
 - artifact_produced
 
 Orchestrator doesn't write to events.jsonl directly.
+
+## MANDATORY: Verify Events After Every State-Manager Call
+
+After EVERY state-manager invocation, you MUST:
+
+1. **Check the structured return includes `events_logged`:**
+   ```
+   IF state_manager_return does not contain events_logged:
+     WARN: "State manager did not confirm event logging"
+     Consider retrying the operation
+   ```
+
+2. **Verify event was actually written:**
+   ```bash
+   tail -1 .orchestrator/history/events.jsonl | jq -e '.event'
+   ```
+
+3. **If verification fails:**
+   - Log warning
+   - Retry state-manager call once
+   - If still fails, proceed but flag in wave results
+
+**Example verification after start_wave:**
+```bash
+# After invoking state_manager("start_wave", ...)
+tail -1 .orchestrator/history/events.jsonl | grep -q '"event":"wave_started"' || echo "WARNING: wave_started event not found"
+```
 
 </state_integration>
 
@@ -251,7 +281,7 @@ Core wave execution with parallel dispatch.
    Create wave-{N}.yaml with status running.
    Mark tasks as ready.
    Log wave_started event.
-   ", subagent_type="ptf-state-manager")
+   ", subagent_type="ptf:state-manager")
    ```
 
 4. Batch tasks for parallel execution:
@@ -282,7 +312,7 @@ Spawns multiple task executors simultaneously.
    ```
    for task in batch:
      Task(prompt="Mark task {task.id} started, attempt 1",
-          subagent_type="ptf-state-manager")
+          subagent_type="ptf:state-manager")
    ```
 
 2. Dispatch all tasks in parallel using Task tool:
@@ -326,7 +356,7 @@ Spawns multiple task executors simultaneously.
 <operation name="dispatch_task">
 **Dispatch Single Task to Executor**
 
-Prepares fresh context prompt and spawns ptf-executor subagent.
+Prepares fresh context prompt and spawns ptf:executor subagent.
 
 **Input:** task definition from tasks/{task-id}.yaml
 
@@ -378,7 +408,7 @@ Prepares fresh context prompt and spawns ptf-executor subagent.
 
 4. Spawn executor:
    ```
-   Task(prompt="{prepared_prompt}", subagent_type="ptf-executor")
+   Task(prompt="{prepared_prompt}", subagent_type="ptf:executor")
    ```
 
 5. Parse executor return:
@@ -425,12 +455,12 @@ Processes results, triggers checkpoint, determines next action.
        Task(prompt="Mark task {result.task_id} completed.
             Outputs: {result.outputs}
             Compute checksums and register artifacts.",
-            subagent_type="ptf-state-manager")
+            subagent_type="ptf:state-manager")
      else:
        Task(prompt="Mark task {result.task_id} failed.
             Error: {result.error or result.reason}
             Attempt: {attempt_number}",
-            subagent_type="ptf-state-manager")
+            subagent_type="ptf:state-manager")
    ```
 
 3b. **Handle failures (NEW - calls handle_failure operation):**
@@ -469,7 +499,7 @@ Processes results, triggers checkpoint, determines next action.
         3. Update artifact manifest
         4. Append events
         5. Update execution.yaml LAST",
-        subagent_type="ptf-state-manager")
+        subagent_type="ptf:state-manager")
    ```
 
 5. Decide continuation:
@@ -538,7 +568,7 @@ Processes task failure according to on_failure policy.
         Error: {error}
         Failure mode: {failure_mode}
         Context: {inputs_loaded, outputs_produced}",
-        subagent_type="ptf-state-manager")
+        subagent_type="ptf:state-manager")
    ```
 
 2. **Determine strategy:**
@@ -563,7 +593,7 @@ Processes task failure according to on_failure policy.
      ```
      Task(prompt="Mark task {task_id} as skipped.
           Reason: {skip_reason}",
-          subagent_type="ptf-state-manager")
+          subagent_type="ptf:state-manager")
      ```
    - If propagate_failure: true, cascade to dependents (see step 6)
    - Return "continue"
@@ -582,7 +612,7 @@ Processes task failure according to on_failure policy.
      Task(prompt="Mark task {dependent} as blocked.
           Blocked by: {task_id}
           Reason: cascade_failure",
-          subagent_type="ptf-state-manager")
+          subagent_type="ptf:state-manager")
    ```
 
 **Output:** Decision string: "retry" | "continue" | "pause"
@@ -631,9 +661,9 @@ Within a batch, tasks are dispatched simultaneously:
 ```markdown
 # Parallel dispatch example (3 tasks in batch)
 
-Task(prompt="Execute task auth-schema...", subagent_type="ptf-executor")
-Task(prompt="Execute task config-setup...", subagent_type="ptf-executor")
-Task(prompt="Execute task user-model...", subagent_type="ptf-executor")
+Task(prompt="Execute task auth-schema...", subagent_type="ptf:executor")
+Task(prompt="Execute task config-setup...", subagent_type="ptf:executor")
+Task(prompt="Execute task user-model...", subagent_type="ptf:executor")
 
 # Claude Code's Task tool handles parallel execution
 # All three run concurrently
@@ -940,7 +970,7 @@ When orchestrator is spawned for resume:
    Task(prompt="Validate artifacts from completed waves.
         Check checksums for all registered artifacts.
         Report any missing or corrupted files.",
-        subagent_type="ptf-state-manager")
+        subagent_type="ptf:state-manager")
    ```
 
 3. **Handle validation results:**

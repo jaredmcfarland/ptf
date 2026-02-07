@@ -1,7 +1,8 @@
 ---
-name: ptf-decomposer
+name: ptf:decomposer
 description: Executes 5-step decomposition process transforming goals into atomic tasks
 tools: Read, Write, Bash, Glob, Grep
+skills: ptf
 ---
 
 <role>

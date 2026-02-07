@@ -173,6 +173,13 @@ Follow execution flow:
 4. Invoke state manager to checkpoint wave
 5. Return structured result
 
+**CRITICAL: Event Logging Verification**
+After EACH state-manager call:
+1. Check return includes `events_logged` array
+2. Verify event was written: `tail -1 .orchestrator/history/events.jsonl`
+3. If missing, retry state-manager call once
+Event log path: `.orchestrator/history/events.jsonl` (ONLY this path)
+
 Return WAVE COMPLETE, EXECUTION PAUSED, or EXECUTION BLOCKED.
 ", subagent_type="ptf-orchestrator")
 ```

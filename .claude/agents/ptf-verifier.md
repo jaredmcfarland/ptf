@@ -1,5 +1,5 @@
 ---
-name: ptf-verifier
+name: ptf:verifier
 description: Independently verifies task outputs against verification criteria
 tools: Read, Bash, Glob, Grep
 ---

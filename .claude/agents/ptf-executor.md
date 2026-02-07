@@ -1,5 +1,5 @@
 ---
-name: ptf-executor
+name: ptf:executor
 description: Executes single PTF task with fresh context and verification
 tools: Read, Write, Bash, Glob, Grep
 ---

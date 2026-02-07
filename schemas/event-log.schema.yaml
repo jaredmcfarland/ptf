@@ -45,6 +45,13 @@ properties:
       # Checkpoint events
       - checkpoint_started
       - checkpoint_completed
+      # Teams events
+      - team_created
+      - team_worker_spawned
+      - team_task_claimed
+      - team_task_dispatched
+      - team_worker_shutdown
+      - team_deleted
       # System events
       - goal_received
       - plan_generated
@@ -102,6 +109,14 @@ properties:
     items:
       type: string
     description: Output paths (task_completed)
+
+  worker:
+    type: string
+    description: Teammate name for teams events (e.g., exec-1)
+
+  team_name:
+    type: string
+    description: Team name (team_created, team_deleted events)
 
 examples:
   - ts: "2026-01-18T10:30:00Z"

@@ -115,6 +115,8 @@ Extract:
 - progress: task counts by status
 - session: current session info
 - blockers: any blockers
+- execution_mode: classic or teams (default: classic)
+- teams: team state if teams mode (team_name, worker_count, tasks_in_flight)
 
 **2. Count task files by status:**
 ```bash
@@ -215,6 +217,32 @@ Wave {current_wave} of {waves_total}
 
 {If blockers array is empty:}
 No blockers. Ready to continue.
+
+{If execution_mode == "teams":}
+
+## Teams Execution
+
+**Mode:** Dynamic scheduling (Agent Teams)
+**Team:** {teams.team_name}
+**Workers:** {teams.worker_count}
+
+### Tasks In Flight
+
+| Worker | Task | Started |
+|--------|------|---------|
+| {worker} | {task_id} | {started} |
+| ... | ... | ... |
+
+### Task Progress (Flat View)
+
+| Status | Tasks |
+|--------|-------|
+| Completed | {list of completed task IDs} |
+| In Progress | {list of running task IDs with worker} |
+| Ready | {list of unblocked pending task IDs} |
+| Blocked | {list of blocked task IDs with reason} |
+
+{End teams section}
 
 ---
 

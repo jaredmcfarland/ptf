@@ -1,0 +1,15 @@
+{
+  "name": "ptf",
+  "description": "Parallel Task Framework - Decompose complex goals into atomic tasks with dependency-aware wave-based parallel execution",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jared McFarland"
+  },
+  "license": "MIT",
+  "keywords": [
+    "task-decomposition",
+    "parallel-execution",
+    "planning",
+    "orchestration"
+  ]
+}

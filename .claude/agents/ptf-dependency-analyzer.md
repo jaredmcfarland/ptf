@@ -1,5 +1,5 @@
 ---
-name: ptf-dependency-analyzer
+name: ptf:dependency-analyzer
 description: Analyzes task dependencies and computes parallel execution waves
 tools: Read, Write, Bash, Glob, Grep
 ---

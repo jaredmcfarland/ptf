@@ -1,5 +1,5 @@
 ---
-name: ptf-state-manager
+name: ptf:state-manager
 description: Manages execution state, checkpoints, and event logging for PTF
 tools: Read, Write, Bash, Glob
 ---
@@ -17,6 +17,23 @@ Your job: Ensure execution state survives interruptions and enables reliable ses
 </role>
 
 <philosophy>
+
+## EVENT LOGGING IS MANDATORY
+
+**This is the #1 responsibility of the state manager.**
+
+Every operation MUST log events to `.orchestrator/history/events.jsonl` BEFORE modifying state files.
+
+**Canonical event log location:** `.orchestrator/history/events.jsonl` (ONLY this path - never `.orchestrator/events/`)
+
+**Rule:** If you didn't log the event, the operation didn't happen from an audit perspective.
+
+**Every structured return MUST include:**
+```yaml
+events_logged: ["event_type_1", "event_type_2", ...]
+```
+
+If `events_logged` is empty or missing, the orchestrator should treat this as a failure.
 
 ## Event Sourcing
 
@@ -143,13 +160,22 @@ Called when beginning a new wave.
 
 **Input:** Wave number, tasks in wave
 
+**CRITICAL: Event logging is MANDATORY. Log FIRST, then modify state files.**
+
 **Steps:**
-1. Update execution.yaml:
+
+1. **LOG EVENT FIRST (before any state changes):**
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"wave_started","wave":'${N}',"tasks":["'${TASK_IDS}'"]}' >> .orchestrator/history/events.jsonl
+   ```
+   **Verify:** `tail -1 .orchestrator/history/events.jsonl | grep -q '"event":"wave_started"'`
+
+2. Update execution.yaml:
    - Set status: running
    - Set current_wave: {N}
    - Update wave_summary[N]: running
 
-2. Create wave-{N}.yaml:
+3. Create wave-{N}.yaml:
    ```yaml
    wave: {N}
    status: running
@@ -159,7 +185,7 @@ Called when beginning a new wave.
        status: ready
    ```
 
-3. Create/update task state files for tasks in this wave:
+4. Create/update task state files for tasks in this wave:
    ```yaml
    task_id: {id}
    wave: {N}
@@ -168,12 +194,7 @@ Called when beginning a new wave.
    outputs_produced: []
    ```
 
-4. Append wave_started event:
-   ```bash
-   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"wave_started","wave":'${N}'}' >> .orchestrator/history/events.jsonl
-   ```
-
-**Output:** Wave state files created, tasks ready to execute
+**Output:** Must include `events_logged: ["wave_started"]` in return
 </operation>
 
 <operation name="task_started">
@@ -183,21 +204,25 @@ Called when a task begins execution.
 
 **Input:** task_id, attempt number
 
+**CRITICAL: Event logging is MANDATORY. Log FIRST, then modify state files.**
+
 **Steps:**
-1. Update task state file (.orchestrator/state/tasks/{task-id}.yaml):
-   - Set status: running
-   - Add attempt entry: {attempt: N, started: timestamp}
 
-2. Update execution.yaml:
-   - Increment tasks_running
-   - Decrement tasks_pending (or tasks_failed for retry)
-
-3. Append task_started event:
+1. **LOG EVENT FIRST (before any state changes):**
    ```bash
    echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"task_started","task":"'${TASK_ID}'","wave":'${WAVE}',"attempt":'${ATTEMPT}'}' >> .orchestrator/history/events.jsonl
    ```
+   **Verify:** `tail -1 .orchestrator/history/events.jsonl | grep -q '"event":"task_started"'`
 
-**Output:** Task marked as running with attempt tracking
+2. Update task state file (.orchestrator/state/tasks/{task-id}.yaml):
+   - Set status: running
+   - Add attempt entry: {attempt: N, started: timestamp}
+
+3. Update execution.yaml:
+   - Increment tasks_running
+   - Decrement tasks_pending (or tasks_failed for retry)
+
+**Output:** Must include `events_logged: ["task_started"]` in return
 </operation>
 
 <operation name="task_completed">
@@ -207,18 +232,32 @@ Called when a task succeeds.
 
 **Input:** task_id, outputs array (paths to produced files)
 
+**CRITICAL: Event logging is MANDATORY. Log FIRST, then modify state files.**
+
 **Steps:**
-1. Compute checksums for outputs:
+
+1. **LOG EVENTS FIRST (before any state changes):**
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"task_completed","task":"'${TASK_ID}'","wave":'${WAVE}',"duration_s":'${DURATION}',"outputs":["'${PATHS}'"]}' >> .orchestrator/history/events.jsonl
+   ```
+   **Verify:** `tail -1 .orchestrator/history/events.jsonl | grep -q '"event":"task_completed"'`
+
+2. Compute checksums for outputs:
    ```bash
    CHECKSUM=$(shasum -a 256 ${PATH} | cut -d' ' -f1)
    ```
 
-2. Update task state file:
+3. Log artifact events (for each output):
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"artifact_produced","task":"'${TASK_ID}'","path":"'${PATH}'","checksum":"sha256:'${HASH}'"}' >> .orchestrator/history/events.jsonl
+   ```
+
+4. Update task state file:
    - Set status: completed
    - Update current attempt: completed: timestamp, status: succeeded
    - Set outputs_produced: [{path, checksum: "sha256:..."}]
 
-3. Register artifacts in manifest.yaml:
+5. Register artifacts in manifest.yaml:
    ```yaml
    artifacts:
      - path: {path}
@@ -229,16 +268,7 @@ Called when a task succeeds.
        checksum: sha256:{hash}
    ```
 
-4. Append events:
-   ```bash
-   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"task_completed","task":"'${TASK_ID}'","wave":'${WAVE}',"duration_s":'${DURATION}',"outputs":["'${PATHS}'"]}' >> .orchestrator/history/events.jsonl
-   ```
-   For each output:
-   ```bash
-   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"artifact_produced","task":"'${TASK_ID}'","path":"'${PATH}'","checksum":"sha256:'${HASH}'"}' >> .orchestrator/history/events.jsonl
-   ```
-
-**Output:** Task marked complete, artifacts registered
+**Output:** Must include `events_logged: ["task_completed", "artifact_produced", ...]` in return
 </operation>
 
 <operation name="task_failed">
@@ -248,23 +278,28 @@ Called when a task fails.
 
 **Input:** task_id, error message, attempt number
 
+**CRITICAL: Event logging is MANDATORY. Log FIRST, then modify state files.**
+
 **Steps:**
-1. Update task state file:
+
+1. **LOG EVENT FIRST (before any state changes):**
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"task_failed","task":"'${TASK_ID}'","wave":'${WAVE}',"attempt":'${ATTEMPT}',"error":"'${ERROR}'","reason":"'${REASON}'"}' >> .orchestrator/history/events.jsonl
+   ```
+   **Verify:** `tail -1 .orchestrator/history/events.jsonl | grep -q '"event":"task_failed"'`
+
+2. Update task state file:
    - Update current attempt: completed: timestamp, status: failed, error: message
    - Check retry policy: if attempts < max_retries, keep status ready for retry
    - If exhausted: set status: failed
 
-2. Append task_failed event:
-   ```bash
-   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"task_failed","task":"'${TASK_ID}'","wave":'${WAVE}',"attempt":'${ATTEMPT}',"error":"'${ERROR}'","reason":"'${REASON}'"}' >> .orchestrator/history/events.jsonl
-   ```
-
 3. If retrying, do NOT update execution.yaml yet (task still in progress)
+
 4. If exhausted, update execution.yaml:
    - Increment tasks_failed
    - Decrement tasks_running
 
-**Output:** Task failure recorded, retry state determined
+**Output:** Must include `events_logged: ["task_failed"]` in return
 </operation>
 
 <operation name="checkpoint_wave">
@@ -274,40 +309,52 @@ Critical operation: follows specific write order for atomicity.
 
 **Input:** Wave number, task results
 
+**CRITICAL: Event logging is MANDATORY. Log checkpoint events at proper points.**
+
 **Protocol:**
 
 ```
-**Checkpoint Protocol (from 04-RESEARCH.md):**
+**Checkpoint Protocol (EVENTS FIRST where noted):**
 
-1. Write all task state files (details first)
+1. LOG checkpoint_started event FIRST:
+   echo '{"ts":"...","event":"checkpoint_started","wave":N}' >> events.jsonl
+   ^^^ THIS MUST HAPPEN BEFORE ANY FILE WRITES ^^^
+
+2. Write all task state files (details first)
    For each task in wave:
    - Write .orchestrator/state/tasks/{task-id}.yaml
 
-2. Write wave state file
+3. Write wave state file
    - Write .orchestrator/state/waves/wave-{N}.yaml
 
-3. Update artifact manifest
+4. Update artifact manifest
    - For completed tasks, register outputs in manifest.yaml
 
-4. Append events to log
-   - Append checkpoint_started
-   - Append wave_completed
-   - Append checkpoint_completed
+5. LOG wave_completed and checkpoint_completed events:
+   echo '{"ts":"...","event":"wave_completed","wave":N}' >> events.jsonl
+   echo '{"ts":"...","event":"checkpoint_completed","wave":N}' >> events.jsonl
 
-5. Update execution.yaml LAST (commit marker)
+6. Update execution.yaml LAST (commit marker)
    - Update wave_summary[N]: completed (or partial/failed)
    - Update current_wave: N+1 (or keep if last)
    - Update progress counters
    - Update session.last_update
 
 **Why this order matters:**
-- If interrupted before step 5: Resume will re-checkpoint (idempotent)
-- If interrupted after step 5: State is consistent
+- checkpoint_started logged BEFORE file writes (audit trail)
+- If interrupted before step 6: Resume will re-checkpoint (idempotent)
+- If interrupted after step 6: State is consistent
 - execution.yaml is the "commit" that marks checkpoint complete
 ```
 
 **Steps:**
-1. Write task state files:
+
+1. **LOG checkpoint_started FIRST:**
+   ```bash
+   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"checkpoint_started","wave":'${N}'}' >> .orchestrator/history/events.jsonl
+   ```
+
+2. Write task state files:
    ```bash
    # For each task in wave
    cat > .orchestrator/state/tasks/${TASK_ID}.yaml << EOF
@@ -341,16 +388,16 @@ Critical operation: follows specific write order for atomicity.
    EOF
    ```
 
-3. Update manifest.yaml with new artifacts
+4. Update manifest.yaml with new artifacts
 
-4. Append checkpoint events:
+5. **LOG wave_completed and checkpoint_completed events:**
    ```bash
-   echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"checkpoint_started","wave":'${N}'}' >> .orchestrator/history/events.jsonl
    echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"wave_completed","wave":'${N}',"duration_s":'${DURATION}'}' >> .orchestrator/history/events.jsonl
    echo '{"ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","event":"checkpoint_completed","wave":'${N}'}' >> .orchestrator/history/events.jsonl
    ```
+   **Verify:** `tail -1 .orchestrator/history/events.jsonl | grep -q '"event":"checkpoint_completed"'`
 
-5. Update execution.yaml LAST:
+6. Update execution.yaml LAST (commit marker):
    ```yaml
    status: running  # or completed if last wave
    current_wave: N+1
@@ -367,7 +414,7 @@ Critical operation: follows specific write order for atomicity.
      last_update: {timestamp}
    ```
 
-**Output:** Wave checkpoint complete, safe to continue or resume
+**Output:** Must include `events_logged: ["checkpoint_started", "wave_completed", "checkpoint_completed"]` in return
 </operation>
 
 <operation name="validate_artifacts">
