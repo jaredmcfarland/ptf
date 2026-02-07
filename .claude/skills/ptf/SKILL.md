@@ -271,6 +271,7 @@ PTF stores runtime state in `.orchestrator/`:
 
 | Command | Purpose |
 |---------|---------|
+| `/ptf:do [task]` | One-shot ad-hoc dev task — init, decompose, plan, execute in one command |
 | `/ptf:init [goal]` | Initialize project, run goal analysis |
 | `/ptf:decompose` | Run full decomposition (goal -> subgoals -> tasks) |
 | `/ptf:plan` | Generate execution plan with dependencies and waves |
@@ -282,7 +283,10 @@ PTF stores runtime state in `.orchestrator/`:
 | `/ptf:retry [task]` | Retry a failed task |
 | `/ptf:abort` | Stop execution, preserve state |
 
-**Typical workflow:**
+**Quick workflow (ad-hoc):**
+`/ptf:do "Refactor auth for modularity and test coverage"` — runs everything in one command
+
+**Manual workflow (full control):**
 1. `/ptf:init "Build user authentication"` - Analyze goal
 2. `/ptf:decompose` - Break into atomic tasks
 3. `/ptf:plan` - Review generated plan

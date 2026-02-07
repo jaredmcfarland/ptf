@@ -16,7 +16,7 @@ This is a **specification and configuration repository** - not a traditional cod
 | `.claude/commands/ptf/` | Slash command implementations |
 | `.claude/skills/ptf/` | The main PTF skill definition |
 | `schemas/` | YAML schemas for tasks, plans, waves, artifacts, execution state |
-| `adapters/` | Domain-specific adapters (software-development, research) |
+| `adapters/` | Domain-specific adapters (software-development, research, dev-do) |
 | `.orchestrator/` | Runtime state directory (created per-project) |
 
 ## Commands
@@ -25,6 +25,7 @@ PTF is used via slash commands within Claude Code:
 
 | Command | Purpose |
 |---------|---------|
+| `/ptf:do [task]` | One-shot ad-hoc dev task — init, decompose, plan, execute in one command |
 | `/ptf:init [goal]` | Initialize project, run goal analysis |
 | `/ptf:decompose` | Break goal into atomic tasks |
 | `/ptf:plan` | Generate execution plan with dependencies and waves |
@@ -36,7 +37,8 @@ PTF is used via slash commands within Claude Code:
 | `/ptf:retry [task]` | Retry a failed task |
 | `/ptf:abort` | Stop execution, preserve state |
 
-**Typical workflow:** `init` → `decompose` → `plan` → `execute-all` → `status`
+**Quick workflow:** `/ptf:do "Refactor auth for modularity and test coverage"` (runs everything)
+**Manual workflow:** `init` → `decompose` → `plan` → `execute-all` → `status`
 
 ## Architecture
 
