@@ -1,0 +1,313 @@
+# yaml-language-server: $schema=../schemas/adapter.schema.yaml
+# Dev-Do Domain Adapter
+# For ad-hoc, one-shot software development tasks via /ptf:do
+# Handles: code review, refactoring, feature dev, debugging, optimization, integration
+
+name: dev-do
+description: |
+  Domain adapter for ad-hoc, one-shot software development tasks.
+  Handles code review, refactoring, feature development, debugging,
+  optimization, SDK integration, and other complex development workflows.
+  Designed for on-the-fly decomposition where the task type is determined
+  dynamically from the natural language goal.
+version: "1.0"
+
+# Questioning - minimal friction for ad-hoc use
+questioning:
+  init_questions:
+    - category: task_nature
+      question: "Is this primarily investigation/analysis, implementation/modification, or both?"
+      why: "Determines whether to start with investigation tasks or jump to implementation. Mixed tasks need a phased approach."
+      options_template:
+        - "Investigation first, then implement (code review, debugging, optimization)"
+        - "Mostly implementation (feature dev, integration)"
+        - "Both equally (refactoring, TDD, study-then-build)"
+
+    - category: scope_awareness
+      question: "How familiar are you with the relevant parts of the codebase?"
+      why: "Low familiarity means exploration/discovery tasks are needed before planning changes."
+      options_template:
+        - "Very familiar - know exactly what to change"
+        - "Somewhat familiar - know the area but not details"
+        - "Not familiar - need to explore first"
+
+    - category: quality_bar
+      question: "What level of thoroughness is expected?"
+      why: "Affects depth of testing, verification, and documentation requirements."
+      options_template:
+        - "Quick and focused - minimal testing, ship fast"
+        - "Standard - reasonable test coverage, clean code"
+        - "Production-grade - comprehensive tests, docs, edge cases"
+
+    - category: test_granularity
+      question: "What level of test coverage does this task need?"
+      why: "Shapes how many test tasks are created and their scope. All tasks follow TDD - tests are always written first."
+      options_template:
+        - "Unit tests only - test individual functions and modules"
+        - "Unit + integration - test both units and their interactions"
+        - "Full stack - unit, integration, and end-to-end tests"
+        - "Match existing coverage - follow the project's current test patterns"
+
+# Decomposition - heuristics that adapt to any dev task type
+decomposition:
+  subgoal_heuristics:
+    - name: by-phase
+      description: Split into TDD phases - investigate, plan, write failing tests, implement to pass, verify
+      examples:
+        - "Investigate: explore codebase, understand current state"
+        - "Plan: design approach, define interfaces and contracts"
+        - "Test: write failing tests that specify desired behavior"
+        - "Implement: write minimal code to make tests pass"
+        - "Verify: run full suite, lint, review changes"
+      when_to_use: "Default for most ad-hoc tasks. Almost always applicable as a first pass."
+
+    - name: by-concern
+      description: Split by distinct responsibilities or concerns within the task
+      examples:
+        - "Extract interface vs migrate consumers"
+        - "Update data layer vs update UI layer"
+        - "Fix core bug vs fix edge case handling"
+        - "Implement feature vs add error handling"
+      when_to_use: "Task involves multiple distinct areas of concern that can be worked independently"
+
+    - name: by-file-scope
+      description: One task per file or tightly-coupled group of files
+      examples:
+        - "Refactor auth-service.ts"
+        - "Update user-repository.ts and user-repository.test.ts"
+        - "Modify route handler files independently"
+      when_to_use: "Changes span many files that can be modified independently"
+
+    - name: by-test-boundary
+      description: Split every implementation into red-green pairs - failing test first, then code to pass
+      examples:
+        - "Write failing unit tests specifying the new interface"
+        - "Implement minimal code to make unit tests pass"
+        - "Write failing integration tests for component interactions"
+        - "Wire components to make integration tests pass"
+      when_to_use: "Primary heuristic for all implementation work. Every code change starts with a failing test."
+
+    - name: by-risk-level
+      description: Order changes from safest to riskiest
+      examples:
+        - "Safe: add new functions without changing existing ones"
+        - "Moderate: refactor internal implementations"
+        - "Risky: change public interfaces or shared state"
+      when_to_use: "Refactoring or changes to critical systems where rollback matters"
+
+  atomicity_criteria:
+    - criterion: single-concern
+      check: "Task addresses one specific change, fix, or addition"
+      fail_signal: "Description mentions multiple unrelated changes or connects different types of work with 'and'"
+
+    - criterion: fresh-context-completable
+      check: "Can complete in <30% context window with only declared inputs"
+      fail_signal: "Inputs require reading >50KB of context or task references undeclared files"
+
+    - criterion: verifiable
+      check: "Has at least one concrete verification (test passes, lint clean, command succeeds)"
+      fail_signal: "No verification defined or verification is subjective like 'looks right'"
+
+    - criterion: bounded-scope
+      check: "Changes limited to at most 3 tightly-coupled files"
+      fail_signal: "Task modifies files across multiple unrelated directories"
+
+    - criterion: explicit-inputs
+      check: "All file dependencies are declared in the inputs array"
+      fail_signal: "Description references files, patterns, or conventions not listed in inputs"
+
+    - criterion: tdd-paired
+      check: "Every implementation task has a corresponding test task that precedes it in the dependency graph"
+      fail_signal: "Implementation task has no test dependency, or test is scheduled after implementation"
+
+  max_recursion_depth: 4
+
+# Constitution - lightweight principles for ad-hoc tasks
+constitution:
+  template: |
+    # {project_name} Constitution
+
+    These principles are IMMUTABLE for this task.
+    Violating them means the task is incorrectly defined.
+
+    ## Core Principles
+
+    1. **Artifact Integrity**: Every task produces exactly the artifacts declared
+       in its outputs. No undeclared file modifications.
+
+    2. **Dependency Honesty**: All file dependencies are declared in inputs.
+       Hidden dependencies break parallel execution.
+
+    3. **Fresh Context**: Every task must be completable by an agent starting
+       with empty context, loading only declared inputs.
+
+    4. **Verification**: Every artifact has a concrete verification step.
+       "Looks good" is not verification.
+
+    ## Domain Principles (Ad-Hoc Development)
+
+    5. **Working Code**: All changes must leave the codebase in a working state.
+       Never break existing functionality. Run existing tests after changes.
+
+    6. **Minimal Footprint**: Change only what's necessary for the stated goal.
+       Avoid scope creep, unnecessary refactoring, or cosmetic changes.
+
+    7. **Codebase Consistency**: Follow existing patterns, naming conventions,
+       and architectural decisions. New patterns require explicit justification.
+
+    8. **Test-First Development**: All code changes follow TDD. Tests are written
+       BEFORE implementation. Test tasks produce failing tests; implementation
+       tasks make them pass. No implementation task exists without a preceding
+       test task in the dependency graph.
+
+    ## Project-Specific Constraints
+
+    {project_constraints}
+
+    ---
+    *Generated: {timestamp}*
+    *Domain: dev-do*
+
+# Artifacts - broad coverage for varying task types
+artifacts:
+  types:
+    - name: source-code
+      extensions:
+        - .ts
+        - .js
+        - .tsx
+        - .jsx
+        - .py
+        - .go
+        - .rs
+        - .java
+        - .rb
+        - .swift
+        - .kt
+      description: Application source code - new or modified files
+
+    - name: test
+      extensions:
+        - .test.ts
+        - .spec.ts
+        - .test.js
+        - .spec.js
+        - .test.tsx
+        - .spec.tsx
+        - .test.py
+        - .test.go
+      description: Test files - unit, integration, or end-to-end
+
+    - name: analysis
+      extensions:
+        - .md
+      description: Investigation findings, code review results, debugging analysis, or optimization reports
+
+    - name: plan
+      extensions:
+        - .md
+      description: Implementation plans, refactoring strategies, or tracking plans
+
+    - name: config
+      extensions:
+        - .yaml
+        - .yml
+        - .json
+        - .toml
+        - .env.example
+      description: Configuration files
+
+    - name: documentation
+      extensions:
+        - .md
+        - .rst
+      description: Documentation updates driven by code changes
+
+  verification_strategies:
+    source-code:
+      - method: exists
+        description: Source file exists at expected path
+      - method: syntax
+        description: File parses without syntax errors
+
+    test:
+      - method: exists
+        description: Test file exists
+      - method: runs
+        command_template: "npm test -- {path}"
+        description: Tests pass when executed
+
+    analysis:
+      - method: exists
+        description: Analysis document exists
+      - method: contains
+        description: Has findings, evidence, and actionable recommendations
+
+    plan:
+      - method: exists
+        description: Plan document exists
+      - method: contains
+        description: Has objectives, steps, and success criteria
+
+    config:
+      - method: exists
+        description: Config file exists
+      - method: syntax
+        description: Valid YAML/JSON/TOML syntax
+
+    documentation:
+      - method: exists
+        description: Documentation file exists
+      - method: contains
+        description: Content reflects current code state
+
+# Dependencies - patterns covering investigation-to-implementation flow
+dependencies:
+  common_patterns:
+    - name: analysis-to-plan
+      from_type: analysis
+      to_type: plan
+      description: Plans depend on investigation or analysis findings
+      confidence: high
+
+    - name: plan-to-source
+      from_type: plan
+      to_type: source-code
+      description: Implementation follows the plan or strategy
+      confidence: high
+
+    - name: analysis-to-source
+      from_type: analysis
+      to_type: source-code
+      description: Implementation depends on code review or debugging findings
+      confidence: high
+
+    - name: test-to-source
+      from_type: test
+      to_type: source-code
+      description: TDD - implementation depends on pre-written failing tests. Tests are always written first.
+      confidence: high
+
+    - name: source-to-test
+      from_type: source-code
+      to_type: test
+      description: Tests for existing code being reviewed or analyzed (not new implementation)
+      confidence: medium
+
+    - name: config-to-source
+      from_type: config
+      to_type: source-code
+      description: Source code depends on configuration it reads
+      confidence: medium
+
+  inference_hints:
+    - pattern: "import.*from ['\"]\\./(.+)['\"]"
+      implies: depends on imported local module
+    - pattern: "require\\(['\"](.+)['\"]\\)"
+      implies: depends on required module
+    - pattern: "Based on (analysis|investigation|review)"
+      implies: depends on analysis artifact
+    - pattern: "Following the (plan|strategy|approach)"
+      implies: depends on plan artifact
+    - pattern: "describe\\(['\"](.+)['\"]"
+      implies: test file depends on described module
