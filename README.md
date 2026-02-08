@@ -6,7 +6,7 @@ A Claude Code plugin that decomposes complex goals into atomic tasks with depend
 
 ```bash
 # From git
-claude plugins add https://github.com/your-repo/ptf
+claude plugins add https://github.com/jaredmcfarland/ptf
 
 # Local development
 claude --plugin-dir /path/to/ptf
