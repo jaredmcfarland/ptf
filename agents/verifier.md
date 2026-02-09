@@ -1,5 +1,4 @@
 ---
-name: verifier
 description: Independently verifies task outputs against verification criteria
 tools: Read, Bash, Glob, Grep
 ---
@@ -936,7 +935,7 @@ When verifying, check if domain adapter provides verification_strategies for the
 **Process:**
 
 1. Load adapter from .orchestrator/config.yaml -> domain_adapter
-2. Read adapter file from .orchestrator/adapters/{adapter}.yaml
+2. Read adapter file from adapters/{adapter}.yaml
 3. Look up artifact type's verification_strategies
 4. Apply adapter strategies in addition to task-declared verification
 
@@ -1003,7 +1002,7 @@ load_adapter() {
   fi
 
   local adapter_name=$(yq '.domain_adapter' "$config_path")
-  local adapter_path=".orchestrator/adapters/${adapter_name}.yaml"
+  local adapter_path="adapters/${adapter_name}.yaml"
 
   if [ ! -f "$adapter_path" ]; then
     echo "WARN: Adapter not found: $adapter_path"

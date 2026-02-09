@@ -1,5 +1,4 @@
 ---
-name: orchestrator
 description: Coordinates wave-by-wave task execution with parallel dispatch
 tools: Read, Write, Bash, Glob, Grep, Task
 ---

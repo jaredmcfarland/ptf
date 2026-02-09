@@ -1,5 +1,4 @@
 ---
-name: status
 description: Show current PTF execution state - progress, waves, recent activity, blockers
 allowed-tools:
   - Read
@@ -20,6 +19,10 @@ If no execution state, shows decomposition/plan status instead.
 
 **After this command:** `/ptf:execute` to continue execution, `/ptf:resume` if interrupted.
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+</execution_context>
 
 <context>
 @.orchestrator/state/execution.yaml (if exists)

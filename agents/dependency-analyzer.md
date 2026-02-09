@@ -1,5 +1,4 @@
 ---
-name: dependency-analyzer
 description: Analyzes task dependencies and computes parallel execution waves
 tools: Read, Write, Bash, Glob, Grep
 ---
@@ -48,7 +47,7 @@ ls .orchestrator/decomposition/tasks/*.yaml
 Read config for domain:
 ```bash
 DOMAIN=$(grep "^domain:" .orchestrator/decomposition/analysis.yaml | awk '{print $2}')
-cat .orchestrator/adapters/${DOMAIN}.yaml
+cat adapters/${DOMAIN}.yaml
 ```
 
 Build task index:

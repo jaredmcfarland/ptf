@@ -1,5 +1,4 @@
 ---
-name: retry
 description: Retry a specific failed or blocked task with fresh context
 allowed-tools:
   - Read
@@ -24,6 +23,10 @@ Retry a specific failed task by resetting its state and re-executing.
 
 **After this command:** Task is ready for execution. Run `/ptf:execute` to execute.
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+</execution_context>
 
 <context>
 @.orchestrator/state/execution.yaml
@@ -93,7 +96,7 @@ Reset task ${TASK_ID} for retry.
    echo '{\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\",\"event\":\"task_retry\",\"task\":\"${TASK_ID}\",\"reason\":\"manual_retry\"}' >> .orchestrator/history/events.jsonl
 
 4. Return confirmation with task details.
-", subagent_type="ptf:state-manager")
+", subagent_type="ptf-state-manager")
 ```
 
 ## Phase 4: Clear Cascade Blocks
@@ -126,7 +129,7 @@ Check cascade effects for task ${TASK_ID}.
    - Increment tasks_pending
 
 4. Return list of affected tasks.
-", subagent_type="ptf:state-manager")
+", subagent_type="ptf-state-manager")
 ```
 
 ## Phase 5: Report Result

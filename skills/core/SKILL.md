@@ -1,5 +1,4 @@
 ---
-name: core
 description: Parallel Task Framework for decomposing complex goals into atomic tasks, computing dependency graphs, and orchestrating parallel execution with fresh context per task. Use when working with PTF commands, building decomposition plans, or understanding wave-based execution.
 ---
 
@@ -271,6 +270,7 @@ PTF stores runtime state in `.orchestrator/`:
 
 | Command | Purpose |
 |---------|---------|
+| `/ptf:do [task]` | One-shot ad-hoc dev task — init, decompose, plan, execute in one command |
 | `/ptf:init [goal]` | Initialize project, run goal analysis |
 | `/ptf:decompose` | Run full decomposition (goal -> subgoals -> tasks) |
 | `/ptf:plan` | Generate execution plan with dependencies and waves |
@@ -282,7 +282,10 @@ PTF stores runtime state in `.orchestrator/`:
 | `/ptf:retry [task]` | Retry a failed task |
 | `/ptf:abort` | Stop execution, preserve state |
 
-**Typical workflow:**
+**Quick workflow (ad-hoc):**
+`/ptf:do "Refactor auth for modularity and test coverage"` — runs everything in one command
+
+**Manual workflow (full control):**
 1. `/ptf:init "Build user authentication"` - Analyze goal
 2. `/ptf:decompose` - Break into atomic tasks
 3. `/ptf:plan` - Review generated plan
@@ -300,7 +303,7 @@ PTF stores runtime state in `.orchestrator/`:
 | `ptf:state-manager` | Checkpoint operations, event logging, artifact tracking |
 | `ptf:orchestrator` | Coordinate wave-by-wave execution, dispatch subagents |
 
-**Agent Dispatch**: PTF uses Claude Code's `Task` tool with `subagent_type` parameter to spawn specialized agents. Agents are registered as `ptf:orchestrator`, `ptf:executor`, etc. Example: `Task(prompt="...", subagent_type="ptf:executor")` loads the ptf:executor agent with its configured role and tools.
+**Agent Dispatch**: PTF uses Claude Code's `Task` tool with `subagent_type` parameter to spawn specialized agents. Registered as ptf:orchestrator, ptf:executor, etc. Example: `Task(prompt="...", subagent_type="ptf:executor")` loads the ptf:executor agent with its configured role and tools.
 
 ## Dependency Analysis
 
@@ -456,9 +459,9 @@ inference_hints: [{pattern: "import.*from", implies: "..."}]
 
 ### Creating Custom Adapters
 
-1. Copy `.orchestrator/adapters/template.yaml` to `.orchestrator/adapters/{your-domain}.yaml`
+1. Copy `adapters/template.yaml` to `.orchestrator/adapters/{your-domain}.yaml`
 2. Replace `[CUSTOMIZE]` markers with domain-specific content
-3. Test with `/ptf:init` and select your domain
+3. Test with `/ptf:init --domain={your-domain}`
 
 **Requirements:** 5 sections present, 3+ init_questions, 2+ heuristics, 3+ atomicity criteria, 2+ artifact types, 2+ dependency patterns.
 
@@ -483,7 +486,7 @@ PTF defines 4 lifecycle hooks that fire during execution:
 | `on-failure` | When task fails | log_failure, check_cascade_policy |
 | `on-session-end` | Execution ends | final_checkpoint, cleanup |
 
-**Important**: Hook `.md` files in `hooks/docs/` are **design specifications**, not executable code. They document the behavior that the orchestrator and state-manager agents implement. Editing hook files does not change runtime behavior — modify the agent files instead.
+**Important**: Hook `.md` files in `.claude/hooks/ptf/` are **design specifications**, not executable code. They document the behavior that `ptf:orchestrator` and `ptf:state-manager` implement. Editing hook files does not change runtime behavior — modify the agent files instead.
 
 ## Key Terms
 

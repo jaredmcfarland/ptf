@@ -1,5 +1,4 @@
 ---
-name: init
 description: Initialize project and run goal analysis
 argument-hint: "<goal description>"
 allowed-tools:
@@ -10,11 +9,6 @@ allowed-tools:
   - Grep
   - AskUserQuestion
 ---
-
-<plugin_paths>
-PTF plugin root: !`echo "${CLAUDE_PLUGIN_ROOT}"`
-Available adapters: !`ls "${CLAUDE_PLUGIN_ROOT}/adapters/" 2>/dev/null | grep ".yaml" | grep -v template | sed 's/.yaml$//' | tr '\n' ', ' || echo "software-development, research, system-design, spec-driven-development, prediction-market, mixpanel-analytics"`
-</plugin_paths>
 
 <objective>
 Initialize a PTF project by analyzing the user's goal, determining domain,
@@ -28,6 +22,10 @@ asking domain-driven clarifying questions, and generating analysis and constitut
 
 **After this command:** Run `/ptf:decompose` to break goal into tasks.
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+</execution_context>
 
 <context>
 Goal: $ARGUMENTS
@@ -50,18 +48,7 @@ Goal: $ARGUMENTS
    fi
    ```
 
-3. **Copy adapters from plugin to project:**
-   ```bash
-   mkdir -p .orchestrator/adapters
-   ```
-   Then copy adapter files from the PTF plugin root (shown in `<plugin_paths>` above) to `.orchestrator/adapters/`:
-   ```bash
-   cp "${PTF_PLUGIN_ROOT}"/adapters/*.yaml .orchestrator/adapters/
-   ```
-   Where `${PTF_PLUGIN_ROOT}` is the plugin root path from the `<plugin_paths>` block.
-   If the plugin root is not available, check if adapters exist at `adapters/` (development mode).
-
-4. **Initialize git repo if needed:**
+3. **Initialize git repo if needed:**
    ```bash
    if [ ! -d .git ] && [ ! -f .git ]; then
      git init
@@ -83,7 +70,7 @@ Goal: $ARGUMENTS
    DOMAIN="software-development"  # or "research" based on analysis
 
    # Check adapter exists
-   if [ ! -f ".orchestrator/adapters/${DOMAIN}.yaml" ]; then
+   if [ ! -f "adapters/${DOMAIN}.yaml" ]; then
      echo "WARNING: Adapter not found for ${DOMAIN}, using software-development"
      DOMAIN="software-development"
    fi
@@ -101,7 +88,7 @@ Goal: $ARGUMENTS
 
 4. **Read the domain adapter:**
    ```bash
-   cat ".orchestrator/adapters/${DOMAIN}.yaml"
+   cat "adapters/${DOMAIN}.yaml"
    ```
 
    Extract:
@@ -184,7 +171,7 @@ Track all responses for use in analysis and constitution.
    # PTF Project Configuration
    created: {timestamp}
    domain: {detected domain}
-   adapter: .orchestrator/adapters/{domain}.yaml
+   adapter: adapters/{domain}.yaml
    goal_file: .orchestrator/goal.md
 
    decomposition:

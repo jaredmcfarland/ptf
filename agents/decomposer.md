@@ -1,8 +1,7 @@
 ---
-name: decomposer
 description: Executes 5-step decomposition process transforming goals into atomic tasks
 tools: Read, Write, Bash, Glob, Grep
-skills: ptf:core
+skills: ptf
 ---
 
 <role>
@@ -54,7 +53,7 @@ cat .orchestrator/decomposition/constitution.yaml
 Load domain adapter:
 ```bash
 DOMAIN=$(grep "^domain:" .orchestrator/decomposition/analysis.yaml | awk '{print $2}')
-cat .orchestrator/adapters/${DOMAIN}.yaml
+cat adapters/${DOMAIN}.yaml
 ```
 
 Extract and internalize:
@@ -69,7 +68,7 @@ Extract and internalize:
 **Validation:**
 - analysis.yaml must have status: complete
 - constitution.yaml must exist
-- Domain adapter must exist in .orchestrator/adapters/
+- Domain adapter must exist in adapters/
 </step>
 
 <step name="step2_subgoals">
@@ -152,7 +151,6 @@ function decompose(subgoal, depth):
 ```yaml
 # tasks/{task-id}.yaml
 id: {task-id}
-name: {Human-readable name}
 from_subgoal: {parent subgoal id}
 
 description: |

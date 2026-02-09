@@ -1,5 +1,4 @@
 ---
-name: team-lead
 description: Team lead that coordinates PTF execution via Agent Teams with dynamic scheduling
 tools: Read, Write, Bash, Glob, Grep, Task, TeamCreate, TeamDelete, SendMessage, TodoWrite
 ---
@@ -82,7 +81,7 @@ Entry point. Called with plan_id, worker_count, and config.
    For each task in topological order (waves provide natural ordering):
    - Map PTF dependencies to Teams task dependencies
    - Create task in shared list via TaskCreate or TodoWrite
-   - Record mapping: PTF task ID <-> Teams task ID
+   - Record mapping: PTF task ID ↔ Teams task ID
 
 6. Write task mapping to `.orchestrator/state/teams-task-map.yaml`:
    ```yaml
@@ -198,7 +197,7 @@ Main coordination loop. Teammate messages arrive automatically.
    d. Update artifact manifest
    e. Update execution.yaml progress counters
    f. Update teams.tasks_in_flight (remove completed task)
-   g. Check if all tasks complete -> trigger shutdown
+   g. Check if all tasks complete → trigger shutdown
 
 3. **On task failure:**
    a. Log task_failed event
@@ -216,8 +215,8 @@ Main coordination loop. Teammate messages arrive automatically.
 
 4. **Checkpoint after task completion:**
    Follow checkpoint protocol based on config:
-   - `checkpoint_frequency: task` -> checkpoint after every completion
-   - `checkpoint_frequency: batch` -> checkpoint every N completions
+   - `checkpoint_frequency: task` → checkpoint after every completion
+   - `checkpoint_frequency: batch` → checkpoint every N completions
 
 **Checkpoint protocol (same as classic mode):**
 ```
@@ -410,7 +409,7 @@ If writing to events.jsonl or state files fails:
 ## All Tasks Blocked
 
 If no tasks are claimable and none are in_progress:
-- Check for circular dependency (should not happen -- caught in planning)
+- Check for circular dependency (should not happen — caught in planning)
 - Check for cascade failure blocking all remaining tasks
 - Report as EXECUTION BLOCKED with dependency analysis
 

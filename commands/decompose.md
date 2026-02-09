@@ -1,5 +1,4 @@
 ---
-name: decompose
 description: Run full 5-step decomposition process
 allowed-tools:
   - Read
@@ -23,6 +22,10 @@ Execute the 5-step decomposition process to transform the analyzed goal into val
 
 **After this command:** Run `/ptf:plan` to generate the execution plan.
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+</execution_context>
 
 <context>
 @.orchestrator/decomposition/analysis.yaml
@@ -52,7 +55,7 @@ Execute the 5-step decomposition process to transform the analyzed goal into val
 3. **Load config for domain:**
    ```bash
    DOMAIN=$(grep "^domain:" .orchestrator/decomposition/analysis.yaml | awk '{print $2}')
-   if [ ! -f ".orchestrator/adapters/${DOMAIN}.yaml" ]; then
+   if [ ! -f "adapters/${DOMAIN}.yaml" ]; then
      echo "WARNING: Adapter not found for ${DOMAIN}, using software-development"
      DOMAIN="software-development"
    fi
@@ -120,14 +123,14 @@ Execute the 5-step decomposition process to transform the analyzed goal into val
 
 ## Phase 2: Spawn Decomposer
 
-Build rich prompt for ptf:decomposer subagent with full context:
+Build rich prompt for ptf-decomposer subagent with full context:
 
 ```
 Task(prompt="
 <context>
 Analysis: @.orchestrator/decomposition/analysis.yaml
 Constitution: @.orchestrator/decomposition/constitution.yaml
-Adapter: @.orchestrator/adapters/{DOMAIN}.yaml
+Adapter: @adapters/{DOMAIN}.yaml
 </context>
 
 <instructions>
@@ -144,7 +147,7 @@ Resume from: {RESUME_FROM or 'beginning'}
 Write state files after each step.
 Return DECOMPOSITION COMPLETE or DECOMPOSITION BLOCKED.
 </instructions>
-", subagent_type="ptf:decomposer")
+", subagent_type="ptf-decomposer")
 ```
 
 Wait for subagent to return.
@@ -322,7 +325,7 @@ Present formatted decomposition summary:
 <success_criteria>
 - [ ] .orchestrator/decomposition/analysis.yaml exists (prerequisite)
 - [ ] .orchestrator/decomposition/constitution.yaml exists (prerequisite)
-- [ ] ptf:decomposer subagent spawned with full context
+- [ ] ptf-decomposer subagent spawned with full context
 - [ ] .orchestrator/decomposition/subgoals.yaml created with subgoal structure
 - [ ] .orchestrator/decomposition/tasks/*.yaml created with atomic task definitions
 - [ ] .orchestrator/decomposition/validation.yaml shows status: passed

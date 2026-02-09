@@ -1,5 +1,4 @@
 ---
-name: state-manager
 description: Manages execution state, checkpoints, and event logging for PTF
 tools: Read, Write, Bash, Glob
 ---

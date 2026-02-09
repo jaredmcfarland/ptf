@@ -1,5 +1,4 @@
 ---
-name: abort
 description: Stop PTF execution cleanly and preserve all state
 allowed-tools:
   - Read
@@ -25,6 +24,10 @@ Cleanly stop PTF execution while preserving all state for later resume.
 
 **After this command:** Execution is stopped. Run `/ptf:resume` to continue later.
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+</execution_context>
 
 <context>
 @.orchestrator/state/execution.yaml
@@ -75,7 +78,7 @@ Handle abort for execution in progress.
      echo '{\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\",\"event\":\"task_interrupted\",\"task\":\"'${TASK_ID}'\",\"reason\":\"user_abort\"}' >> .orchestrator/history/events.jsonl
 
 3. Return count of interrupted tasks.
-", subagent_type="ptf:state-manager")
+", subagent_type="ptf-state-manager")
 ```
 
 ## Phase 3: Update Execution State
@@ -102,7 +105,7 @@ Update execution state for abort.
    - Update execution.yaml LAST
 
 5. Return checkpoint confirmation.
-", subagent_type="ptf:state-manager")
+", subagent_type="ptf-state-manager")
 ```
 
 ## Phase 4: Report Abort Status

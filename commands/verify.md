@@ -1,5 +1,4 @@
 ---
-name: verify
 description: Verify task outputs against declared criteria
 allowed-tools:
   - Read
@@ -25,6 +24,12 @@ Run verification checks for a specific task or set of tasks.
 - If all pass: Continue execution or commit changes
 - If failures: Fix issues and re-verify, or use `/ptf:retry`
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+@.claude/agents/ptf-verifier.md
+@.claude/agents/ptf-state-manager.md
+</execution_context>
 
 <context>
 @.orchestrator/state/execution.yaml (if exists)
@@ -137,7 +142,7 @@ for task in tasks_to_verify:
 
 ## Phase 3: Dispatch Verifier
 
-Spawn ptf:verifier subagent for each task.
+Spawn ptf-verifier subagent for each task.
 
 **3.1 For each task, spawn verifier:**
 
@@ -165,7 +170,7 @@ Run all verification checks in fail-fast order:
 5. custom checks
 
 Return VERIFICATION PASSED or VERIFICATION FAILED with detailed results.
-", subagent_type="ptf:verifier")
+", subagent_type="ptf-verifier")
 ```
 
 **3.2 Collect verifier results:**
@@ -208,7 +213,7 @@ Results:
 Update task state file with verification section.
 Append verification_completed event to log.
 Update artifact manifest verified status.
-", operation="record_verification", subagent_type="ptf:state-manager")
+", operation="record_verification", subagent_type="ptf-state-manager")
 ```
 
 **4.2 Wait for state manager confirmation:**

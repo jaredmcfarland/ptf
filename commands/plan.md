@@ -1,5 +1,4 @@
 ---
-name: plan
 description: Generate human-readable execution plan from decomposition
 allowed-tools:
   - Read
@@ -22,6 +21,10 @@ Generate a human-readable execution plan showing waves and task ordering.
 
 **After this command:** Run `/ptf:execute` to begin execution.
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+</execution_context>
 
 <context>
 @.orchestrator/decomposition/analysis.yaml
@@ -87,7 +90,7 @@ Config: @.orchestrator/config.yaml
 Tasks: .orchestrator/decomposition/tasks/*.yaml
 Analysis: @.orchestrator/decomposition/analysis.yaml
 
-Domain adapter: @.orchestrator/adapters/{DOMAIN}.yaml
+Domain adapter: @adapters/{DOMAIN}.yaml
 </context>
 
 <instructions>
@@ -107,7 +110,7 @@ Then:
 
 Return ANALYSIS COMPLETE or ANALYSIS BLOCKED.
 </instructions>
-", subagent_type="ptf:dependency-analyzer")
+", subagent_type="ptf-dependency-analyzer")
 ```
 
 Wait for analyzer to complete.
@@ -432,7 +435,7 @@ Use AskUserQuestion with these options.
 
    Re-run analysis excluding these dependencies.
    </context>
-   ", subagent_type="ptf:dependency-analyzer")
+   ", subagent_type="ptf-dependency-analyzer")
    ```
 4. Handle new result (may find more cycles or succeed)
 

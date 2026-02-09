@@ -1,5 +1,4 @@
 ---
-name: create-adapter
 description: Create a new PTF domain adapter through guided wizard
 argument-hint: "[domain-name]"
 allowed-tools:
@@ -14,18 +13,23 @@ allowed-tools:
 <objective>
 Guide the user through creating a new PTF domain adapter via an interactive
 question-driven wizard. Validates each section against the adapter schema
-and produces a valid YAML file at `.orchestrator/adapters/{name}.yaml`.
+and produces a valid YAML file at `adapters/{name}.yaml`.
 
 **Creates:**
-- `.orchestrator/adapters/{name}.yaml` - New domain adapter
+- `adapters/{name}.yaml` - New domain adapter
 
 **After this command:** Use the adapter with `/ptf:init --domain={name}`
 </objective>
 
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+@schemas/adapter.schema.yaml
+</execution_context>
+
 <context>
 Existing adapters for reference:
-@.orchestrator/adapters/software-development.yaml
-@.orchestrator/adapters/research.yaml
+@adapters/software-development.yaml
+@adapters/research.yaml
 </context>
 
 <process>
@@ -54,7 +58,7 @@ Existing adapters for reference:
 
 2. **Check for existing adapters:**
    ```bash
-   ls .orchestrator/adapters/*.yaml 2>/dev/null | xargs -I{} basename {} .yaml || echo ""
+   ls adapters/*.yaml 2>/dev/null | xargs -I{} basename {} .yaml || echo ""
    ```
    Store existing adapter names to prevent duplicates.
 
@@ -696,7 +700,7 @@ Existing adapters for reference:
 
 1. **Write adapter file:**
 
-   Write to `.orchestrator/adapters/{ADAPTER_NAME}.yaml` with complete YAML content.
+   Write to `adapters/{ADAPTER_NAME}.yaml` with complete YAML content.
 
 2. **Git operations:**
 
@@ -709,7 +713,7 @@ Existing adapters for reference:
 
    If yes:
    ```bash
-   git add .orchestrator/adapters/{ADAPTER_NAME}.yaml
+   git add adapters/{ADAPTER_NAME}.yaml
    git commit -m "$(cat <<'EOF'
    ptf: add {ADAPTER_NAME} domain adapter
 
@@ -731,7 +735,7 @@ Existing adapters for reference:
 
    ## Adapter Created Successfully
 
-   **File:** .orchestrator/adapters/{ADAPTER_NAME}.yaml
+   **File:** adapters/{ADAPTER_NAME}.yaml
 
    ### Summary
 
@@ -751,7 +755,7 @@ Existing adapters for reference:
       ```
 
    2. **Review and refine:**
-      - Edit `.orchestrator/adapters/{ADAPTER_NAME}.yaml` directly for fine-tuning
+      - Edit `adapters/{ADAPTER_NAME}.yaml` directly for fine-tuning
       - Adjust questions if they don't elicit useful responses
       - Tune atomicity criteria if tasks are too large/small
 
@@ -777,6 +781,6 @@ Existing adapters for reference:
 - [ ] Each artifact type has at least 1 verification strategy
 - [ ] dependencies.common_patterns has at least 1 pattern
 - [ ] Full adapter validates against adapter.schema.yaml
-- [ ] File written to .orchestrator/adapters/{name}.yaml
+- [ ] File written to adapters/{name}.yaml
 - [ ] User knows to test with `/ptf:init --domain={name}`
 </success_criteria>

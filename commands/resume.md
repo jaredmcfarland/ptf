@@ -1,5 +1,4 @@
 ---
-name: resume
 description: Resume PTF execution from last checkpoint after interruption
 allowed-tools:
   - Read
@@ -21,6 +20,10 @@ This command:
 
 **After this command:** `/ptf:execute` continues from current wave.
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+</execution_context>
 
 <context>
 @.orchestrator/state/execution.yaml
@@ -121,7 +124,7 @@ Return VALIDATION RESULTS with:
 - Total artifacts checked
 - Valid count
 - Invalid list (path, reason, producing task)
-", subagent_type="ptf:state-manager")
+", subagent_type="ptf-state-manager")
 ```
 
 **Process validation results:**

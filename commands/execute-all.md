@@ -1,5 +1,4 @@
 ---
-name: execute-all
 description: Execute all waves with automatic progression
 allowed-tools:
   - Read
@@ -35,6 +34,14 @@ Execute the entire plan, progressing through all waves automatically until compl
 - `/ptf:verify` for final verification
 - `/ptf:resume` if interrupted
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+@.claude/agents/ptf-orchestrator.md
+@.claude/agents/ptf-executor.md
+@.claude/agents/ptf-team-lead.md
+@.claude/agents/ptf-team-executor.md
+</execution_context>
 
 <context>
 @.orchestrator/state/execution.yaml (if exists)
@@ -171,7 +178,7 @@ After EACH state-manager call:
 Event log path: `.orchestrator/history/events.jsonl` (ONLY this path)
 
 Return PLAN COMPLETE, EXECUTION PAUSED, or EXECUTION BLOCKED.
-", subagent_type="ptf:orchestrator")
+", subagent_type="ptf-orchestrator")
 ```
 
 **2.3 Wait for orchestrator:**
@@ -232,7 +239,7 @@ Execution flow:
 Teammates report via SendMessage. You process messages and write state.
 
 Return PLAN COMPLETE, EXECUTION PAUSED, or EXECUTION BLOCKED.
-", subagent_type="ptf:team-lead")
+", subagent_type="ptf-team-lead")
 ```
 
 **2T.3 Wait for team lead:**
@@ -373,7 +380,7 @@ After resolving, run `/ptf:resume` to continue.
 | Scheduling | Wave boundaries | Wave boundaries | Dynamic (dependency-driven) |
 | Parallelism | Within wave only | Within wave only | Across waves |
 | Progression | Manual | Automatic | Automatic |
-| Coordinator | ptf:orchestrator | ptf:orchestrator | ptf:team-lead |
+| Coordinator | ptf-orchestrator | ptf-orchestrator | ptf-team-lead |
 | User control | After each wave | At completion/failure | At completion/failure |
 | Best for | Step-by-step | Hands-off, smaller plans | Large plans, uneven tasks |
 

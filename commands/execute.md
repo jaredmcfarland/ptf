@@ -1,5 +1,4 @@
 ---
-name: execute
 description: Execute single wave or next pending wave
 allowed-tools:
   - Read
@@ -27,6 +26,12 @@ and checkpoints state.
 - Run again for next wave, OR
 - Run `/ptf:execute-all` for automatic progression
 </objective>
+
+<execution_context>
+@.claude/skills/ptf/SKILL.md
+@.claude/agents/ptf-orchestrator.md
+@.claude/agents/ptf-executor.md
+</execution_context>
 
 <context>
 @.orchestrator/state/execution.yaml (if exists)
@@ -128,7 +133,7 @@ IF no tasks in wave:
 
 ## Phase 3: Dispatch Orchestrator
 
-Spawn the ptf:orchestrator subagent to handle wave execution.
+Spawn the ptf-orchestrator subagent to handle wave execution.
 
 **3.1 Prepare orchestrator context:**
 
@@ -175,7 +180,7 @@ After EACH state-manager call:
 Event log path: `.orchestrator/history/events.jsonl` (ONLY this path)
 
 Return WAVE COMPLETE, EXECUTION PAUSED, or EXECUTION BLOCKED.
-", subagent_type="ptf:orchestrator")
+", subagent_type="ptf-orchestrator")
 ```
 
 **3.3 Wait for orchestrator completion:**
